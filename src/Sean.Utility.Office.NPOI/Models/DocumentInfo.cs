@@ -1,42 +1,38 @@
-﻿namespace Sean.Utility.Office.NPOI
+﻿namespace Sean.Utility.Office.NPOI.Models
 {
     /// <summary>
     /// 文件信息
     /// </summary>
     public class DocumentInfo
     {
-        #region 说明
         /// <summary>
         /// 标题
         /// </summary>
-        public string Title = "";
+        public string Title { get; set; }
         /// <summary>
         /// 主题
         /// </summary>
-        public string Subject = "";
+        public string Subject { get; set; }
         /// <summary>
         /// 类别
         /// </summary>
-        public string Category = "";
+        public string Category { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
-        public string Comments = "Created By NPOI";
-        #endregion
+        public string Comments { get; set; } = "Created By NPOI";
 
-        #region 来源
         /// <summary>
         /// 作者
         /// </summary>
-        public string Author = "Sean";
+        public string Author { get; set; } = "Sean";
         /// <summary>
         /// 公司
         /// </summary>
-        public string Company = "";
+        public string Company { get; set; }
         /// <summary>
         /// 管理者
         /// </summary>
-        public string Manager = "";
-        #endregion
+        public string Manager { get; set; }
     }
 }

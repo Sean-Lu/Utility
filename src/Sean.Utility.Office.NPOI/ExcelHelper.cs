@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Data;
 using System.Linq;
@@ -13,8 +12,8 @@ using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
+using Sean.Utility.Office.NPOI.Models;
 
-//[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]// 解决：类型“XXX”违反了继承安全性规则。派生类型必须与基类型的安全可访问性匹配或者比基类型的安全可访问性低。
 namespace Sean.Utility.Office.NPOI
 {
     /// <summary>
@@ -25,62 +24,21 @@ namespace Sean.Utility.Office.NPOI
         /// <summary>
         /// 处理DateTime数据的Func委托
         /// </summary>
-        public static Func<DateTime, string> HandleDateTimeDataFunc { get; set; }
+        public static Func<DateTime, string> DateTimeFormat { get; set; }
 
         #region Public Methods
         /// <summary>
-        /// DataTable转Excel（SheetName使用对应DataTable的TableName）。
-        /// 支持在已存在的Excel文件中添加新的sheet。
-        /// </summary>
-        /// <param name="dt">待写入Excel的DataTable对象</param>
-        /// <param name="excelFilePath">Excel文件路径</param>
-        /// <param name="isColumnWritten">DataTable的列名是否要写入</param>
-        /// <param name="cellStyle">单元格格式。如果为null，则不设置单元格格式。</param>
-        /// <param name="createFlag">如何创建Excel文件的标志。0表示获取现有文件（文件存在）或创建新文件（文件不存在）；1表示获取现有文件（文件不存在则不做任何操作）；2表示创建新文件（保存时覆盖现有文件）。</param>
-        /// <returns>写入Excel的行数</returns>
-        public static void ToExcel(DataTable dt, string excelFilePath, bool isColumnWritten, CellStyle cellStyle, int createFlag = 0)
-        {
-            if (dt == null || dt.Rows.Count < 1) return;
-
-            var ds = new DataSet();
-            ds.Tables.Add(dt.Copy());
-            ToExcel(ds, excelFilePath, isColumnWritten, cellStyle, createFlag);
-        }
-        /// <summary>
         /// DataTable转Excel。
-        /// 支持在已存在的Excel文件中添加新的sheet。
         /// </summary>
-        /// <param name="dt">待写入Excel的DataTable对象</param>
-        /// <param name="excelFilePath">Excel文件路径</param>
-        /// <param name="sheetName">sheet名称。值为空时使用默认名称</param>
-        /// <param name="isColumnWritten">DataTable的列名是否要写入</param>
-        /// <param name="cellStyle">单元格格式。如果为null，则不设置单元格格式。</param>
-        /// <param name="createFlag">如何创建Excel文件的标志。0表示获取现有文件（文件存在）或创建新文件（文件不存在）；1表示获取现有文件（文件不存在则不做任何操作）；2表示创建新文件（保存时覆盖现有文件）。</param>
+        /// <param name="dt"></param>
+        /// <param name="options"></param>
         /// <returns>写入Excel的行数</returns>
-        public static void ToExcel(DataTable dt, string excelFilePath, string sheetName, bool isColumnWritten, CellStyle cellStyle, int createFlag = 0)
+        public static void ToExcel(DataTable dt, ExcelExportOptions options)
         {
-            if (dt == null || dt.Rows.Count < 1) return;
-
-            var dtTmp = dt.Copy();
-            dtTmp.TableName = sheetName;
-            ToExcel(dtTmp, excelFilePath, isColumnWritten, cellStyle, createFlag);
-        }
-        /// <summary>
-        /// DataSet转Excel（SheetName使用对应DataTable的TableName）。
-        /// 支持在已存在的Excel文件中添加新的sheet。
-        /// </summary>
-        /// <param name="ds">待写入Excel的DataSet对象</param>
-        /// <param name="excelFilePath">Excel文件路径</param>
-        /// <param name="isColumnWritten">DataTable的列名是否要写入</param>
-        /// <param name="cellStyle">单元格格式。如果为null，则不设置单元格格式。</param>
-        /// <param name="createFlag">如何创建Excel文件的标志。0表示获取现有文件（文件存在）或创建新文件（文件不存在）；1表示获取现有文件（文件不存在则不做任何操作）；2表示创建新文件（保存时覆盖现有文件）。</param>
-        /// <returns>写入Excel的行数</returns>
-        public static void ToExcel(DataSet ds, string excelFilePath, bool isColumnWritten, CellStyle cellStyle, int createFlag = 0)
-        {
-            var workbook = GetWorkbook(ds, excelFilePath, isColumnWritten, cellStyle, createFlag);
+            var workbook = GetWorkbook(dt, options);
             if (workbook != null)
             {
-                Save(workbook, excelFilePath);
+                Save(workbook, options.ExcelFilePath);
             }
         }
         /// <summary>
@@ -88,50 +46,28 @@ namespace Sean.Utility.Office.NPOI
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="excelFilePath"></param>
-        /// <param name="sheetName"></param>
-        /// <param name="isHeaderWritten"></param>
-        /// <param name="cellStyle"></param>
-        /// <param name="createFlag"></param>
-        public static void ToExcel<T>(IList<T> list, string excelFilePath, string sheetName = null, bool isHeaderWritten = true, CellStyle cellStyle = null, int createFlag = 0)
+        /// <param name="options"></param>
+        public static void ToExcel<T>(IList<T> list, ExcelExportOptions options)
         {
-            var workbook = GetWorkbook(list, excelFilePath, sheetName, isHeaderWritten, cellStyle, createFlag);
+            var workbook = GetWorkbook(list, options);
             if (workbook != null)
             {
-                Save(workbook, excelFilePath);
+                Save(workbook, options.ExcelFilePath);
             }
         }
 
         /// <summary>
-        /// DataTable转Excel（SheetName使用对应DataTable的TableName），并在浏览器中输出。
+        /// DataTable转Excel，并在浏览器中输出。
         /// </summary>
-        /// <param name="dt">待写入Excel的DataTable对象</param>
-        /// <param name="excelFileName">Excel文件名称</param>
-        /// <param name="isColumnWritten">DataTable的列名是否要写入</param>
-        /// <param name="cellStyle">单元格格式。如果为null，则不设置单元格格式。</param>
+        /// <param name="dt"></param>
+        /// <param name="options"></param>
         /// <returns>写入Excel的行数</returns>
-        public static void ToExcelInBrowser(DataTable dt, string excelFileName, bool isColumnWritten, CellStyle cellStyle)
+        public static void ToExcelInBrowser(DataTable dt, ExcelExportOptions options)
         {
-            if (dt == null || dt.Rows.Count < 1) return;
-
-            DataSet ds = new DataSet();
-            ds.Tables.Add(dt.Copy());
-            ToExcelInBrowser(ds, excelFileName, isColumnWritten, cellStyle);
-        }
-        /// <summary>
-        /// DataSet转Excel（SheetName使用对应DataTable的TableName），并在浏览器中输出。
-        /// </summary>
-        /// <param name="ds">待写入Excel的DataSet对象</param>
-        /// <param name="excelFileName">Excel文件名称</param>
-        /// <param name="isColumnWritten">DataTable的列名是否要写入</param>
-        /// <param name="cellStyle">单元格格式。如果为null，则不设置单元格格式。</param>
-        /// <returns>写入Excel的行数</returns>
-        public static void ToExcelInBrowser(DataSet ds, string excelFileName, bool isColumnWritten, CellStyle cellStyle)
-        {
-            IWorkbook workbook = GetWorkbook(ds, excelFileName, isColumnWritten, cellStyle, 2);
+            var workbook = GetWorkbook(dt, options);
             if (workbook == null) return;
 
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 workbook.Write(ms);
                 workbook.Close();
@@ -139,7 +75,7 @@ namespace Sean.Utility.Office.NPOI
 #if NETSTANDARD
                 HttpContext httpContext = HttpContextExt.Current ?? throw new ArgumentNullException("HttpContextExt.Current");
                 httpContext.Response.ContentType = "application/octet-stream; charset=utf-8";
-                httpContext.Response.Headers.Add("Content-Disposition", $"attachment; filename={HttpUtility.UrlEncode(excelFileName, Encoding.UTF8)}");
+                httpContext.Response.Headers.Add("Content-Disposition", $"attachment; filename={HttpUtility.UrlEncode(options.ExcelFilePath, Encoding.UTF8)}");
                 var data = ms.ToArray();
                 httpContext.Response.Body.WriteAsync(data, 0, data.Length);
 #else
@@ -149,7 +85,7 @@ namespace Sean.Utility.Office.NPOI
                 //httpContext.Response.ContentType = "application/ms-excel";
                 httpContext.Response.ContentEncoding = Encoding.UTF8;
                 //httpContext.Response.Charset = "UTF-8";
-                httpContext.Response.AddHeader("Content-Disposition", $"attachment; filename={HttpUtility.UrlEncode(excelFileName, Encoding.UTF8)}");
+                httpContext.Response.AddHeader("Content-Disposition", $"attachment; filename={HttpUtility.UrlEncode(options.ExcelFilePath, Encoding.UTF8)}");
                 //httpContext.Response.AddHeader("Content-Disposition", string.Format("attachment; filename={0}", HttpUtility.UrlPathEncode(excelFileName)));
                 httpContext.Response.BinaryWrite(ms.ToArray());
                 httpContext.Response.End();
@@ -341,19 +277,6 @@ namespace Sean.Utility.Office.NPOI
         }
 
         /// <summary>
-        /// 另存为（仅保存数据，不保存原有Excel的格式）。
-        /// 注：可作为xls转xlsx、xlsx转xls使用。
-        /// </summary>
-        /// <param name="excelFilePath">Excel文件路径</param>
-        /// <param name="newFilePath">新的Excel文件路径</param>
-        /// <param name="cellStyle">单元格格式。如果为null，则不设置单元格格式。</param>
-        public static void SaveAs(string excelFilePath, string newFilePath, CellStyle cellStyle)
-        {
-            DataSet ds = ToDataSet(excelFilePath, false);
-            ToExcel(ds, newFilePath, false, cellStyle);
-        }
-
-        /// <summary>
         /// 添加文件信息
         /// </summary>
         /// <param name="excelFilePath">Excel文件路径</param>
@@ -396,13 +319,16 @@ namespace Sean.Utility.Office.NPOI
 
                     var xmlProps = xssfWorkbook.GetProperties();
                     var coreProps = xmlProps.CoreProperties;
-
-                    coreProps.Category = documentInfo.Category;
+                    var underlyingProperties = xmlProps.ExtendedProperties.GetUnderlyingProperties();
 
                     coreProps.Creator = documentInfo.Author;
                     coreProps.Subject = documentInfo.Subject;
                     coreProps.Title = documentInfo.Title;
                     coreProps.Description = documentInfo.Comments;
+                    coreProps.Category = documentInfo.Category;
+
+                    underlyingProperties.Company = documentInfo.Company;
+                    underlyingProperties.Manager = documentInfo.Manager;
 
                     Save(xssfWorkbook, excelFilePath);
                 }
@@ -416,33 +342,21 @@ namespace Sean.Utility.Office.NPOI
         /// </summary>
         private ExcelHelper() { }
 
-        /// <summary>
-        /// 获取Workbook
-        /// </summary>
-        /// <param name="ds">待写入Excel的DataSet对象</param>
-        /// <param name="excelFilePath">Excel文件路径</param>
-        /// <param name="isColumnWritten">DataTable的列名是否要写入</param>
-        /// <param name="cellStyle">单元格格式。如果为null，则不设置单元格格式。</param>
-        /// <param name="createFlag">如何创建Excel文件的标志。0表示获取现有文件（文件存在）或创建新文件（文件不存在）；1表示获取现有文件（文件不存在则不做任何操作）；2表示创建新文件（保存时覆盖现有文件）。</param>
-        /// <returns>IWorkbook对象</returns>
-        private static IWorkbook GetWorkbook(DataSet ds, string excelFilePath, bool isColumnWritten, CellStyle cellStyle, int createFlag)
+        private static IWorkbook GetWorkbook(DataTable dt, ExcelExportOptions options)
         {
-            if (ds == null || ds.Tables.Count <= 0) return null;
+            if (dt == null) throw new ArgumentNullException(nameof(dt));
 
-            List<int> list = new List<int>();//写入Excel的行数
             IWorkbook workbook = null;
-            ISheet sheet = null;
-
-            switch (createFlag)
+            switch (options.CreateFileType)
             {
-                case 0:
-                    workbook = GetOrCreateWorkbook(excelFilePath);
+                case CreateFileType.GetOrCreate:
+                    workbook = GetOrCreateWorkbook(options.ExcelFilePath);
                     break;
-                case 1:
-                    workbook = GetWorkbook(excelFilePath);
+                case CreateFileType.Get:
+                    workbook = GetWorkbook(options.ExcelFilePath);
                     break;
-                case 2:
-                    workbook = CreateWorkbook(excelFilePath);
+                case CreateFileType.Create:
+                    workbook = CreateWorkbook(options.ExcelFilePath);
                     break;
             }
 
@@ -451,11 +365,11 @@ namespace Sean.Utility.Office.NPOI
             #region 设置单元格样式
             ICellStyle cellStyleHeader = null;
             ICellStyle cellStyleContent = null;
-            if (cellStyle != null)
+            if (options.DefaultCellStyle != null)
             {
                 #region 标题
                 cellStyleHeader = workbook.CreateCellStyle();
-                if (cellStyle.Border)
+                if (options.DefaultCellStyle.Border)
                 {
                     //设置边框格式
                     cellStyleHeader.BorderTop = BorderStyle.Thin;
@@ -463,19 +377,19 @@ namespace Sean.Utility.Office.NPOI
                     cellStyleHeader.BorderLeft = BorderStyle.Thin;
                     cellStyleHeader.BorderRight = BorderStyle.Thin;
                 }
-                if (cellStyle.TitleFontHorizontalCenter)
+                if (options.DefaultCellStyle.TitleFontHorizontalCenter)
                 {
                     cellStyleHeader.Alignment = HorizontalAlignment.Center; //字体水平居中
                 }
                 IFont fontHeader = workbook.CreateFont();
-                fontHeader.IsBold = cellStyle.TitleFontBold; //字体是否加粗
-                fontHeader.FontHeightInPoints = cellStyle.TitleFontSize; //字体大小
+                fontHeader.IsBold = options.DefaultCellStyle.TitleFontBold; //字体是否加粗
+                fontHeader.FontHeightInPoints = options.DefaultCellStyle.TitleFontSize; //字体大小
                 cellStyleHeader.SetFont(fontHeader);
                 #endregion
 
                 #region 内容
                 cellStyleContent = workbook.CreateCellStyle();
-                if (cellStyle.Border)
+                if (options.DefaultCellStyle.Border)
                 {
                     //设置边框格式
                     cellStyleContent.BorderTop = BorderStyle.Thin;
@@ -484,121 +398,112 @@ namespace Sean.Utility.Office.NPOI
                     cellStyleContent.BorderRight = BorderStyle.Thin;
                 }
                 IFont fontContent = workbook.CreateFont();
-                fontContent.FontHeightInPoints = cellStyle.ContentFontSize; //字体大小
+                fontContent.FontHeightInPoints = options.DefaultCellStyle.ContentFontSize; //字体大小
                 cellStyleContent.SetFont(fontContent);
                 #endregion
             }
             #endregion
 
-            for (int k = 0; k < ds.Tables.Count; k++)
+            int count = 0;
+
+            #region 创建sheet
+            ISheet sheet;
+            if (string.IsNullOrWhiteSpace(options.SheetName))
             {
-                DataTable dt = ds.Tables[k];
-                if (dt == null || dt.Rows.Count <= 0) continue;
-
-                int count = 0;
-                string sheetName = GetValidSheetName(ds.Tables[k].TableName);
-
-                #region 创建sheet
-                if (string.IsNullOrEmpty(sheetName))
+                sheet = workbook.CreateSheet(); //创建一个工作表
+            }
+            else
+            {
+                if (workbook.GetSheet(options.SheetName) == null)
                 {
-                    sheet = workbook.CreateSheet(); //创建一个工作表
+                    //sheet不存在
+                    sheet = workbook.CreateSheet(options.SheetName); //创建一个带名称的工作表
                 }
                 else
                 {
-                    if (workbook.GetSheet(sheetName) == null)
+                    //sheet已存在
+                    int index = workbook.GetSheetIndex(options.SheetName);
+                    workbook.RemoveSheetAt(index);
+                    sheet = workbook.CreateSheet(options.SheetName); //创建一个带名称的工作表
+                    workbook.SetSheetOrder(options.SheetName, index);
+                }
+            }
+            #endregion
+
+            //在指定sheet中写数据
+            if (sheet != null)
+            {
+                #region 写标题
+                if (options.OutputHeader)
+                {
+                    IRow row = sheet.CreateRow(0);
+                    for (int i = 0; i < dt.Columns.Count; i++)
                     {
-                        //sheet不存在
-                        sheet = workbook.CreateSheet(sheetName); //创建一个带名称的工作表
+                        ICell cell = row.CreateCell(i);
+                        if (cell != null)
+                        {
+                            cell.SetCellValue(dt.Columns[i].ColumnName);
+
+                            if (options.DefaultCellStyle != null)
+                            {
+                                cell.CellStyle = cellStyleHeader;
+                                sheet.SetColumnWidth(i, options.DefaultCellStyle.ColumnWidth);
+                            }
+                        }
                     }
-                    else
-                    {
-                        //sheet已存在
-                        int index = workbook.GetSheetIndex(sheetName);
-                        workbook.RemoveSheetAt(index);
-                        sheet = workbook.CreateSheet(sheetName); //创建一个带名称的工作表
-                        workbook.SetSheetOrder(sheetName, index);
-                    }
+                    count++;
                 }
                 #endregion
 
-                //在指定sheet中写数据
-                if (sheet != null)
+                #region 写内容
+                for (int i = 0; i < dt.Rows.Count; i++)
                 {
-                    #region 写标题
-                    if (isColumnWritten)
+                    IRow row = sheet.CreateRow(count);
+                    for (int j = 0; j < dt.Columns.Count; j++)
                     {
-                        IRow row = sheet.CreateRow(0);
-                        for (int i = 0; i < dt.Columns.Count; i++)
+                        ICell cell = row.CreateCell(j);
+                        if (cell != null)
                         {
-                            ICell cell = row.CreateCell(i);
-                            if (cell != null)
+                            var val = dt.Rows[i][j];
+                            if (DateTimeFormat != null && val is DateTime time)
                             {
-                                cell.SetCellValue(dt.Columns[i].ColumnName);
+                                cell.SetCellValue(DateTimeFormat(time));
+                            }
+                            else
+                            {
+                                cell.SetCellValue(val.ToString());
+                            }
 
-                                if (cellStyle != null)
-                                {
-                                    cell.CellStyle = cellStyleHeader;
-                                    sheet.SetColumnWidth(i, cellStyle.ColumnWidth);
-                                }
+                            if (options.DefaultCellStyle != null)
+                            {
+                                cell.CellStyle = cellStyleContent;
                             }
                         }
-                        count++;
                     }
-                    #endregion
-
-                    #region 写内容
-                    for (int i = 0; i < dt.Rows.Count; i++)
-                    {
-                        IRow row = sheet.CreateRow(count);
-                        for (int j = 0; j < dt.Columns.Count; j++)
-                        {
-                            ICell cell = row.CreateCell(j);
-                            if (cell != null)
-                            {
-                                var val = dt.Rows[i][j];
-                                if (HandleDateTimeDataFunc != null && val is DateTime time)
-                                {
-                                    cell.SetCellValue(HandleDateTimeDataFunc(time));
-                                }
-                                else
-                                {
-                                    cell.SetCellValue(val.ToString());
-                                }
-
-                                if (cellStyle != null)
-                                {
-                                    cell.CellStyle = cellStyleContent;
-                                }
-                            }
-                        }
-                        count++;
-                    }
-                    #endregion
+                    count++;
                 }
-                list.Add(count);
+                #endregion
             }
 
-            //return list;
             return workbook;
         }
-        private static IWorkbook GetWorkbook<T>(IList<T> list, string excelFilePath, string sheetName, bool isHeaderWritten, CellStyle cellStyle, int createFlag)
+        private static IWorkbook GetWorkbook<T>(IList<T> list, ExcelExportOptions options)
         {
-            if (list == null || list.Count <= 0) return null;
+            if (list == null) throw new ArgumentNullException(nameof(list));
 
-            var listRows = new List<int>();//写入Excel的行数
             IWorkbook workbook = null;
-            ISheet sheet = null;
+            ISheet sheet;
 
-            switch (createFlag)
+            switch (options.CreateFileType)
             {
-                case 0:
-                    workbook = GetOrCreateWorkbook(excelFilePath);
+                case CreateFileType.GetOrCreate:
+                    workbook = GetOrCreateWorkbook(options.ExcelFilePath);
                     break;
-                case 1:
-                    workbook = GetWorkbook(excelFilePath);
+                case CreateFileType.Get:
+                    workbook = GetWorkbook(options.ExcelFilePath);
                     break;
-                case 2:
-                    workbook = CreateWorkbook(excelFilePath);
+                case CreateFileType.Create:
+                    workbook = CreateWorkbook(options.ExcelFilePath);
                     break;
             }
 
@@ -607,11 +512,11 @@ namespace Sean.Utility.Office.NPOI
             #region 设置单元格样式
             ICellStyle cellStyleHeader = null;
             ICellStyle cellStyleContent = null;
-            if (cellStyle != null)
+            if (options.DefaultCellStyle != null)
             {
                 #region 标题
                 cellStyleHeader = workbook.CreateCellStyle();
-                if (cellStyle.Border)
+                if (options.DefaultCellStyle.Border)
                 {
                     //设置边框格式
                     cellStyleHeader.BorderTop = BorderStyle.Thin;
@@ -619,19 +524,19 @@ namespace Sean.Utility.Office.NPOI
                     cellStyleHeader.BorderLeft = BorderStyle.Thin;
                     cellStyleHeader.BorderRight = BorderStyle.Thin;
                 }
-                if (cellStyle.TitleFontHorizontalCenter)
+                if (options.DefaultCellStyle.TitleFontHorizontalCenter)
                 {
                     cellStyleHeader.Alignment = HorizontalAlignment.Center; //字体水平居中
                 }
                 IFont fontHeader = workbook.CreateFont();
-                fontHeader.IsBold = cellStyle.TitleFontBold; //字体是否加粗
-                fontHeader.FontHeightInPoints = cellStyle.TitleFontSize; //字体大小
+                fontHeader.IsBold = options.DefaultCellStyle.TitleFontBold; //字体是否加粗
+                fontHeader.FontHeightInPoints = options.DefaultCellStyle.TitleFontSize; //字体大小
                 cellStyleHeader.SetFont(fontHeader);
                 #endregion
 
                 #region 内容
                 cellStyleContent = workbook.CreateCellStyle();
-                if (cellStyle.Border)
+                if (options.DefaultCellStyle.Border)
                 {
                     //设置边框格式
                     cellStyleContent.BorderTop = BorderStyle.Thin;
@@ -640,35 +545,32 @@ namespace Sean.Utility.Office.NPOI
                     cellStyleContent.BorderRight = BorderStyle.Thin;
                 }
                 IFont fontContent = workbook.CreateFont();
-                fontContent.FontHeightInPoints = cellStyle.ContentFontSize; //字体大小
+                fontContent.FontHeightInPoints = options.DefaultCellStyle.ContentFontSize; //字体大小
                 cellStyleContent.SetFont(fontContent);
                 #endregion
             }
             #endregion
 
             var count = 0;
-            sheetName = string.IsNullOrEmpty(sheetName) ? GetValidSheetName(typeof(T).Name) : GetValidSheetName(sheetName);
 
             #region 创建sheet
-            if (string.IsNullOrEmpty(sheetName))
+            if (string.IsNullOrWhiteSpace(options.SheetName))
             {
-                sheet = workbook.CreateSheet(); //创建一个工作表
+                options.SheetName = typeof(T).Name;
+            }
+
+            if (workbook.GetSheet(options.SheetName) == null)
+            {
+                //sheet不存在
+                sheet = workbook.CreateSheet(options.SheetName); //创建一个带名称的工作表
             }
             else
             {
-                if (workbook.GetSheet(sheetName) == null)
-                {
-                    //sheet不存在
-                    sheet = workbook.CreateSheet(sheetName); //创建一个带名称的工作表
-                }
-                else
-                {
-                    //sheet已存在
-                    int index = workbook.GetSheetIndex(sheetName);
-                    workbook.RemoveSheetAt(index);
-                    sheet = workbook.CreateSheet(sheetName); //创建一个带名称的工作表
-                    workbook.SetSheetOrder(sheetName, index);
-                }
+                //sheet已存在
+                int index = workbook.GetSheetIndex(options.SheetName);
+                workbook.RemoveSheetAt(index);
+                sheet = workbook.CreateSheet(options.SheetName); //创建一个带名称的工作表
+                workbook.SetSheetOrder(options.SheetName, index);
             }
             #endregion
 
@@ -680,7 +582,7 @@ namespace Sean.Utility.Office.NPOI
             var propertyInfos = typeof(T).GetProperties();
 
             #region 写标题
-            if (isHeaderWritten)
+            if (options.OutputHeader)
             {
                 IRow row = sheet.CreateRow(0);
                 for (var i = 0; i < propertyInfos.Length; i++)
@@ -693,10 +595,10 @@ namespace Sean.Utility.Office.NPOI
                     {
                         cell.SetCellValue(propertyInfoName);
 
-                        if (cellStyle != null)
+                        if (options.DefaultCellStyle != null)
                         {
                             cell.CellStyle = cellStyleHeader;
-                            sheet.SetColumnWidth(i, cellStyle.ColumnWidth);
+                            sheet.SetColumnWidth(i, options.DefaultCellStyle.ColumnWidth);
                         }
                     }
                 }
@@ -720,9 +622,9 @@ namespace Sean.Utility.Office.NPOI
                     {
                         if (propertyValue is DateTime time)
                         {
-                            if (HandleDateTimeDataFunc != null)
+                            if (DateTimeFormat != null)
                             {
-                                cell.SetCellValue(HandleDateTimeDataFunc(time));
+                                cell.SetCellValue(DateTimeFormat(time));
                             }
                             else
                             {
@@ -742,14 +644,13 @@ namespace Sean.Utility.Office.NPOI
                             cell.SetCellValue(propertyValue?.ToString());
                         }
 
-                        if (cellStyle != null)
+                        if (options.DefaultCellStyle != null)
                         {
                             cell.CellStyle = cellStyleContent;
                         }
                     }
                 }
                 count++;
-                listRows.Add(count);
             }
             #endregion
 
@@ -865,30 +766,6 @@ namespace Sean.Utility.Office.NPOI
         }
 
         /// <summary>
-        /// 获取合法sheet名称
-        /// </summary>
-        /// <param name="sheetName">可能包含非法字符的sheet名称</param>
-        /// <returns></returns>
-        private static string GetValidSheetName(string sheetName)
-        {
-            if (!string.IsNullOrEmpty(sheetName))
-            {
-                //名称不多于31个字符
-                if (sheetName.Length > 31)
-                    sheetName = sheetName.Substring(0, 31);
-
-                //名称不包含下列任一字符
-                char[] invalidSheetNameChars = { ':', '\\', '/', '?', '*', '[', ']' };
-
-                StringBuilder builder = new StringBuilder(sheetName);
-                foreach (char invalidChar in invalidSheetNameChars)
-                    builder.Replace(invalidChar, ' ');
-                sheetName = builder.ToString();
-            }
-            return sheetName;
-        }
-
-        /// <summary>
         /// 保存
         /// </summary>
         /// <param name="workbook">workbook对象</param>
@@ -897,7 +774,7 @@ namespace Sean.Utility.Office.NPOI
         {
             if (workbook == null) return;
 
-            using (FileStream fs = new FileStream(excelFilePath, FileMode.Create, FileAccess.Write))
+            using (var fs = new FileStream(excelFilePath, FileMode.Create, FileAccess.Write))
             {
                 workbook.Write(fs);
                 workbook.Close();

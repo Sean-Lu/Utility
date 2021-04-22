@@ -1,21 +1,18 @@
-﻿using System.ComponentModel;
-
-namespace Sean.Utility.Office.NPOI
+﻿namespace Sean.Utility.Office.NPOI
 {
-    /// <summary>
-    /// Office文件格式
-    /// </summary>
-    public enum OfficeType
+    public enum CreateFileType
     {
         /// <summary>
-        /// 97-2003格式
+        /// 获取现有文件（文件存在）或创建新文件（文件不存在）
         /// </summary>
-        [Description("Office2003")]
-        Office2003,
+        GetOrCreate,
         /// <summary>
-        /// 2007+格式
+        /// 获取现有文件（文件不存在则不做任何操作）
         /// </summary>
-        [Description("Office2007")]
-        Office2007
+        Get,
+        /// <summary>
+        /// 创建新文件（保存时覆盖现有文件）
+        /// </summary>
+        Create
     }
 }
