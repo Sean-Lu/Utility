@@ -73,9 +73,14 @@ namespace Sean.Utility.Timers
 
             _isRunning = true;
 
-            Elapsed();
-
-            _isRunning = false;
+            try
+            {
+                Elapsed();
+            }
+            finally
+            {
+                _isRunning = false;
+            }
         }
     }
 }
