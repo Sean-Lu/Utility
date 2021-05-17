@@ -23,7 +23,7 @@ namespace Sean.Utility.Contracts
         /// <summary>
         /// 队列配置
         /// </summary>
-        SimpleQueueOptions Options { get; }
+        ISimpleQueueOptions Options { get; }
 
         /// <summary>
         /// 将单个数据插入队列

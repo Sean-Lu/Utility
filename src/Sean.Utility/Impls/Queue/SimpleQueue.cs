@@ -49,7 +49,7 @@ namespace Sean.Utility.Impls.Queue
         /// <summary>
         /// 队列配置
         /// </summary>
-        public SimpleQueueOptions Options => _options;
+        public ISimpleQueueOptions Options => _options;
 
         #region Private Fields
         /// <summary>
