@@ -125,10 +125,10 @@ namespace Sean.Utility.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="task"></param>
-        /// <param name="logMsg"></param>
+        /// <param name="errorMsg"></param>
         /// <param name="handleError"></param>
         /// <returns></returns>
-        public static Task<T> TaskEx<T>(this Task<T> task, string logMsg = null, Action<string, Exception> handleError = null)
+        public static Task<T> TaskEx<T>(this Task<T> task, string errorMsg, Action<string, Exception> handleError)
         {
             return task.ContinueWith(c =>
             {
@@ -137,7 +137,7 @@ namespace Sean.Utility.Extensions
 
                 c.Exception?.InnerExceptions?.ToList().ForEach(ex =>
                 {
-                    handleError?.Invoke(logMsg ?? string.Empty, ex);
+                    handleError?.Invoke(errorMsg, ex);
                 });
                 return default;
             });
@@ -147,10 +147,10 @@ namespace Sean.Utility.Extensions
         /// Task异常捕获
         /// </summary>
         /// <param name="task"></param>
-        /// <param name="logMsg"></param>
+        /// <param name="errorMsg"></param>
         /// <param name="handleError"></param>
         /// <returns></returns>
-        public static Task TaskEx(this Task task, string logMsg = null, Action<string, Exception> handleError = null)
+        public static Task TaskEx(this Task task, string errorMsg, Action<string, Exception> handleError)
         {
             return task.ContinueWith(c =>
             {
@@ -159,22 +159,9 @@ namespace Sean.Utility.Extensions
 
                 c.Exception?.InnerExceptions?.ToList().ForEach(ex =>
                 {
-                    handleError?.Invoke(logMsg ?? string.Empty, ex);
+                    handleError?.Invoke(errorMsg, ex);
                 });
             });
-        }
-
-        /// <summary>
-        /// Task异常捕获
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="task"></param>
-        /// <param name="logMsg"></param>
-        /// <param name="handleError"></param>
-        /// <returns></returns>
-        public static T TaskResultEx<T>(this Task<T> task, string logMsg = null, Action<string, Exception> handleError = null)
-        {
-            return task.TaskEx(logMsg, handleError).Result;
         }
         #endregion
     }
