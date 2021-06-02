@@ -22,7 +22,7 @@ namespace Sean.Utility.IO
         /// <returns></returns>
         public static string GetBackupFilePath(string filePath, out int index)
         {
-            index = 1;
+            index = 2;
             while (true)
             {
                 var backupFilePath = Path.Combine(Path.GetDirectoryName(filePath), $"{Path.GetFileNameWithoutExtension(filePath)}({index}){Path.GetExtension(filePath)}");
