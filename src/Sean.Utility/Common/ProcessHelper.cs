@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Sean.Utility.Enums;
+using System.Linq;
 
 namespace Sean.Utility.Common
 {
@@ -59,44 +61,81 @@ namespace Sean.Utility.Common
         }
 
         /// <summary>
-        /// 根据指定进程名检查进程是否已经存在（不检查文件路径是否相同）
+        /// 根据当前进程名和进程的文件路径检查进程是否已经存在，存在则返回已经运行的实例（进程）。
         /// </summary>
-        /// <param name="name">进程名。示例：Application.ProductName</param>
         /// <returns></returns>
-        public static bool IsProcessExist(string name)
+        public static List<Process> GetRunningInstance()
         {
-            var mutex = new Mutex(true, name, out var createNew);
-            if (createNew)
-            {
-                mutex.ReleaseMutex();
-            }
-            return !createNew;
+            var current = Process.GetCurrentProcess();
+            var processes = Process.GetProcessesByName(current.ProcessName);
+            return processes?.Where(process => process.Id != current.Id && process.MainModule.FileName == current.MainModule.FileName).ToList();
         }
 
         /// <summary>
-        /// 根据当前进程名和进程的文件路径检查进程是否已经存在，存在则返回已经运行的实例（进程），不存在则返回null。
+        /// 执行指定的应用程序
         /// </summary>
+        /// <param name="path">应用程序的文件路径</param>
+        /// <param name="arguments">启动应用程序时的参数</param>
+        /// <param name="outputDataReceived"></param>
+        /// <param name="errorDataReceived"></param>
+        /// <param name="createNoWindow">true:不显示窗口，false:不显示窗口</param>
         /// <returns></returns>
-        public static Process GetRunningInstance()
+        public static void RunProcess(string path, string arguments, DataReceivedEventHandler outputDataReceived, DataReceivedEventHandler errorDataReceived, bool createNoWindow = true)
         {
-            Process current = Process.GetCurrentProcess();
-            Process[] processes = Process.GetProcessesByName(current.ProcessName);
-            //Loop through the running processes in with the same name   
-            foreach (Process process in processes)
+            using (Process process = new Process())
             {
-                //Ignore the current process   
-                if (process.Id != current.Id)
+                process.StartInfo.FileName = path;
+                process.StartInfo.Arguments = arguments;
+                process.StartInfo.CreateNoWindow = createNoWindow;
+                process.StartInfo.RedirectStandardInput = true;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.UseShellExecute = false;
+
+                process.Start();
+
+                //output = process.StandardOutput.ReadToEnd();
+                //error = process.StandardError.ReadToEnd();
+
+                if (outputDataReceived != null)
                 {
-                    //Make sure that the process is running from the exe file.   
-                    if (process.MainModule.FileName == current.MainModule.FileName)
-                    {
-                        //Return the other process instance.   
-                        return process;
-                    }
+                    process.BeginOutputReadLine();
+                    process.OutputDataReceived += outputDataReceived;
                 }
+                if (errorDataReceived != null)
+                {
+                    process.BeginErrorReadLine();
+                    process.ErrorDataReceived += errorDataReceived;
+                }
+
+                process.WaitForExit();
+                process.Close();
             }
-            //No other instance was found, return null. 
-            return null;
+        }
+        /// <summary>
+        /// 通过 cmd.exe 执行指定的应用程序
+        /// </summary>
+        /// <param name="path">应用程序的文件路径</param>
+        /// <param name="arguments">启动应用程序时的参数</param>
+        /// <param name="outputDataReceived"></param>
+        /// <param name="errorDataReceived"></param>
+        /// <param name="createNoWindow">true:不显示窗口，false:不显示窗口</param>
+        /// <returns></returns>
+        public static void RunProcessByCmd(string path, string arguments, DataReceivedEventHandler outputDataReceived, DataReceivedEventHandler errorDataReceived, bool createNoWindow = true)
+        {
+            path = Path.GetFullPath(path);
+
+            //CmdHelper.RunCmd(new[]
+            //{
+            //    $"{Path.GetPathRoot(path).TrimEnd('\\')}",//1. 切换盘符
+            //    $"cd \"{Path.GetDirectoryName(path)}\"",//2. 切换目录
+            //    $"{Path.GetFileName(path)} {arguments}"//3. 运行程序
+            //}, outputDataReceived, errorDataReceived, createNoWindow: createNoWindow);
+
+            CmdHelper.RunCmd(new[]
+            {
+                $"{Path.GetFileName(path)}{(!string.IsNullOrWhiteSpace(arguments)?$" {arguments}":string.Empty)}"
+            }, outputDataReceived, errorDataReceived, Path.GetDirectoryName(path), createNoWindow);
         }
     }
 }

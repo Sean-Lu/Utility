@@ -1,4 +1,5 @@
 ﻿using Sean.Utility.Common;
+using System.Text;
 
 namespace Sean.Utility.Net.FileShare
 {
@@ -26,9 +27,15 @@ namespace Sean.Utility.Net.FileShare
         /// <returns></returns>
         public static bool Connect(string remotePath, string username, string password)
         {
-            var cmd = $@"net use {remotePath} /User:{username} {password} /PERSISTENT:YES";
-            CmdHelper.RunCmd(cmd, out _, out var error);
-            return string.IsNullOrWhiteSpace(error);
+            var error = new StringBuilder();
+            CmdHelper.RunCmd(new[] { $@"net use {remotePath} /User:{username} {password} /PERSISTENT:YES" }, null, (sender, e) =>
+           {
+               if (e.Data != null)
+               {
+                   error.AppendLine(e.Data);
+               }
+           });
+            return string.IsNullOrWhiteSpace(error.ToString());
         }
 
         /// <summary>
@@ -37,8 +44,15 @@ namespace Sean.Utility.Net.FileShare
         /// <returns></returns>
         public static bool Disconnect()
         {
-            CmdHelper.RunCmd(@"net use * /del /y", out _, out var error);
-            return string.IsNullOrWhiteSpace(error);
+            var error = new StringBuilder();
+            CmdHelper.RunCmd(new[] { @"net use * /del /y" }, null, (sender, e) =>
+            {
+                if (e.Data != null)
+                {
+                    error.AppendLine(e.Data);
+                }
+            });
+            return string.IsNullOrWhiteSpace(error.ToString());
         }
     }
 }
