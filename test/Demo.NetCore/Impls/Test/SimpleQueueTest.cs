@@ -33,8 +33,7 @@ namespace Demo.NetCore.Impls.Test
 
             var queue = new SimpleQueue<TestModel>(options =>
             {
-                //options.QueueTriggerType = QueueTriggerType.Count;
-                options.QueueTriggerType = QueueTriggerType.Count | QueueTriggerType.Timer | QueueTriggerType.Manual;
+                options.TriggerType = QueueTriggerType.Count | QueueTriggerType.Timer | QueueTriggerType.Manual;
                 options.TimerInterval = 1000;
                 options.CountLimit = 3;
                 options.MaxReconsumeCount = 5;

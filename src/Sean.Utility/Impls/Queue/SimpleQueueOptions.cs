@@ -11,15 +11,15 @@ namespace Sean.Utility.Impls.Queue
         /// <summary>
         /// 队列触发器类型
         /// </summary>
-        public QueueTriggerType QueueTriggerType { get; set; }
+        public QueueTriggerType TriggerType { get; set; }
 
         /// <summary>
-        /// QueueTriggerType.Timer => 定时器时间间隔（以毫秒为单位）
+        /// <see cref="QueueTriggerType.Timer"/> => 定时器时间间隔（以毫秒为单位）
         /// </summary>
         public double TimerInterval { get; set; }
 
         /// <summary>
-        /// QueueTriggerType.Count => 数量上限
+        /// <see cref="QueueTriggerType.Count"/> => 数量上限
         /// </summary>
         public int CountLimit { get; set; }
 

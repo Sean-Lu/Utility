@@ -50,7 +50,7 @@ namespace Sean.Utility.Contracts
         void Enqueue(IEnumerable<SimpleQueueData<T>> items);
 
         /// <summary>
-        /// 手动执行1次消费（必须先设置允许手动触发消费：<see cref="SimpleQueueOptions.QueueTriggerType"/> |= QueueTriggerType.Manual;）
+        /// 手动执行1次消费（必须先设置允许手动触发消费：<see cref="SimpleQueueOptions.TriggerType"/> |= <see cref="QueueTriggerType.Manual"/>;）
         /// </summary>
         /// <param name="count">消费的数量（小于0：消费全部数据，大于0：消费部分数据）</param>
         /// <returns>本次队列中实际被消费的数量</returns>

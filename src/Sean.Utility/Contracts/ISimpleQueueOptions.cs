@@ -7,15 +7,15 @@ namespace Sean.Utility.Contracts
         /// <summary>
         /// 队列触发器类型
         /// </summary>
-        QueueTriggerType QueueTriggerType { get; }
+        QueueTriggerType TriggerType { get; }
 
         /// <summary>
-        /// QueueTriggerType.Timer => 定时器时间间隔（以毫秒为单位）
+        /// <see cref="QueueTriggerType.Timer"/> => 定时器时间间隔（以毫秒为单位）
         /// </summary>
         double TimerInterval { get; }
 
         /// <summary>
-        /// QueueTriggerType.Count => 数量上限
+        /// <see cref="QueueTriggerType.Count"/> => 数量上限
         /// </summary>
         int CountLimit { get; }
 

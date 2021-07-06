@@ -106,7 +106,7 @@ namespace Sean.Utility.Impls.Queue
 
             options?.Invoke(_options);
 
-            if ((_options.QueueTriggerType & QueueTriggerType.Count) == QueueTriggerType.Count)
+            if ((_options.TriggerType & QueueTriggerType.Count) == QueueTriggerType.Count)
             {
                 if (_options.CountLimit <= 0)
                 {
@@ -114,7 +114,7 @@ namespace Sean.Utility.Impls.Queue
                 }
             }
 
-            if ((_options.QueueTriggerType & QueueTriggerType.Timer) == QueueTriggerType.Timer)
+            if ((_options.TriggerType & QueueTriggerType.Timer) == QueueTriggerType.Timer)
             {
                 if (_options.TimerInterval <= 0)
                 {
@@ -150,7 +150,7 @@ namespace Sean.Utility.Impls.Queue
 
             ExceptionHelper.TryCatchFinal(() =>
             {
-                if (_options.QueueTriggerType == QueueTriggerType.Immediate)
+                if (_options.TriggerType == QueueTriggerType.Immediate)
                 {
                     // 不走队列，直接处理数据
                     ExecuteConsume(() =>
@@ -162,7 +162,7 @@ namespace Sean.Utility.Impls.Queue
 
                 _queue.Enqueue(item);
 
-                if ((_options.QueueTriggerType & QueueTriggerType.Count) == QueueTriggerType.Count && Count >= _options.CountLimit)
+                if ((_options.TriggerType & QueueTriggerType.Count) == QueueTriggerType.Count && Count >= _options.CountLimit)
                 {
                     // 数量达到上限
                     ExecuteConsume(() =>
@@ -210,7 +210,7 @@ namespace Sean.Utility.Impls.Queue
 
             ExceptionHelper.TryCatchFinal(() =>
             {
-                if (_options.QueueTriggerType == QueueTriggerType.Immediate)
+                if (_options.TriggerType == QueueTriggerType.Immediate)
                 {
                     // 不走队列，直接处理数据
                     ExecuteConsume(() =>
@@ -236,13 +236,13 @@ namespace Sean.Utility.Impls.Queue
         }
 
         /// <summary>
-        /// 手动执行1次消费（必须先设置允许手动触发消费：<see cref="SimpleQueueOptions.QueueTriggerType"/> |= QueueTriggerType.Manual;）
+        /// 手动执行1次消费（必须先设置允许手动触发消费：<see cref="SimpleQueueOptions.TriggerType"/> |= <see cref="QueueTriggerType.Manual"/>;）
         /// </summary>
         /// <param name="count">消费的数量（小于0：消费全部数据，大于0：消费部分数据）</param>
         /// <returns>本次队列中实际被消费的数量</returns>
         public int ExecuteConsume(int count)
         {
-            if ((_options.QueueTriggerType & QueueTriggerType.Manual) != QueueTriggerType.Manual)
+            if ((_options.TriggerType & QueueTriggerType.Manual) != QueueTriggerType.Manual)
             {
                 throw new Exception("Manual consume is not allowed.");
             }
@@ -449,7 +449,7 @@ namespace Sean.Utility.Impls.Queue
             ExecuteConsume(() =>
             {
                 var count = -1;
-                if ((_options.QueueTriggerType & QueueTriggerType.Count) == QueueTriggerType.Count && _options.CountLimit > 0)
+                if ((_options.TriggerType & QueueTriggerType.Count) == QueueTriggerType.Count && _options.CountLimit > 0)
                 {
                     count = _options.CountLimit;
                 }
