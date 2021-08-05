@@ -57,6 +57,10 @@ namespace Sean.Utility.Impls.Log
         /// Encoding，默认值为UTF8。
         /// </remarks>
         public static Encoding DefaultEncoding { get; set; } = Encoding.UTF8;
+        /// <summary>
+        /// 默认日志配置
+        /// </summary>
+        public static SimpleLocalLoggerOptions DefaultLoggerOptions { get; set; } = new SimpleLocalLoggerOptions();
 
         public ISimpleLocalLoggerOptions Options => _options;
 
@@ -78,9 +82,9 @@ namespace Sean.Utility.Impls.Log
         protected SimpleLocalLoggerBase(Action<SimpleLocalLoggerOptions> options)
         {
 #if NETSTANDARD
-            _options = ServiceProvider?.GetService<IOptionsMonitor<SimpleLocalLoggerOptions>>().CurrentValue ?? new SimpleLocalLoggerOptions();
+            _options = ServiceProvider?.GetService<IOptionsMonitor<SimpleLocalLoggerOptions>>()?.CurrentValue ?? DefaultLoggerOptions;
 #else
-            _options = new SimpleLocalLoggerOptions();
+            _options = DefaultLoggerOptions;
 #endif
 
             options?.Invoke(_options);
