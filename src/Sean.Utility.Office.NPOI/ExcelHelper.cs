@@ -17,7 +17,7 @@ using Sean.Utility.Office.NPOI.Models;
 namespace Sean.Utility.Office.NPOI
 {
     /// <summary>
-    /// Excel文件操作类（支持xls、xlsx）
+    /// Excel文件操作，支持格式：xls、xlsx
     /// </summary>
     public class ExcelHelper
     {

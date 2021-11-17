@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
@@ -9,7 +10,7 @@ namespace Sean.Utility.Net.Smtp
     /// <summary>  
     /// 邮件发送（基于SMTP协议）
     /// </summary>  
-    public class SmtpClientExt
+    public class SmtpClientExt : IDisposable
     {
         #region [ 字段、属性 ]
         /// <summary>  
@@ -90,7 +91,7 @@ namespace Sean.Utility.Net.Smtp
             this.EnableSsl = enableSsl;
             this.Credential = credential;
 
-            _smtp = new System.Net.Mail.SmtpClient
+            _smtp = new SmtpClient
             {
                 Host = SmtpHost,
                 Port = SmtpPort > 0 ? SmtpPort : 25,
@@ -151,5 +152,10 @@ namespace Sean.Utility.Net.Smtp
             _smtp.Send(mm);
         }
         #endregion
+
+        public void Dispose()
+        {
+            _smtp?.Dispose();
+        }
     }
 }

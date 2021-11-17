@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace Sean.Utility.Serialize
 {
     /// <summary>
-    /// XML序列化
+    /// XML序列化\反序列化
     /// </summary>
     public class XmlSerializer<T>
     {

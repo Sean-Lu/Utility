@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace Sean.Utility.Format
 {
     /// <summary>
-    /// Json数据转换（基于Newtonsoft.Json）
+    /// json数据转换（基于 <see cref="JsonConvert"/> ）
     /// </summary>
     public class JsonHelper
     {

@@ -4,7 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace Sean.Utility.Serialize
 {
     /// <summary>
-    /// 二进制序列化
+    /// 二进制序列化\反序列化
     /// </summary>
     public class BinarySerializer
     {
