@@ -1,10 +1,10 @@
-﻿using System.Text;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using System.Text;
 
-namespace Sean.Utility.IO
+namespace Sean.Utility.Config
 {
     /// <summary>
-    /// ini文件操作类
+    /// ini文件操作
     /// </summary>
     public class IniHelper
     {

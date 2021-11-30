@@ -114,6 +114,12 @@ namespace Sean.Utility.Impls.Log
             ClassType = type;
         }
 
+        /// <summary>
+        /// 记录日志
+        /// </summary>
+        /// <param name="logLevel"></param>
+        /// <param name="msg"></param>
+        /// <param name="ex"></param>
         public virtual void Log(LogLevel logLevel, string msg, Exception ex = null)
         {
             try
@@ -126,7 +132,7 @@ namespace Sean.Utility.Impls.Log
                     return;
                 }
 
-                var msgFormat = GetMsgFormat(ClassType, logLevel, msg, ex);
+                var msgFormat = GetFormattedMessage(ClassType, logLevel, msg, ex);
                 if (!string.IsNullOrWhiteSpace(msgFormat))
                 {
                     if (_options.LogToConsole && logLevel >= _options.MinLogLevelForConsole)
@@ -155,7 +161,7 @@ namespace Sean.Utility.Impls.Log
                                 var fileInfo = new FileInfo(filePath);
                                 if (fileInfo.Length >= _options.MaxFileSize)
                                 {
-                                    var backupFilePath = PathHelper.GetBackupFilePath(filePath, out _);
+                                    var backupFilePath = NewBackupFilePath(filePath);
                                     File.Move(filePath, backupFilePath);
                                 }
                             }
@@ -191,6 +197,13 @@ namespace Sean.Utility.Impls.Log
             }
         }
 
+        /// <summary>
+        /// 记录日志（异步）
+        /// </summary>
+        /// <param name="logLevel"></param>
+        /// <param name="msg"></param>
+        /// <param name="ex"></param>
+        /// <returns></returns>
         public virtual Task LogAsync(LogLevel logLevel, string msg, Exception ex = null)
         {
             return Task.Factory.StartNewCatchException(() =>
@@ -199,7 +212,15 @@ namespace Sean.Utility.Impls.Log
             });
         }
 
-        protected virtual string GetMsgFormat(Type classType, LogLevel logLevel, string msg, Exception ex = null)
+        /// <summary>
+        /// 日志消息格式化处理
+        /// </summary>
+        /// <param name="classType"></param>
+        /// <param name="logLevel"></param>
+        /// <param name="msg"></param>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        protected virtual string GetFormattedMessage(Type classType, LogLevel logLevel, string msg, Exception ex = null)
         {
             if (MsgFormat != null)
             {
@@ -209,6 +230,26 @@ namespace Sean.Utility.Impls.Log
             }
 
             return DefaultHandleMsgFormat(ClassType, logLevel, msg, ex);
+        }
+
+        /// <summary>
+        /// 获取新的备份文件路径
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        protected virtual string NewBackupFilePath(string filePath)
+        {
+            var index = 2;
+            while (true)
+            {
+                var backupFilePath = Path.Combine(Path.GetDirectoryName(filePath), $"{Path.GetFileNameWithoutExtension(filePath)}({index}){Path.GetExtension(filePath)}");
+                if (!File.Exists(backupFilePath))
+                {
+                    return backupFilePath;
+                }
+
+                index++;
+            }
         }
 
         protected virtual string DefaultHandleMsgFormat(Type classType, LogLevel logLevel, string msg, Exception exception)
@@ -222,7 +263,7 @@ namespace Sean.Utility.Impls.Log
 
             try
             {
-                var msg = GetMsgFormat(this.GetType(), LogLevel.Fatal, "Internal error.", exception);
+                var msg = GetFormattedMessage(this.GetType(), LogLevel.Fatal, "Internal error.", exception);
                 using (var sw = File.AppendText(Path.Combine(LogFileDirectory(LogLevel.Fatal), "internal.log")))
                 {
                     sw.WriteLine(msg);

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Sean.Utility.Compress.SharpZipLib;
+using Sean.Utility.Config;
 using Sean.Utility.IO;
 
 namespace UpdateNugetPackage

@@ -9,7 +9,7 @@ using System.Text;
 namespace Sean.Utility.Serialize
 {
     /// <summary>
-    /// json序列化\反序列化
+    /// json序列化\反序列化（基于 <see cref="DataContractJsonSerializer"/> ）
     /// </summary>
     public class JsonSerializer
     {

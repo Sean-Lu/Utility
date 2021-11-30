@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace Sean.Utility.Common.Config
+namespace Sean.Utility.Config
 {
     /// <summary>
     /// 配置文件操作（App.config）

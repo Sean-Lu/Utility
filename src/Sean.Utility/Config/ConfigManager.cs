@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using Sean.Utility.Common;
 using Sean.Utility.Enums;
 using Sean.Utility.IO;
 
-namespace Sean.Utility.Common.Config
+namespace Sean.Utility.Config
 {
     /// <summary>
     /// 应用程序配置文件管理器（App.config、Web.config）
@@ -31,7 +32,7 @@ namespace Sean.Utility.Common.Config
         {
             DefaultConfigFileType = ConfigFileType.Auto;
             DefaultAppConfigFilePath = $"{AssemblyHelper.GetCallingAssemblyLocation()}.config";
-            DefaultWebConfigFilePath = Path.Combine(AssemblyHelper.GetCurrentDomainBaseDirectory(), "Web.config");
+            DefaultWebConfigFilePath = Path.Combine(DirectoryHelper.GetBaseDirectory(), "Web.config");
         }
         #endregion
 

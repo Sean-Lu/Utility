@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-namespace Sean.Utility.IO
+namespace Sean.Utility.Config
 {
     /// <summary>
     /// XML文件操作

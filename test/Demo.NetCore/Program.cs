@@ -10,6 +10,7 @@ using Sean.Utility.Contracts;
 using Sean.Utility.Extensions;
 using Sean.Utility.Format;
 using Sean.Utility.Impls.Log;
+using Sean.Utility.IO;
 using Sean.Utility.Serialize;
 
 namespace Demo.NetCore
@@ -38,7 +39,6 @@ namespace Demo.NetCore
             {
                 //Console.WriteLine($"自定义输出日志：{JsonHelper.Serialize(eventArgs.Options)}");
             };
-            //SimpleLocalLoggerBase.MsgFormat
             #endregion
 
             //_logger = SimpleLocalLoggerManager.GetCurrentClassLogger();
@@ -47,8 +47,8 @@ namespace Demo.NetCore
 
             //ISimpleDo toDo = new SimpleQueueTest();
             //ISimpleDo toDo = new ProcessTest();
-            ISimpleDo toDo = new MultiThreadTest();
-            toDo.Execute();
+            //ISimpleDo toDo = new MultiThreadTest();
+            //toDo.Execute();
 
             Console.WriteLine("--------------->Done.");
             Console.ReadLine();
