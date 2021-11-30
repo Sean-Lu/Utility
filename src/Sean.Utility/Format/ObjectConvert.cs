@@ -1,4 +1,5 @@
 ﻿using System;
+using Sean.Utility.Serialize;
 
 namespace Sean.Utility.Format
 {
@@ -76,17 +77,15 @@ namespace Sean.Utility.Format
             return outputObject;
         }
         /// <summary>
-        /// 将object对象转换为实体对象（json序列化）
+        /// 将object对象转换为实体对象（json序列化\反序列化）
         /// </summary>
-        /// <typeparam name="T">实体对象类名</typeparam>
-        /// <param name="source">object对象</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
         /// <returns></returns>
         public static T ConvertObjectByJson<T>(object source)
         {
-            //将object对象转换为json字符串
-            var json = JsonHelper.Serialize(source);
-            //将json字符串转换为实体对象
-            return JsonHelper.Deserialize<T>(json);
+            var json = JsonSerializer.Instance.Serialize(source);
+            return JsonSerializer.Instance.Deserialize<T>(json);
         }
     }
 }

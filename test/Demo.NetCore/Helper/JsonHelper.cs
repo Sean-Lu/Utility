@@ -3,15 +3,13 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Sean.Utility.Format
+namespace Demo.NetCore.Helper
 {
     /// <summary>
     /// json数据转换（基于 <see cref="JsonConvert"/> ）
     /// </summary>
     public class JsonHelper
     {
-        private JsonHelper() { }
-
         #region Json序列化
         /// <summary>
         /// Json序列化
@@ -58,39 +56,9 @@ namespace Sean.Utility.Format
         {
             return JsonConvert.SerializeObject(obj, new JsonSerializerSettings { Formatting = Formatting.Indented });
         }
-
-        public static void SerializeToFile(object obj, string filePath)
-        {
-            using (var sw = new StreamWriter(filePath, false, Encoding.UTF8))
-            {
-                sw.WriteLine(JsonConvert.SerializeObject(obj));
-            }
-        }
         #endregion
 
         #region Json反序列化
-        /// <summary>
-        /// Json反序列化
-        /// </summary>
-        /// <param name="json">json字符串</param>
-        /// <param name="type">数据类型</param>
-        /// <returns></returns>
-        public static object Deserialize(string json, Type type)
-        {
-            return JsonConvert.DeserializeObject(json, type);
-        }
-        /// <summary>
-        /// Json反序列化
-        /// </summary>
-        /// <param name="json">json字符串</param>
-        /// <param name="type">数据类型</param>
-        /// <param name="settings"></param>
-        /// <returns></returns>
-        public static object Deserialize(string json, Type type, JsonSerializerSettings settings)
-        {
-            return JsonConvert.DeserializeObject(json, type, settings);
-        }
-
         /// <summary>
         /// Json反序列化
         /// </summary>
@@ -111,14 +79,6 @@ namespace Sean.Utility.Format
         public static T Deserialize<T>(string json, JsonSerializerSettings settings)
         {
             return JsonConvert.DeserializeObject<T>(json, settings);
-        }
-
-        public static T DeserializeFromFile<T>(string filePath)
-        {
-            using (var sr = new StreamReader(filePath, Encoding.UTF8))
-            {
-                return JsonConvert.DeserializeObject<T>(sr.ReadToEnd());
-            }
         }
         #endregion
 

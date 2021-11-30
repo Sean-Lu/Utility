@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Newtonsoft.Json;
 using Sean.Utility.Enums;
 using Sean.Utility.Format;
 using Sean.Utility.Serialize;
@@ -117,7 +118,7 @@ namespace Sean.Utility.Net.Http
         /// <param name="resultCallback">处理返回结果的委托</param>
         public static string Get(string url, IDictionary<string, string> requestParasDic, Action<string> resultCallback = null)
         {
-            return Get(url, JsonHelper.Serialize(requestParasDic), resultCallback);
+            return Get(url, JsonConvert.SerializeObject(requestParasDic), resultCallback);
         }
 
         /// <summary>
@@ -144,7 +145,7 @@ namespace Sean.Utility.Net.Http
         /// <typeparam name="T"></typeparam>
         public static T Get<T>(string url, IDictionary<string, string> requestParasDic, HttpRequestResultType type = HttpRequestResultType.Json, Action<T> resultCallback = null) where T : class, new()
         {
-            return Get(url, JsonHelper.Serialize(requestParasDic), type, resultCallback);
+            return Get(url, JsonConvert.SerializeObject(requestParasDic), type, resultCallback);
         }
         #endregion
 
@@ -169,7 +170,7 @@ namespace Sean.Utility.Net.Http
         /// <param name="resultCallback">处理返回结果的委托</param>
         public static string Post(string url, IDictionary<string, string> postDataDic, Action<string> resultCallback = null)
         {
-            return Post(url, JsonHelper.Serialize(postDataDic), resultCallback);
+            return Post(url, JsonConvert.SerializeObject(postDataDic), resultCallback);
         }
 
         /// <summary>
@@ -198,7 +199,7 @@ namespace Sean.Utility.Net.Http
         /// <returns></returns>
         public static T Post<T>(string url, IDictionary<string, string> postDataDic, HttpRequestResultType type = HttpRequestResultType.Json, Action<T> resultCallback = null) where T : class, new()
         {
-            return Post<T>(url, JsonHelper.Serialize(postDataDic), type, resultCallback);
+            return Post<T>(url, JsonConvert.SerializeObject(postDataDic), type, resultCallback);
         }
         #endregion
 
@@ -233,7 +234,7 @@ namespace Sean.Utility.Net.Http
         /// <returns></returns>
         public static string Request(HttpRequestType type, string url, IDictionary<string, string> requestParasDic, TimeSpan? timeout = null, IDictionary<string, string> headerDic = null, string cookie = null, string referrer = null, bool ensureSuccess = true)
         {
-            return Request(type, url, JsonHelper.Serialize(requestParasDic), timeout, headerDic, cookie, referrer, ensureSuccess);
+            return Request(type, url, JsonConvert.SerializeObject(requestParasDic), timeout, headerDic, cookie, referrer, ensureSuccess);
         }
 
         /// <summary>
@@ -270,7 +271,7 @@ namespace Sean.Utility.Net.Http
         /// <returns></returns>
         public static T Request<T>(HttpRequestType type, string url, IDictionary<string, string> requestParasDic, TimeSpan? timeout = null, IDictionary<string, string> headerDic = null, string cookie = null, string referrer = null, bool ensureSuccess = true, HttpRequestResultType httpRequestResultType = HttpRequestResultType.Json) where T : class, new()
         {
-            return Request<T>(type, url, JsonHelper.Serialize(requestParasDic), timeout, headerDic, cookie, referrer, ensureSuccess, httpRequestResultType);
+            return Request<T>(type, url, JsonConvert.SerializeObject(requestParasDic), timeout, headerDic, cookie, referrer, ensureSuccess, httpRequestResultType);
         }
 
         /// <summary>
@@ -370,7 +371,7 @@ namespace Sean.Utility.Net.Http
         /// <returns></returns>
         public static async Task<string> RequestAsync(HttpRequestType type, string url, IDictionary<string, string> requestParasDic, TimeSpan? timeout = null, IDictionary<string, string> headerDic = null, string cookie = null, string referrer = null, bool ensureSuccess = true)
         {
-            return await RequestAsync(type, url, JsonHelper.Serialize(requestParasDic), timeout, headerDic, cookie, referrer, ensureSuccess);
+            return await RequestAsync(type, url, JsonConvert.SerializeObject(requestParasDic), timeout, headerDic, cookie, referrer, ensureSuccess);
         }
 
         /// <summary>
@@ -402,10 +403,10 @@ namespace Sean.Utility.Net.Http
             switch (httpRequestResultType)
             {
                 case HttpRequestResultType.Json:
-                    result = JsonHelper.Deserialize<T>(requestResult);
+                    result = JsonConvert.DeserializeObject<T>(requestResult);
                     break;
                 case HttpRequestResultType.Xml:
-                    result = XmlSerializer<T>.Instance.Deserialize(requestResult);
+                    result = new XmlSerializer<T>().Deserialize(requestResult);
                     break;
                 default:
                     throw new Exception($"Unsupported HttpRequestResultType: {httpRequestResultType.ToString()}");
@@ -428,7 +429,7 @@ namespace Sean.Utility.Net.Http
         /// <returns></returns>
         public static async Task<T> RequestAsync<T>(HttpRequestType type, string url, IDictionary<string, string> requestParasDic, TimeSpan? timeout = null, IDictionary<string, string> headerDic = null, string cookie = null, string referrer = null, bool ensureSuccess = true, HttpRequestResultType httpRequestResultType = HttpRequestResultType.Json) where T : class, new()
         {
-            return await RequestAsync<T>(type, url, JsonHelper.Serialize(requestParasDic), timeout, headerDic, cookie, referrer, ensureSuccess, httpRequestResultType);
+            return await RequestAsync<T>(type, url, JsonConvert.SerializeObject(requestParasDic), timeout, headerDic, cookie, referrer, ensureSuccess, httpRequestResultType);
         }
 
         /// <summary>
@@ -488,7 +489,8 @@ namespace Sean.Utility.Net.Http
                 return json;
             }
 
-            if (!JsonHelper.JsonMinify(json, out var jsonMini) || string.IsNullOrWhiteSpace(jsonMini))
+            var jsonMini = JsonConvert.SerializeObject(JsonConvert.DeserializeObject<object>(json));// 压缩json
+            if (string.IsNullOrWhiteSpace(jsonMini))
             {
                 throw new ArgumentException("参数格式错误", nameof(json));
             }

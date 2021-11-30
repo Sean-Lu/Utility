@@ -11,12 +11,14 @@ namespace Sean.Utility.Impls.Log
     {
         public SimpleLocalLogger() : base()
         {
-
         }
 
         public SimpleLocalLogger(Action<SimpleLocalLoggerOptions> options) : base(options)
         {
+        }
 
+        public SimpleLocalLogger(Type type) : base(type)
+        {
         }
 
         public void LogDebug(string msg, Exception ex = null)

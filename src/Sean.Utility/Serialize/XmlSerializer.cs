@@ -10,8 +10,6 @@ namespace Sean.Utility.Serialize
     {
         private readonly XmlSerializer _xmlSerializer = new XmlSerializer(typeof(T));
 
-        public static XmlSerializer<T> Instance { get; } = new XmlSerializer<T>();
-
         #region 序列化
         /// <summary>
         /// 序列化对象：实体类转换成XML

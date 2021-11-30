@@ -2,7 +2,7 @@
 
 namespace Demo.NetCore.Models
 {
-    [Serializable]
+    //[Serializable]
     public class TestModel
     {
         public long Id { get; set; }

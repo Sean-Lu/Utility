@@ -6,6 +6,7 @@ using Sean.Utility.Format;
 using Sean.Utility.Impls.Queue;
 using System;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace Demo.NetCore.Impls.Test
 {
@@ -13,16 +14,17 @@ namespace Demo.NetCore.Impls.Test
     {
         public void Execute()
         {
+            var jsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
             SimpleQueue<TestModel>.OnDataConsumed += (sender, args) =>
             {
-                Console.WriteLine(JsonHelper.SerializeIgnoreNullValue(args.QueueData));
+                Console.WriteLine(JsonConvert.SerializeObject(args.QueueData, jsonSettings));
                 Console.WriteLine("===================================");
             };
-            SimpleQueue<TestModel>.OnDataBatchConsumed += (sender, args) => 
+            SimpleQueue<TestModel>.OnDataBatchConsumed += (sender, args) =>
             {
                 args.QueueData.ForEach(c =>
                 {
-                    Console.WriteLine(JsonHelper.SerializeIgnoreNullValue(c));
+                    Console.WriteLine(JsonConvert.SerializeObject(c, jsonSettings));
                 });
                 Console.WriteLine("===================================");
             };
@@ -59,7 +61,7 @@ namespace Demo.NetCore.Impls.Test
             }, 50);
 
             Console.WriteLine($"当前队列中的数据量：{queue.Count}");
-            Console.WriteLine($"队列配置：{JsonHelper.Serialize(queue.Options)}");
+            Console.WriteLine($"队列配置：{JsonConvert.SerializeObject(queue.Options)}");
         }
     }
 }

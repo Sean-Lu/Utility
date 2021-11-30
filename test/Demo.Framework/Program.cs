@@ -6,7 +6,7 @@ namespace Demo.Framework
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Done.");
+            Console.WriteLine("--------------->Done.");
             Console.ReadLine();
         }
     }

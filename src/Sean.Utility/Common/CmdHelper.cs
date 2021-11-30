@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Sean.Utility.Common
 {
@@ -47,27 +44,23 @@ namespace Sean.Utility.Common
         /// <param name="errorDataReceived"></param>
         /// <param name="workingDirectory">设置进程的工作目录</param>
         /// <param name="createNoWindow">true:不显示窗口，false:不显示窗口</param>
-        public static void RunCmd(string[] command, DataReceivedEventHandler outputDataReceived, DataReceivedEventHandler errorDataReceived, string workingDirectory = ".", bool createNoWindow = true)
+        public static void RunCmd(string[] command, DataReceivedEventHandler outputDataReceived = null, DataReceivedEventHandler errorDataReceived = null, string workingDirectory = ".", bool createNoWindow = true)
         {
             if (command is null)
             {
                 throw new ArgumentNullException(nameof(command));
             }
 
-            using (Process process = new Process
+            using (var process = new Process())
             {
-                StartInfo =
-                {
-                    FileName = "cmd.exe",
-                    RedirectStandardInput = true,  //重定向标准输入
-                    RedirectStandardOutput = true, //重定向标准输出
-                    RedirectStandardError = true,  //重定向标准错误输出
-                    UseShellExecute = false,       //是否使用操作系统外壳程序启动进程
-                    WorkingDirectory = workingDirectory,
-                    CreateNoWindow = createNoWindow
-                }
-            })
-            {
+                process.StartInfo.FileName = "cmd.exe";
+                process.StartInfo.RedirectStandardInput = true;  //重定向标准输入
+                process.StartInfo.RedirectStandardOutput = true; //重定向标准输出
+                process.StartInfo.RedirectStandardError = true;  //重定向标准错误输出
+                process.StartInfo.UseShellExecute = false;       //是否使用操作系统外壳程序启动进程
+                process.StartInfo.WorkingDirectory = workingDirectory;
+                process.StartInfo.CreateNoWindow = createNoWindow;
+
                 process.Start();
 
                 process.StandardInput.AutoFlush = true;

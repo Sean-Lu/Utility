@@ -7,8 +7,8 @@
     <Authors>Sean</Authors>
     <Copyright>Copyright © 2016-2021 Sean</Copyright>
     <Description>Library of utility methods.</Description>
-    <Version>2.0.16</Version>
-    <PackageProjectUrl>https://github.com/Sean-Lu/Utility.git</PackageProjectUrl>
+    <Version>2.1.0-beta2021113001</Version>
+    <PackageProjectUrl>https://github.com/Sean-Lu/Utility</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <!--<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />-->
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">

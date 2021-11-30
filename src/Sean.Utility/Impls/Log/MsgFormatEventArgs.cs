@@ -27,9 +27,5 @@ namespace Sean.Utility.Impls.Log
         /// 格式化后的消息
         /// </summary>
         public string MsgFormat { get; set; }
-        /// <summary>
-        /// 是否已经将信息输出到<see cref="Console"/>控制台窗口
-        /// </summary>
-        public bool HasOutputConsole { get; set; }
     }
 }
