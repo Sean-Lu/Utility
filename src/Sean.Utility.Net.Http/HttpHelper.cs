@@ -406,7 +406,7 @@ namespace Sean.Utility.Net.Http
                     result = JsonConvert.DeserializeObject<T>(requestResult);
                     break;
                 case HttpRequestResultType.Xml:
-                    result = new XmlSerializer<T>().Deserialize(requestResult);
+                    result = XmlSerializer.Instance.Deserialize<T>(requestResult);
                     break;
                 default:
                     throw new Exception($"Unsupported HttpRequestResultType: {httpRequestResultType.ToString()}");

@@ -8,10 +8,6 @@ namespace Sean.Utility.Serialize
     /// </summary>
     public class BinarySerializer
     {
-        private BinarySerializer()
-        {
-        }
-
         public static BinarySerializer Instance { get; } = new BinarySerializer();
 
         private readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();

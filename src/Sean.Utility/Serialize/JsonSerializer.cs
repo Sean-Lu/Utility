@@ -5,15 +5,16 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using Sean.Utility.Contracts;
 
 namespace Sean.Utility.Serialize
 {
     /// <summary>
     /// json序列化\反序列化（基于 <see cref="DataContractJsonSerializer"/> ）
     /// </summary>
-    public class JsonSerializer
+    public class JsonSerializer : IJsonSerializer
     {
-        private JsonSerializer()
+        public JsonSerializer()
         {
 #if NETSTANDARD || NET45_OR_GREATER
             Settings = new DataContractJsonSerializerSettings
@@ -27,15 +28,15 @@ namespace Sean.Utility.Serialize
         public static JsonSerializer Instance { get; } = new JsonSerializer();
 
 #if NETSTANDARD || NET45_OR_GREATER
-        public DataContractJsonSerializerSettings Settings;
+        public DataContractJsonSerializerSettings Settings { get; set; }
 #endif
         /// <summary>
         /// 默认编码格式：<see cref="Encoding.UTF8"/>
         /// </summary>
-        public Encoding DefaultEncoding;
+        public Encoding DefaultEncoding { get; set; }
 
         /// <summary>
-        /// 序列化为json对象
+        /// json序列化
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
@@ -54,13 +55,13 @@ namespace Sean.Utility.Serialize
         }
 
         /// <summary>
-        /// json对象反序列化
+        /// json反序列化
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="json"></param>
         /// <returns></returns>
-        public T Deserialize<T>(string data)
+        public T Deserialize<T>(string json)
         {
-            using (var stream = new MemoryStream(DefaultEncoding.GetBytes(data)))
+            using (var stream = new MemoryStream(DefaultEncoding.GetBytes(json)))
             {
 #if NETSTANDARD || NET45_OR_GREATER
                 var serializer = new DataContractJsonSerializer(typeof(T), Settings);

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Demo.NetCore.Contracts;
+using Demo.NetCore.Impls;
 using Demo.NetCore.Impls.Test;
 using Demo.NetCore.Models;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +27,9 @@ namespace Demo.NetCore
             IocContainer.Instance.ConfigureServices(services =>
             {
                 services.AddSimpleLocalLogger();
+                services.AddTransient<IJsonSerializer, JsonSerializer>();
+                services.AddTransient<INewJsonSerializer, NewJsonSerializer>();
+                JsonHelper.Serializer = NewJsonSerializer.Instance;
             });
             #endregion
 
