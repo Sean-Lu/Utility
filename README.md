@@ -42,6 +42,14 @@ JsonHelper.Serializer = NewJsonSerializer.Instance;
 JsonHelper.Serialize(obj);
 ```
 
+- [Json.NET vs .NET Serializers](https://www.newtonsoft.com/json/help/html/jsonnetvsdotnetserializers.htm)
+  
+  - `Json.NET`：`Newtonsoft.Json`
+  
+  - `DataContractJsonSerializer`：`System.Runtime.Serialization.Json`
+  
+  - `JavaScriptSerializer`：`System.Web.Script.Serialization`
+
 ## Sean.Utility.Compress.SharpZipLib
 
 > Zip compression tool based on SharpZipLib.
