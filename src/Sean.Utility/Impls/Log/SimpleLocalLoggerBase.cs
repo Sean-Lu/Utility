@@ -33,11 +33,19 @@ namespace Sean.Utility.Impls.Log
         public static event EventHandler<EventArgs<Exception>> OnException;
 
         /// <summary>
-        /// 日志文件目录，默认：.\Log
+        /// 是否通过 <see cref="LogLevel"/> 分隔日志文件，如：
+        /// <para>\Log\Debug\yyyy-MM-dd.log</para>
+        /// <para>\Log\Info\yyyy-MM-dd.log</para>
+        /// <para>\Log\Error\yyyy-MM-dd.log</para>
+        /// <para>...</para>
+        /// </summary>
+        public static bool LogFileSeparatedByLogLevel { get; set; }
+        /// <summary>
+        /// 日志文件目录，默认：\Log
         /// </summary>
         public static Func<LogLevel, string> LogFileDirectory { get; set; } = (level) =>
          {
-             var dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log");
+             var dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Log{(LogFileSeparatedByLogLevel ? $@"\{level.ToString()}" : string.Empty)}");
              if (!Directory.Exists(dir))
              {
                  Directory.CreateDirectory(dir);

@@ -66,9 +66,4 @@ namespace Sean.Utility.Serialize
             }
         }
     }
-
-    public class XmlSerializer<T> : XmlSerializer
-    {
-
-    }
 }

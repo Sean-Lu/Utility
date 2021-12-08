@@ -1,16 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using Sean.Utility.Contracts;
+using Sean.Utility.Extensions;
 
 namespace Sean.Utility.Serialize
 {
     /// <summary>
     /// json序列化\反序列化（基于 <see cref="DataContractJsonSerializer"/> ）
+    /// <para>支持：</para>
+    /// <para>- Serializes DataSets and DataTables【数据集\数据表】</para>
+    /// <para>- Serializes anonymous types【匿名类型】</para>
+    /// <para>- Serializes .NET 4.0 dynamic objects【动态类型】</para>
+    /// <para>更多信息：[Json.NET vs .NET Serializers](https://www.newtonsoft.com/json/help/html/jsonnetvsdotnetserializers.htm)</para>
     /// </summary>
     public class JsonSerializer : IJsonSerializer
     {
@@ -19,8 +27,12 @@ namespace Sean.Utility.Serialize
 #if NETSTANDARD || NET45_OR_GREATER
             Settings = new DataContractJsonSerializerSettings
             {
-                DateTimeFormat = new DateTimeFormat("yyyy-MM-ddTHH:mm:sszzz")
+                DateTimeFormat = new DateTimeFormat("yyyy-MM-ddTHH:mm:sszzz"),
+                UseSimpleDictionaryFormat = true
             };
+#if !NETSTANDARD
+            //Settings.DataContractSurrogate = new xxxSurrogate();
+#endif
 #endif
             DefaultEncoding = Encoding.UTF8;
         }
@@ -42,16 +54,32 @@ namespace Sean.Utility.Serialize
         /// <returns></returns>
         public string Serialize<T>(T obj)
         {
-#if NETSTANDARD || NET45_OR_GREATER
-            var serializer = new DataContractJsonSerializer(typeof(T), Settings);
-#else
-            var serializer = new DataContractJsonSerializer(typeof(T));
-#endif
-            using (var ms = new MemoryStream())
+            if (obj == null)
             {
-                serializer.WriteObject(ms, obj);
-                return DefaultEncoding.GetString(ms.ToArray());
+                return null;
             }
+
+            if (typeof(T) == typeof(DataTable))
+            {
+                var data = (obj as DataTable).ToDictionary();
+                return SerializeObject(data);
+            }
+            else if (typeof(T) == typeof(DataSet))
+            {
+                var data = (obj as DataSet).ToDictionary();
+                return SerializeObject(data);
+            }
+            else if (typeof(T).IsAnonymousType())// 匿名类型
+            {
+                var dic = new Dictionary<string, object>();
+                foreach (var property in typeof(T).GetProperties())
+                {
+                    dic.Add(property.Name, property.GetValue(obj, null));
+                }
+                return SerializeObject(dic);
+            }
+
+            return SerializeObject(obj);
         }
 
         /// <summary>
@@ -60,6 +88,63 @@ namespace Sean.Utility.Serialize
         /// <param name="json"></param>
         /// <returns></returns>
         public T Deserialize<T>(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return default;
+            }
+
+            if (typeof(T) == typeof(DataTable))
+            {
+                var data = DeserializeObject<IList<IDictionary<string, object>>>(json).ToDataTable();
+                return (T)Convert.ChangeType(data, typeof(T));
+            }
+            else if (typeof(T) == typeof(DataSet))
+            {
+                var data = DeserializeObject<IDictionary<string, IList<IDictionary<string, object>>>>(json).ToDataSet();
+                return (T)Convert.ChangeType(data, typeof(T));
+            }
+            else if (typeof(T) == typeof(object))// dynamic动态类型
+            {
+                if (json.StartsWith("["))
+                {
+                    var data = DeserializeObject<List<ExpandoObject>>(json);
+                    return (T)Convert.ChangeType(data, typeof(List<ExpandoObject>));
+                }
+                else
+                {
+                    var data = DeserializeObject<ExpandoObject>(json);
+                    return (T)Convert.ChangeType(data, typeof(ExpandoObject));
+                }
+            }
+            else if (typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(List<>))
+            {
+                var types = typeof(T).GetGenericArguments();
+                if (types.Length == 1 && types[0] == typeof(object))// dynamic动态类型（泛型）
+                {
+                    var data = DeserializeObject<List<ExpandoObject>>(json);
+                    var result = data.Select(c => Convert.ChangeType(c, typeof(ExpandoObject))).ToList();
+                    return (T)Convert.ChangeType(result, typeof(T));
+                }
+            }
+
+            return DeserializeObject<T>(json);
+        }
+
+        private string SerializeObject<T>(T obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+#if NETSTANDARD || NET45_OR_GREATER
+                var serializer = new DataContractJsonSerializer(typeof(T), Settings);
+#else
+                var serializer = new DataContractJsonSerializer(typeof(T));
+#endif
+                serializer.WriteObject(ms, obj);
+                return DefaultEncoding.GetString(ms.ToArray());
+            }
+        }
+        private T DeserializeObject<T>(string json)
         {
             using (var stream = new MemoryStream(DefaultEncoding.GetBytes(json)))
             {

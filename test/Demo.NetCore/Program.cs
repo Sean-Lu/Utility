@@ -1,19 +1,13 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using Demo.NetCore.Contracts;
+﻿using Demo.NetCore.Contracts;
 using Demo.NetCore.Impls;
-using Demo.NetCore.Impls.Test;
-using Demo.NetCore.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sean.Core.Ioc;
-using Sean.Utility.Common;
 using Sean.Utility.Contracts;
 using Sean.Utility.Extensions;
 using Sean.Utility.Format;
 using Sean.Utility.Impls.Log;
-using Sean.Utility.IO;
 using Sean.Utility.Serialize;
+using System;
 
 namespace Demo.NetCore
 {
@@ -44,6 +38,7 @@ namespace Demo.NetCore
             {
                 //Console.WriteLine($"自定义输出日志：{JsonHelper.Serialize(eventArgs.Options)}");
             };
+            //SimpleLocalLoggerBase.LogFileSeparatedByLogLevel = true;
             #endregion
 
             //_logger = SimpleLocalLoggerManager.GetCurrentClassLogger();

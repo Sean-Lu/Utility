@@ -84,8 +84,8 @@ namespace Sean.Utility.Format
         /// <returns></returns>
         public static T ConvertObjectByJson<T>(object source)
         {
-            var json = JsonSerializer.Instance.Serialize(source);
-            return JsonSerializer.Instance.Deserialize<T>(json);
+            var json = JsonHelper.Serialize(source);
+            return JsonHelper.Deserialize<T>(json);
         }
     }
 }

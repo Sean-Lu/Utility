@@ -3,6 +3,9 @@ using Sean.Utility.Serialize;
 
 namespace Sean.Utility.Format
 {
+    /// <summary>
+    /// json序列化\反序列化
+    /// </summary>
     public class JsonHelper
     {
         /// <summary>

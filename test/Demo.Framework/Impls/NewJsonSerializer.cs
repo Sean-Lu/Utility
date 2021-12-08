@@ -1,7 +1,7 @@
-﻿using Demo.NetCore.Contracts;
+﻿using Demo.Framework.Contracts;
 using Newtonsoft.Json;
 
-namespace Demo.NetCore.Impls
+namespace Demo.Framework.Impls
 {
     /// <summary>
     /// json序列化\反序列化（基于 <see cref="JsonConvert"/> ）

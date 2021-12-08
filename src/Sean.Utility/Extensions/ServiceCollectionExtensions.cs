@@ -21,12 +21,29 @@ namespace Sean.Utility.Extensions
         /// <returns></returns>
         public static IConfiguration GetConfiguration(this IServiceCollection services)
         {
-            //return services.BuildServiceProvider().GetService<IConfiguration>();
-            return (IConfiguration)services.FirstOrDefault(p => p.ServiceType == typeof(IConfiguration))?.ImplementationInstance;
+            return services.GetImplementationInstance<IConfiguration>() ?? services.BuildServiceProvider().GetService<IConfiguration>();
+        }
+
+        /// <summary>
+        /// Get <see cref="ServiceDescriptor.ImplementationInstance"/> of type T from <see cref="IServiceCollection"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static T GetImplementationInstance<T>(this IServiceCollection services)
+        {
+            var serviceDescriptor = services.FirstOrDefault(c => c.ServiceType == typeof(T));
+            if (serviceDescriptor == null && typeof(T).IsGenericType)
+            {
+                serviceDescriptor = services.FirstOrDefault(c => c.ServiceType.IsGenericType && c.ServiceType.GetGenericTypeDefinition() == typeof(T).GetGenericTypeDefinition());
+            }
+            var instance = serviceDescriptor?.ImplementationInstance;
+            return instance != null ? (T)instance : default;
         }
 
         #region SimpleLocalLogger
         /// <summary>
+        /// 默认依赖注入(<paramref name="useDefaultDependencyInjection"/> == true)：
         /// <para><see cref="ISimpleLogger"/></para>
         /// <para><see cref="ISimpleLogger{T}"/></para>
         /// <para><see cref="ISimpleLoggerAsync{T}"/></para>
@@ -38,13 +55,16 @@ namespace Sean.Utility.Extensions
         /// <returns></returns>
         public static IServiceCollection AddSimpleLocalLogger(this IServiceCollection services, bool useDefaultDependencyInjection = true, Action<SimpleLocalLoggerOptions> configureOptions = null, IConfiguration configuration = null)
         {
+            var provider = services.BuildServiceProvider();
+            SimpleLocalLoggerBase.ServiceProvider = provider;
+
             if (configuration is IConfigurationSection section)
             {
                 services.Configure<SimpleLocalLoggerOptions>(section);
             }
             else
             {
-                services.Configure<SimpleLocalLoggerOptions>((configuration ?? services.GetConfiguration()).GetSection(nameof(SimpleLocalLoggerOptions)));
+                services.Configure<SimpleLocalLoggerOptions>((configuration ?? provider.GetService<IConfiguration>())?.GetSection(nameof(SimpleLocalLoggerOptions)));
             }
 
             if (configureOptions != null)
@@ -54,12 +74,11 @@ namespace Sean.Utility.Extensions
 
             if (useDefaultDependencyInjection)
             {
-                services.AddSingleton<ISimpleLogger>(new SimpleLocalLogger());
+                services.AddTransient(typeof(ISimpleLogger), typeof(SimpleLocalLogger));
                 services.AddTransient(typeof(ISimpleLogger<>), typeof(SimpleLocalLogger<>));
                 services.AddTransient(typeof(ISimpleLoggerAsync<>), typeof(SimpleLocalLoggerAsync<>));
             }
 
-            SimpleLocalLoggerBase.ServiceProvider = services.BuildServiceProvider();
             return services;
         }
         #endregion
@@ -75,13 +94,16 @@ namespace Sean.Utility.Extensions
         /// <returns></returns>
         public static IServiceCollection AddSimpleQueue(this IServiceCollection services, bool useDefaultDependencyInjection = true, Action<SimpleQueueOptions> configureOptions = null, IConfiguration configuration = null)
         {
+            var provider = services.BuildServiceProvider();
+            SimpleQueueBase.ServiceProvider = provider;
+
             if (configuration is IConfigurationSection section)
             {
                 services.Configure<SimpleQueueOptions>(section);
             }
             else
             {
-                services.Configure<SimpleQueueOptions>((configuration ?? services.GetConfiguration()).GetSection(nameof(SimpleQueueOptions)));
+                services.Configure<SimpleQueueOptions>((configuration ?? provider.GetService<IConfiguration>())?.GetSection(nameof(SimpleQueueOptions)));
             }
 
             if (configureOptions != null)
@@ -94,7 +116,6 @@ namespace Sean.Utility.Extensions
                 services.AddSingleton(typeof(ISimpleQueue<>), typeof(SimpleQueue<>));
             }
 
-            SimpleQueueBase.ServiceProvider = services.BuildServiceProvider();
             return services;
         }
         #endregion
