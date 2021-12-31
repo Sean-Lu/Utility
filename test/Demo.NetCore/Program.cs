@@ -21,8 +21,8 @@ namespace Demo.NetCore
             IocContainer.Instance.ConfigureServices(services =>
             {
                 services.AddSimpleLocalLogger();
-                services.AddTransient<IJsonSerializer, JsonSerializer>();
-                services.AddTransient<INewJsonSerializer, NewJsonSerializer>();
+                //services.AddSingleton<IJsonSerializer, JsonSerializer>();
+                services.AddSingleton<IJsonSerializer, NewJsonSerializer>();
                 JsonHelper.Serializer = NewJsonSerializer.Instance;
             });
             #endregion

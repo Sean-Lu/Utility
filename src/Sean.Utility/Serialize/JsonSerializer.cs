@@ -4,9 +4,11 @@ using System.Data;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 using Sean.Utility.Contracts;
 using Sean.Utility.Extensions;
 
@@ -77,6 +79,33 @@ namespace Sean.Utility.Serialize
                     dic.Add(property.Name, property.GetValue(obj, null));
                 }
                 return SerializeObject(dic);
+            }
+            else if (typeof(T).GetCustomAttributes(typeof(SerializableAttribute), false).Any())// 解决 k__BackingField 的问题：正则查找替换
+            {
+                var json = SerializeObject(obj);
+                var startStr = "\"<";
+                var endStr = ">k__BackingField\":";
+                var pattern = $"(?<=({startStr}))(.*?)(?=({endStr}))";
+                if (Regex.IsMatch(json, pattern))
+                {
+                    var matches = Regex.Matches(json, pattern);
+                    var list = new List<string>();
+                    foreach (Match match in matches)
+                    {
+                        var value = match.Value;
+                        if (!list.Contains(value))
+                        {
+                            list.Add(value);
+                        }
+                    }
+
+                    list.ForEach(c =>
+                    {
+                        json = json.Replace($"{startStr}{c}{endStr}", $"\"{c}\":");
+                    });
+                    return json;
+                }
+                return json;
             }
 
             return SerializeObject(obj);

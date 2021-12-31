@@ -14,8 +14,6 @@ namespace Sean.Utility.Format
     /// </summary>
     public class ConvertHelper
     {
-        private ConvertHelper() { }
-
         #region DataTable转List(泛型)
         /// <summary>
         /// DataTable转List（将数据表转换为字典）
@@ -114,121 +112,6 @@ namespace Sean.Utility.Format
         }
         #endregion
 
-        #region DataTable与DataGridView转换
-        /*/// <summary>
-        /// DataGridView转DataTable
-        /// </summary>
-        /// <param name="dgv">DatGridView对象</param>
-        /// <returns></returns>
-        public static DataTable ToDataTable(DataGridView dgv)
-        {
-            //return dgv.DataSource as DataTable;
-
-            DataTable dt = new DataTable();
-            for (int i = 0; i < dgv.Columns.Count; i++)
-            {
-                DataColumn dc = new DataColumn { ColumnName = dgv.Columns[i].HeaderText };
-                dt.Columns.Add(dc);
-            }
-            for (int j = 0; j < dgv.Rows.Count; j++)
-            {
-                DataRow dr = dt.NewRow();
-                for (int x = 0; x < dgv.Columns.Count; x++)
-                {
-                    dr[x] = dgv.Rows[j].Cells[x].Value;
-                }
-                dt.Rows.Add(dr);
-            }
-            return dt;
-        }*/
-        #endregion
-
-        #region List(泛型)与数组互相转换
-        /// <summary>
-        /// List转数组
-        /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        public static T[] ToArray<T>(IList<T> list)
-        {
-            return list?.ToArray();
-        }
-        /// <summary>
-        /// 数组转List
-        /// </summary>
-        /// <param name="array"></param>
-        /// <returns></returns>
-        public static IList<T> ToList<T>(T[] array)
-        {
-            return array != null ? new List<T>(array) : null;
-        }
-        #endregion
-
-        #region 字符串和字符数组互相转换
-        /// <summary>
-        /// string转char[]
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static char[] ToCharArray(string str)
-        {
-            return str.ToCharArray();
-        }
-        /// <summary>
-        /// char[]转string
-        /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        public static string ToString(char[] c)
-        {
-            return new string(c);
-        }
-        #endregion
-
-        #region 字符串和字节数组互相转换
-        /// <summary>
-        /// string转byte[]
-        /// </summary>
-        /// <param name="str"></param>
-        /// <param name="encode"></param>
-        /// <returns></returns>
-        public static byte[] ToBytes(string str, Encoding encode)
-        {
-            return encode.GetBytes(str);
-        }
-        /// <summary>
-        /// byte[]转string
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <param name="encode"></param>
-        /// <returns></returns>
-        public static string ToString(byte[] bytes, Encoding encode)
-        {
-            return encode.GetString(bytes);
-        }
-        #endregion
-
-        #region 数字和字节数组互相转换
-        /// <summary>
-        /// int转byte[]
-        /// </summary>
-        /// <param name="num">数字</param>
-        /// <returns>字节数组</returns>
-        public static byte[] ToBytes(int num)
-        {
-            return BitConverter.GetBytes(num);
-        }
-        /// <summary>
-        /// byte[]转int
-        /// </summary>
-        /// <param name="bytes">字节数组</param>
-        /// <returns>数字</returns>
-        public static int ToNum(byte[] bytes)
-        {
-            return BitConverter.ToInt32(bytes, 0);
-        }
-        #endregion
-
         #region 16进制字符串和字符串互相转换
         /// <summary>
         /// 字符串转16进制字符
@@ -305,29 +188,19 @@ namespace Sean.Utility.Format
         /// <returns>字节数组</returns> 
         public static byte[] ToBytes(string hexString, string separator = "-")
         {
-
-            if (string.IsNullOrWhiteSpace(separator))
+            if (!string.IsNullOrEmpty(separator))
             {
-                if (hexString.Length % 2 != 0)
-                    return null;
+                hexString = hexString.Replace(separator, string.Empty);
+            }
+            if (hexString.Length % 2 != 0)
+                return null;
 
-                var bytes = new byte[hexString.Length / 2];
-                for (int i = 0; i < hexString.Length / 2; i++)
-                {
-                    bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
-                }
-                return bytes;
-            }
-            else
+            var bytes = new byte[hexString.Length / 2];
+            for (var i = 0; i < bytes.Length; i++)
             {
-                string[] split = hexString.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
-                var bytes = new byte[split.Length];
-                for (int i = 0; i < split.Length; i++)
-                {
-                    bytes[i] = ToByte(split[i]);
-                }
-                return bytes;
+                bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             }
+            return bytes;
         }
         #endregion
 

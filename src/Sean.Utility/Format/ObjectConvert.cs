@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sean.Utility.Extensions;
 
 namespace Sean.Utility.Format
@@ -11,7 +12,7 @@ namespace Sean.Utility.Format
     {
         #region 对象映射
         /// <summary>
-        /// 对象映射
+        /// 对象映射（属性和字段）
         /// </summary>
         /// <typeparam name="TDestination"></typeparam>
         /// <typeparam name="TSource"></typeparam>
@@ -24,13 +25,38 @@ namespace Sean.Utility.Format
             return result;
         }
         /// <summary>
-        /// 对象映射
+        /// 对象映射（属性和字段）
         /// </summary>
         /// <typeparam name="TDestination"></typeparam>
         /// <typeparam name="TSource"></typeparam>
         /// <param name="destination"></param>
         /// <param name="source"></param>
         public static void Map<TDestination, TSource>(TDestination destination, TSource source)
+        {
+            MapProperties<TDestination, TSource>(destination, source);
+            MapFields<TDestination, TSource>(destination, source);
+        }
+        /// <summary>
+        /// 对象映射（仅属性）
+        /// </summary>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static TDestination MapProperties<TDestination, TSource>(TSource source) where TDestination : new()
+        {
+            var result = Activator.CreateInstance<TDestination>();
+            MapProperties(result, source);
+            return result;
+        }
+        /// <summary>
+        /// 对象映射（仅属性）
+        /// </summary>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="destination"></param>
+        /// <param name="source"></param>
+        public static void MapProperties<TDestination, TSource>(TDestination destination, TSource source)
         {
             if (source == null || destination == null)
             {
@@ -49,7 +75,45 @@ namespace Sean.Utility.Format
             }
         }
         /// <summary>
-        /// 对象映射
+        /// 对象映射（仅字段）
+        /// </summary>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static TDestination MapFields<TDestination, TSource>(TSource source) where TDestination : new()
+        {
+            var result = Activator.CreateInstance<TDestination>();
+            MapFields(result, source);
+            return result;
+        }
+        /// <summary>
+        /// 对象映射（仅字段）
+        /// </summary>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="destination"></param>
+        /// <param name="source"></param>
+        public static void MapFields<TDestination, TSource>(TDestination destination, TSource source)
+        {
+            if (source == null || destination == null)
+            {
+                return;
+            }
+
+            var typeSource = typeof(TSource);
+            var typeDestination = typeof(TDestination);
+            foreach (var destinationPropertyInfo in typeDestination.GetFields())
+            {
+                var sourcePropertyInfo = typeSource.GetField(destinationPropertyInfo.Name);
+                if (sourcePropertyInfo != null)
+                {
+                    destinationPropertyInfo.SetValue(destination, sourcePropertyInfo.GetValue(source));
+                }
+            }
+        }
+        /// <summary>
+        /// 对象映射（属性和字段）
         /// </summary>
         /// <typeparam name="TDestination"></typeparam>
         /// <typeparam name="TSource"></typeparam>

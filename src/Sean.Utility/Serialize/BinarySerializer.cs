@@ -62,10 +62,7 @@ namespace Sean.Utility.Serialize
         /// <returns></returns>
         public T Deserialize<T>(byte[] serializedObject)
         {
-            using (var memoryStream = new MemoryStream(serializedObject))
-            {
-                return (T)_binaryFormatter.Deserialize(memoryStream);
-            }
+            return (T)Deserialize(serializedObject);
         }
 
         /// <summary>
