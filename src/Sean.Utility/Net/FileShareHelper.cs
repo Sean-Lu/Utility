@@ -1,12 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using Sean.Utility.Enums;
 
-namespace Sean.Utility.Net.FileShare
+namespace Sean.Utility.Net
 {
     /// <summary>
     /// 访问网络共享文件夹（基于磁盘映射）
     /// </summary> 
-    public class NetworkConnectionHelper
+    public class FileShareHelper
     {
         /// <summary>
         /// 建立连接
@@ -17,7 +17,7 @@ namespace Sean.Utility.Net.FileShare
         /// <param name="dwFlags">设为零或CONNECT_UPDATE_PROFILE（表示创建永久性连接）</param>
         /// <returns></returns>
         [DllImport("mpr.dll")]
-        private static extern int WNetAddConnection2A(NetResource[] lpNetResource, string lpPassword, string lpUserName, int dwFlags);
+        public static extern int WNetAddConnection2A(NetResource[] lpNetResource, string lpPassword, string lpUserName, int dwFlags);
         /// <summary>
         /// 取消连接
         /// </summary>
@@ -26,9 +26,9 @@ namespace Sean.Utility.Net.FileShare
         /// <param name="fForce">如为TRUE，表示强制断开连接（即使连接的资源上正有打开的文件或作业）</param>
         /// <returns></returns>
         [DllImport("mpr.dll")]
-        private static extern int WNetCancelConnection2A(string name, int dwFlags, int fForce);
+        public static extern int WNetCancelConnection2A(string name, int dwFlags, int fForce);
 
-        private NetworkConnectionHelper() { }
+        private FileShareHelper() { }
 
         /// <summary>
         /// 建立连接
@@ -68,7 +68,7 @@ namespace Sean.Utility.Net.FileShare
     /// 网络资源
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    internal struct NetResource
+    public struct NetResource
     {
         public RESOURCE_SCOPE dwScope;
         public RESOURCE_TYPE dwType;

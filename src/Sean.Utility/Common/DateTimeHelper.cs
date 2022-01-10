@@ -335,7 +335,8 @@ namespace Sean.Utility.Common
             return GetFirstDayOfMonth(datetime.AddMonths(1)).AddDays(-1);
         }
 
-        #region DateTime与时间戳转换（包括JavaScript时间戳、Unix时间戳）
+        #region DateTime与时间戳转换
+        //private static readonly DateTime Jan1st1970Utc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         /// <summary>
         /// DateTime转换为时间戳
         /// </summary>
@@ -343,37 +344,18 @@ namespace Sean.Utility.Common
         /// <param name="timestampType">时间戳类型</param>
         /// <param name="timeZoneInfo">时区</param>
         /// <returns></returns>
-        public static double ToTimestamp(DateTime time, TimestampType timestampType = TimestampType.JavaScript, TimeZoneInfo timeZoneInfo = null)
+        public static long GetTimestamp(DateTime time, TimestampType timestampType = TimestampType.JavaScript)
         {
-            var startTime = GetGmtStartTime(timeZoneInfo);
             switch (timestampType)
             {
                 case TimestampType.JavaScript:
-                    return (time - startTime).TotalMilliseconds;//(dt2.Ticks - dt1.Ticks) / 10000;
+                    //return (long)(time.ToUniversalTime() - Jan1st1970Utc).TotalMilliseconds;
+                    return (time.ToUniversalTime().Ticks - 621355968000000000L) / 10000;
                 case TimestampType.Unix:
-                    return (time - startTime).TotalSeconds;//(dt2.Ticks - dt1.Ticks) / 10000000;
+                    //return (long)(time.ToUniversalTime() - Jan1st1970Utc).TotalSeconds;
+                    return (time.ToUniversalTime().Ticks - 621355968000000000L) / 10000000;
                 default:
-                    return 0;
-            }
-        }
-        /// <summary>
-        /// DateTime转换为时间戳
-        /// </summary>
-        /// <param name="time">时间</param>
-        /// <param name="timestampType">时间戳类型</param>
-        /// <param name="timeZoneInfo">时区</param>
-        /// <returns></returns>
-        public static long ToTimestampByTicks(DateTime time, TimestampType timestampType = TimestampType.JavaScript, TimeZoneInfo timeZoneInfo = null)
-        {
-            var startTime = GetGmtStartTime(timeZoneInfo);
-            switch (timestampType)
-            {
-                case TimestampType.JavaScript:
-                    return (time.Ticks - startTime.Ticks) / 10000;
-                case TimestampType.Unix:
-                    return (time.Ticks - startTime.Ticks) / 10000000;
-                default:
-                    return 0;
+                    throw new NotSupportedException($"Unsupported type: {timestampType}");
             }
         }
         /// <summary>
@@ -383,24 +365,19 @@ namespace Sean.Utility.Common
         /// <param name="timestampType">时间戳类型</param>
         /// <param name="timeZoneInfo">时区</param>
         /// <returns></returns>
-        public static DateTime ToDateTime(double timestamp, TimestampType timestampType = TimestampType.JavaScript, TimeZoneInfo timeZoneInfo = null)
+        public static DateTime GetDateTime(long timestamp, TimestampType timestampType = TimestampType.JavaScript)
         {
-            var startTime = GetGmtStartTime(timeZoneInfo);
             switch (timestampType)
             {
                 case TimestampType.JavaScript:
-                    return startTime.AddMilliseconds(timestamp);
+                    //return Jan1st1970Utc.AddMilliseconds(timestamp).ToLocalTime();
+                    return new DateTime(timestamp * 10000 + 621355968000000000L, DateTimeKind.Utc).ToLocalTime();
                 case TimestampType.Unix:
-                    return startTime.AddSeconds(timestamp);
+                    //return Jan1st1970Utc.AddSeconds(timestamp).ToLocalTime();
+                    return new DateTime(timestamp * 10000000 + 621355968000000000L, DateTimeKind.Utc).ToLocalTime();
                 default:
-                    return default;
+                    throw new NotSupportedException($"Unsupported type: {timestampType}");
             }
-        }
-
-        private static DateTime GetGmtStartTime(TimeZoneInfo timeZoneInfo = null)
-        {
-            var dt = new DateTime(1970, 1, 1);
-            return timeZoneInfo == null ? TimeZone.CurrentTimeZone.ToLocalTime(dt) : TimeZoneInfo.ConvertTimeFromUtc(dt, timeZoneInfo);
         }
         #endregion
     }

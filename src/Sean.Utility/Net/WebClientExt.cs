@@ -14,18 +14,10 @@ namespace Sean.Utility.Net
         public int Timeout { get; set; }
 
         /// <summary>
-        /// 默认设置<see cref="Timeout"/>为20秒
-        /// </summary>
-        public WebClientExt()
-        {
-            this.Timeout = 20000;
-        }
-
-        /// <summary>
         /// 自定义超时时间
         /// </summary>
         /// <param name="timeout">超时时间（单位：ms）</param>
-        public WebClientExt(int timeout)
+        public WebClientExt(int timeout = 30000)
         {
             this.Timeout = timeout;
         }

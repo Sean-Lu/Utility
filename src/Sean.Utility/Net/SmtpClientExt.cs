@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 
-namespace Sean.Utility.Net.Smtp
+namespace Sean.Utility.Net
 {
     /// <summary>  
     /// 邮件发送（基于SMTP协议）
@@ -114,42 +114,44 @@ namespace Sean.Utility.Net.Smtp
         /// <param name="attachments">附件路径，如果为null，或者文件不存在，则不带附件</param>
         public void SendMail(string subject, string body, string to, string cc = null, string bcc = null, List<string> attachments = null)
         {
-            var mm = new MailMessage();
-            mm.Priority = MailPriority.Normal;
-            mm.From = new MailAddress(FromEmailAddress);
-            //mm.From = new MailAddress(fromEmailAddress, "管理员", Encoding.UTF8);
-
-            //收件人
-            if (!string.IsNullOrWhiteSpace(to))
-                mm.To.Add(to);
-            //抄送人
-            if (!string.IsNullOrWhiteSpace(cc))
-                mm.CC.Add(cc);
-            //密送人
-            if (!string.IsNullOrWhiteSpace(bcc))
-                mm.Bcc.Add(bcc);
-
-            mm.Subject = subject;
-            mm.SubjectEncoding = SubjectEncoding;
-            mm.Body = body;
-            mm.BodyEncoding = BodyEncoding;
-            mm.IsBodyHtml = IsBodyHtml;
-
-            //邮件附件 
-            if (attachments != null)
+            using (var mm = new MailMessage())
             {
-                foreach (string fn in attachments)
+                mm.Priority = MailPriority.Normal;
+                mm.From = new MailAddress(FromEmailAddress);
+                //mm.From = new MailAddress(fromEmailAddress, "管理员", Encoding.UTF8);
+
+                //收件人
+                if (!string.IsNullOrWhiteSpace(to))
+                    mm.To.Add(to);
+                //抄送人
+                if (!string.IsNullOrWhiteSpace(cc))
+                    mm.CC.Add(cc);
+                //密送人
+                if (!string.IsNullOrWhiteSpace(bcc))
+                    mm.Bcc.Add(bcc);
+
+                mm.Subject = subject;
+                mm.SubjectEncoding = SubjectEncoding;
+                mm.Body = body;
+                mm.BodyEncoding = BodyEncoding;
+                mm.IsBodyHtml = IsBodyHtml;
+
+                //邮件附件 
+                if (attachments != null)
                 {
-                    var fi = new FileInfo(fn);
-                    if (fi.Exists)
+                    foreach (string fn in attachments)
                     {
-                        mm.Attachments.Add(new Attachment(fn));
+                        var fi = new FileInfo(fn);
+                        if (fi.Exists)
+                        {
+                            mm.Attachments.Add(new Attachment(fn));
+                        }
                     }
                 }
-            }
 
-            //发送邮件
-            _smtp.Send(mm);
+                //发送邮件
+                _smtp.Send(mm);
+            }
         }
         #endregion
 

@@ -1,11 +1,13 @@
-﻿using System.Configuration;
+﻿#if !NETSTANDARD
+using System.Configuration;
+using System.Web.Configuration;
 
-namespace Sean.Utility.Config
+namespace Sean.Utility.Web.Config
 {
     /// <summary>
-    /// 配置文件操作（App.config）
+    /// 配置文件操作（Web.config）
     /// </summary>
-    public class AppConfigHelper
+    public class WebConfigurationHelper
     {
         #region AppSetting
 
@@ -15,7 +17,7 @@ namespace Sean.Utility.Config
         /// <param name="key"></param>
         public static string GetAppSetting(string key)
         {
-            return ConfigurationManager.AppSettings[key];
+            return WebConfigurationManager.AppSettings[key];
         }
 
         /// <summary>
@@ -25,10 +27,9 @@ namespace Sean.Utility.Config
         /// <param name="value"></param>
         public static void SetAppSetting(string key, string value)
         {
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            Configuration config = WebConfigurationManager.OpenWebConfiguration(null);
             config.AppSettings.Settings[key].Value = value;
             config.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("appSettings");
         }
 
         /// <summary>
@@ -38,10 +39,9 @@ namespace Sean.Utility.Config
         /// <param name="value"></param>
         public static void AddAppSetting(string key, string value)
         {
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            Configuration config = WebConfigurationManager.OpenWebConfiguration(null);
             config.AppSettings.Settings.Add(key, value);
             config.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("appSettings");
         }
 
         /// <summary>
@@ -50,10 +50,9 @@ namespace Sean.Utility.Config
         /// <param name="key"></param>
         public static void RemoveAppSetting(string key)
         {
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            Configuration config = WebConfigurationManager.OpenWebConfiguration(null);
             config.AppSettings.Settings.Remove(key);
             config.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("appSettings");
         }
 
         #endregion
@@ -66,7 +65,7 @@ namespace Sean.Utility.Config
         /// <param name="name"></param>
         public static string GetConnectionString(string name)
         {
-            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
+            return WebConfigurationManager.ConnectionStrings[name].ConnectionString;
         }
 
         /// <summary>
@@ -76,10 +75,9 @@ namespace Sean.Utility.Config
         /// <param name="connectionString"></param>
         public static void SetConnectionString(string name, string connectionString)
         {
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            Configuration config = WebConfigurationManager.OpenWebConfiguration(null);
             config.ConnectionStrings.ConnectionStrings[name].ConnectionString = connectionString;
             config.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("connectionStrings");
         }
 
         /// <summary>
@@ -89,10 +87,9 @@ namespace Sean.Utility.Config
         /// <param name="connectionString"></param>
         public static void AddConnectionString(string name, string connectionString)
         {
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            Configuration config = WebConfigurationManager.OpenWebConfiguration(null);
             config.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings(name, connectionString));
             config.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("connectionStrings");
         }
 
         /// <summary>
@@ -101,12 +98,12 @@ namespace Sean.Utility.Config
         /// <param name="name"></param>
         public static void RemoveConnectionString(string name)
         {
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            Configuration config = WebConfigurationManager.OpenWebConfiguration(null);
             config.ConnectionStrings.ConnectionStrings.Remove(name);
             config.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("connectionStrings");
         }
 
         #endregion
     }
 }
+#endif

@@ -1,18 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net4;netstandard2.0</TargetFrameworks>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Sean</Authors>
-    <Copyright>Copyright © 2019-2020 Sean</Copyright>
-    <Version>2.0.3-beta</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net4;netstandard2.0</TargetFrameworks>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Authors>Sean</Authors>
+		<Copyright>Copyright © 2019-2022 Sean</Copyright>
+		<PackageProjectUrl>https://github.com/Sean-Lu/Utility</PackageProjectUrl>
+		<Version>2.0.4</Version>
+	</PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net4'">
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.Configuration" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net4'">
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Web" />
+		<Reference Include="System.Web.Services" />
+	</ItemGroup>
 
 </Project>

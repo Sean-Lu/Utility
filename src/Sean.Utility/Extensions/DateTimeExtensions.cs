@@ -29,7 +29,15 @@ namespace Sean.Utility.Extensions
         /// <returns></returns>
         public static string ToLongDateTimeWithTimezone(this DateTime dateTime)
         {
-            return dateTime.ToString("yyyy-MM-ddTHH:mm:sszzz");
+            switch (dateTime.Kind)
+            {
+                case DateTimeKind.Local:
+                    return dateTime.ToString("yyyy-MM-ddTHH:mm:sszzz");
+                case DateTimeKind.Utc:
+                    return dateTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                default:
+                    return dateTime.ToString("yyyy-MM-ddTHH:mm:ss");// DateTimeKind.Unspecified
+            }
         }
 
         /// <summary>
@@ -59,45 +67,6 @@ namespace Sean.Utility.Extensions
         }
 
         /// <summary>
-        /// Convert the date into a string in "HH:mm" format
-        /// </summary>
-        /// <remarks>
-        /// 将日期转成 "HH:mm" 格式的字符串
-        /// </remarks>
-        /// <param name="dateTime"></param>
-        /// <returns></returns>
-        public static string ToHourMinute(this DateTime dateTime)
-        {
-            return dateTime.ToString("HH:mm");
-        }
-
-        /// <summary>
-        /// Return the time zone, example (China time zone): +08:00
-        /// </summary>
-        /// <remarks>
-        /// 返回时区，示例（中国时区）：+08:00
-        /// </remarks>
-        /// <param name="dateTime"></param>
-        /// <returns></returns>
-        public static string Timezone(this DateTime dateTime)
-        {
-            return dateTime.ToString("zzz");
-        }
-
-        /// <summary>
-        /// Set time type
-        /// </summary>
-        /// <remarks>
-        /// 设置时间类型
-        /// </remarks>
-        /// <param name="dateTime"></param>
-        /// <param name="kind">时间类型，默认为本地时间</param>
-        /// <returns></returns>
-        public static DateTime SetDateTimeKind(this DateTime dateTime, DateTimeKind kind = DateTimeKind.Local)
-        {
-            return new DateTime(dateTime.Ticks, kind);
-        }
-        /// <summary>
         /// Set time type (if not specified)
         /// </summary>
         /// <remarks>
@@ -108,12 +77,12 @@ namespace Sean.Utility.Extensions
         /// <returns></returns>
         public static DateTime SetDateTimeKindIfUnspecified(this DateTime dateTime, DateTimeKind kind = DateTimeKind.Local)
         {
-            if (dateTime.Kind == DateTimeKind.Unspecified)
+            if (dateTime.Kind != DateTimeKind.Unspecified)
             {
-                return new DateTime(dateTime.Ticks, kind);
+                return dateTime;
             }
 
-            return dateTime;
+            return DateTime.SpecifyKind(dateTime, kind);
         }
     }
 }

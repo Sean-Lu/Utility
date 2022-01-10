@@ -24,8 +24,7 @@
 | `Sean.Utility.Serialize.BinarySerializer`            | 二进制序列化\反序列化                                                                                                                             |
 | `Sean.Utility.IO.XmlHelper`                          | XML文件操作                                                                                                                                 |
 | `Sean.Utility.Common.CmdHelper`                      | 1. 执行指定的cmd命令<br>2. 应用程序分配或附加控制台，方便输出调试信息                                                                                               |
-| `Sean.Utility.Net.FileShare.NetworkConnectionHelper` | 访问网络共享文件夹（基于磁盘映射）                                                                                                                       |
-| `Sean.Utility.Net.Ftp.FtpClient`                     | FTP客户端                                                                                                                                  |
+| `Sean.Utility.Net.FileShareHelper`                   | 访问网络共享文件夹（基于磁盘映射）                                                                                                                       |
 
 - Nuget包从 `2.1.0` 版本开始，去除了对第三方Nuget包 `Newtonsoft.Json` 的依赖：
 

@@ -25,22 +25,15 @@ namespace Sean.Utility.Config
         {
             if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(Constants.FilePathCannotBeEmpty);
 
-            try
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlDeclaration xmlDeclaration = xmlDoc.CreateXmlDeclaration(version, encoding, standalone);
+            xmlDoc.AppendChild(xmlDeclaration);
+            if (!string.IsNullOrWhiteSpace(rootNodeName))
             {
-                XmlDocument xmlDoc = new XmlDocument();
-                XmlDeclaration xmlDeclaration = xmlDoc.CreateXmlDeclaration(version, encoding, standalone);
-                xmlDoc.AppendChild(xmlDeclaration);
-                if (!string.IsNullOrWhiteSpace(rootNodeName))
-                {
-                    XmlNode root = xmlDoc.CreateElement(rootNodeName);
-                    xmlDoc.AppendChild(root);
-                }
-                xmlDoc.Save(xmlFilePath);
+                XmlNode root = xmlDoc.CreateElement(rootNodeName);
+                xmlDoc.AppendChild(root);
             }
-            catch
-            {
-                return false;
-            }
+            xmlDoc.Save(xmlFilePath);
             return true;
         }
         #endregion
@@ -59,35 +52,28 @@ namespace Sean.Utility.Config
         {
             if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(Constants.FilePathCannotBeEmpty);
 
-            try
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(xmlFilePath);
-                XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
-                if (xmlNode == null)
-                {
-                    return false;
-                }
-
-                //存不存在此节点都创建
-                XmlElement subElement = xmlDoc.CreateElement(xmlNodeName);
-                subElement.InnerXml = innerText;
-
-                //如果属性和值参数都不为空则在此新节点上新增属性
-                if (!string.IsNullOrWhiteSpace(xmlAttributeName) && !string.IsNullOrWhiteSpace(value))
-                {
-                    XmlAttribute xmlAttribute = xmlDoc.CreateAttribute(xmlAttributeName);
-                    xmlAttribute.Value = value;
-                    subElement.Attributes.Append(xmlAttribute);
-                }
-
-                xmlNode.AppendChild(subElement);
-                xmlDoc.Save(xmlFilePath);
-            }
-            catch
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(xmlFilePath);
+            XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
+            if (xmlNode == null)
             {
                 return false;
             }
+
+            //存不存在此节点都创建
+            XmlElement subElement = xmlDoc.CreateElement(xmlNodeName);
+            subElement.InnerXml = innerText;
+
+            //如果属性和值参数都不为空则在此新节点上新增属性
+            if (!string.IsNullOrWhiteSpace(xmlAttributeName) && !string.IsNullOrWhiteSpace(value))
+            {
+                XmlAttribute xmlAttribute = xmlDoc.CreateAttribute(xmlAttributeName);
+                xmlAttribute.Value = value;
+                subElement.Attributes.Append(xmlAttribute);
+            }
+
+            xmlNode.AppendChild(subElement);
+            xmlDoc.Save(xmlFilePath);
             return true;
         }
 
@@ -102,43 +88,36 @@ namespace Sean.Utility.Config
         {
             if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(Constants.FilePathCannotBeEmpty);
 
-            try
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(xmlFilePath);
-                XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
-                if (xmlNode == null)
-                {
-                    return false;
-                }
-
-                bool isExistsNode = false; //标识节点是否存在
-                //遍历xpath节点下的所有子节点
-                foreach (XmlNode node in xmlNode.ChildNodes)
-                {
-                    if (node.Name.ToLower() == xmlNodeName.ToLower())
-                    {
-                        //存在此节点则更新
-                        node.InnerXml = innerText;
-                        isExistsNode = true;
-                        break;
-                    }
-                }
-
-                if (!isExistsNode)
-                {
-                    //不存在此节点则创建
-                    XmlElement subElement = xmlDoc.CreateElement(xmlNodeName);
-                    subElement.InnerXml = innerText;
-                    xmlNode.AppendChild(subElement);
-                }
-
-                xmlDoc.Save(xmlFilePath);
-            }
-            catch
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(xmlFilePath);
+            XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
+            if (xmlNode == null)
             {
                 return false;
             }
+
+            bool isExistsNode = false; //标识节点是否存在
+                                       //遍历xpath节点下的所有子节点
+            foreach (XmlNode node in xmlNode.ChildNodes)
+            {
+                if (node.Name.ToLower() == xmlNodeName.ToLower())
+                {
+                    //存在此节点则更新
+                    node.InnerXml = innerText;
+                    isExistsNode = true;
+                    break;
+                }
+            }
+
+            if (!isExistsNode)
+            {
+                //不存在此节点则创建
+                XmlElement subElement = xmlDoc.CreateElement(xmlNodeName);
+                subElement.InnerXml = innerText;
+                xmlNode.AppendChild(subElement);
+            }
+
+            xmlDoc.Save(xmlFilePath);
             return true;
         }
 
@@ -153,43 +132,36 @@ namespace Sean.Utility.Config
         {
             if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(Constants.FilePathCannotBeEmpty);
 
-            try
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(xmlFilePath);
-                XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
-                if (xmlNode?.Attributes == null)
-                {
-                    return false;
-                }
-
-                bool isExistsAttribute = false; //标识属性是否存在
-                //遍历xpath节点中的所有属性
-                foreach (XmlAttribute attribute in xmlNode.Attributes)
-                {
-                    if (attribute.Name.ToLower() == xmlAttributeName.ToLower())
-                    {
-                        //节点中存在此属性则更新
-                        attribute.Value = value;
-                        isExistsAttribute = true;
-                        break;
-                    }
-                }
-
-                if (!isExistsAttribute)
-                {
-                    //节点中不存在此属性则创建
-                    XmlAttribute xmlAttribute = xmlDoc.CreateAttribute(xmlAttributeName);
-                    xmlAttribute.Value = value;
-                    xmlNode.Attributes.Append(xmlAttribute);
-                }
-
-                xmlDoc.Save(xmlFilePath);
-            }
-            catch
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(xmlFilePath);
+            XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
+            if (xmlNode?.Attributes == null)
             {
                 return false;
             }
+
+            bool isExistsAttribute = false; //标识属性是否存在
+                                            //遍历xpath节点中的所有属性
+            foreach (XmlAttribute attribute in xmlNode.Attributes)
+            {
+                if (attribute.Name.ToLower() == xmlAttributeName.ToLower())
+                {
+                    //节点中存在此属性则更新
+                    attribute.Value = value;
+                    isExistsAttribute = true;
+                    break;
+                }
+            }
+
+            if (!isExistsAttribute)
+            {
+                //节点中不存在此属性则创建
+                XmlAttribute xmlAttribute = xmlDoc.CreateAttribute(xmlAttributeName);
+                xmlAttribute.Value = value;
+                xmlNode.Attributes.Append(xmlAttribute);
+            }
+
+            xmlDoc.Save(xmlFilePath);
             return true;
         }
         #endregion
@@ -205,16 +177,9 @@ namespace Sean.Utility.Config
         /// <returns>返回XmlNode</returns>
         public static XmlNode GetXmlNode(string xmlFilePath, string xpath)
         {
-            try
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(xmlFilePath);
-                return xmlDoc.SelectSingleNode(xpath);
-            }
-            catch
-            {
-                return null;
-            }
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(xmlFilePath);
+            return xmlDoc.SelectSingleNode(xpath);
         }
         #endregion
 
@@ -266,16 +231,9 @@ namespace Sean.Utility.Config
         public static XmlNodeList GetXmlNodeList(string xmlFilePath, string xpath)
         {
             XmlDocument xmlDoc = new XmlDocument();
-            try
-            {
-                xmlDoc.Load(xmlFilePath);
-                XmlNodeList xmlNodeList = xmlDoc.SelectNodes(xpath);
-                return xmlNodeList;
-            }
-            catch
-            {
-                return null;
-            }
+            xmlDoc.Load(xmlFilePath);
+            XmlNodeList xmlNodeList = xmlDoc.SelectNodes(xpath);
+            return xmlNodeList;
         }
         #endregion
 
@@ -289,7 +247,7 @@ namespace Sean.Utility.Config
         public static List<string> GetXmlNodeListInnerText(string xmlFilePath, string xpath)
         {
             XmlNodeList xmlNodeList = GetXmlNodeList(xmlFilePath, xpath);
-            return (from XmlNode xmlNode in xmlNodeList select xmlNode.InnerText).ToList();
+            return xmlNodeList.Cast<XmlNode>().Select(xmlNode => xmlNode.InnerText).ToList();
         }
         #endregion
 
@@ -454,23 +412,16 @@ namespace Sean.Utility.Config
         /// <param name="xpath">要匹配的XPath表达式(例如:"//节点名//子节点名</param>
         public static bool DeleteXmlNode(string xmlFilePath, string xpath)
         {
-            try
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(xmlFilePath);
-                XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
-                if (xmlNode?.ParentNode == null)
-                {
-                    return false;
-                }
-
-                xmlNode.ParentNode.RemoveChild(xmlNode);
-                xmlDoc.Save(xmlFilePath);
-            }
-            catch
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(xmlFilePath);
+            XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
+            if (xmlNode?.ParentNode == null)
             {
                 return false;
             }
+
+            xmlNode.ParentNode.RemoveChild(xmlNode);
+            xmlDoc.Save(xmlFilePath);
             return true;
         }
 
@@ -482,44 +433,37 @@ namespace Sean.Utility.Config
         /// <param name="xmlAttributeName">要删除的xmlAttributeName的属性名称</param>
         public static bool DeleteXmlAttribute(string xmlFilePath, string xpath, string xmlAttributeName)
         {
-            try
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(xmlFilePath);
-                XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
-                if (xmlNode?.Attributes == null)
-                {
-                    return false;
-                }
-
-                //遍历xpath节点中的所有属性
-                bool isExistsAttribute = false;
-                XmlAttribute xmlAttribute = null;
-                foreach (XmlAttribute attribute in xmlNode.Attributes)
-                {
-                    if (attribute.Name.ToLower() == xmlAttributeName.ToLower())
-                    {
-                        //节点中存在此属性
-                        xmlAttribute = attribute;
-                        isExistsAttribute = true;
-                        break;
-                    }
-                }
-
-                if (!isExistsAttribute)
-                {
-                    return false;
-                }
-
-                //删除节点中的属性
-                xmlNode.Attributes.Remove(xmlAttribute);
-
-                xmlDoc.Save(xmlFilePath);
-            }
-            catch
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(xmlFilePath);
+            XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
+            if (xmlNode?.Attributes == null)
             {
                 return false;
             }
+
+            //遍历xpath节点中的所有属性
+            bool isExistsAttribute = false;
+            XmlAttribute xmlAttribute = null;
+            foreach (XmlAttribute attribute in xmlNode.Attributes)
+            {
+                if (attribute.Name.ToLower() == xmlAttributeName.ToLower())
+                {
+                    //节点中存在此属性
+                    xmlAttribute = attribute;
+                    isExistsAttribute = true;
+                    break;
+                }
+            }
+
+            if (!isExistsAttribute)
+            {
+                return false;
+            }
+
+            //删除节点中的属性
+            xmlNode.Attributes.Remove(xmlAttribute);
+
+            xmlDoc.Save(xmlFilePath);
             return true;
         }
 
@@ -530,23 +474,16 @@ namespace Sean.Utility.Config
         /// <param name="xpath">要匹配的XPath表达式(例如:"//节点名//子节点名</param>
         public static bool DeleteAllXmlAttribute(string xmlFilePath, string xpath)
         {
-            try
-            {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(xmlFilePath);
-                XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
-                if (xmlNode?.Attributes == null)
-                {
-                    return false;
-                }
-
-                xmlNode.Attributes.RemoveAll();
-                xmlDoc.Save(xmlFilePath);
-            }
-            catch
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(xmlFilePath);
+            XmlNode xmlNode = xmlDoc.SelectSingleNode(xpath);
+            if (xmlNode?.Attributes == null)
             {
                 return false;
             }
+
+            xmlNode.Attributes.RemoveAll();
+            xmlDoc.Save(xmlFilePath);
             return true;
         }
         #endregion

@@ -1,7 +1,5 @@
 ﻿namespace Sean.Utility.Enums
 {
-    #region NetworkConnection
-
     public enum ERROR_ID
     {
         /// <summary>
@@ -35,7 +33,7 @@
         ERROR_OPEN_FILES = 2401
     }
 
-    internal enum RESOURCE_SCOPE
+    public enum RESOURCE_SCOPE
     {
         RESOURCE_CONNECTED = 1,
         RESOURCE_GLOBALNET = 2,
@@ -44,7 +42,7 @@
         RESOURCE_CONTEXT = 5
     }
 
-    internal enum RESOURCE_TYPE
+    public enum RESOURCE_TYPE
     {
         RESOURCETYPE_ANY = 0,
         RESOURCETYPE_DISK = 1,
@@ -52,7 +50,7 @@
         RESOURCETYPE_RESERVED = 8,
     }
 
-    internal enum RESOURCE_DISPLAYTYPE
+    public enum RESOURCE_DISPLAYTYPE
     {
         RESOURCEDISPLAYTYPE_GENERIC = 0,
         RESOURCEDISPLAYTYPE_DOMAIN = 1,
@@ -68,7 +66,7 @@
         RESOURCEDISPLAYTYPE_NDSCONTAINER = 11
     }
 
-    internal enum RESOURCE_USAGE
+    public enum RESOURCE_USAGE
     {
         RESOURCEUSAGE_CONNECTABLE = 1,
         RESOURCEUSAGE_CONTAINER = 2,
@@ -77,6 +75,4 @@
         RESOURCEUSAGE_ATTACHED = 16,
         RESOURCEUSAGE_ALL = (RESOURCEUSAGE_CONNECTABLE | RESOURCEUSAGE_CONTAINER | RESOURCEUSAGE_ATTACHED),
     }
-
-    #endregion
 }

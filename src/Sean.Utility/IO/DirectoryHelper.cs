@@ -6,32 +6,6 @@ namespace Sean.Utility.IO
     public class DirectoryHelper
     {
         /// <summary>
-        /// 获得应用程序的当前工作目录
-        /// </summary>
-        public static string GetCurrentDirectory()
-        {
-            return Directory.GetCurrentDirectory();
-        }
-
-        /// <summary>
-        /// 设置应用程序的当前工作目录
-        /// </summary>
-        /// <param name="path"></param>
-        public static void SetCurrentDirectory(string path)
-        {
-            Directory.SetCurrentDirectory(path);
-        }
-
-        /// <summary>
-        /// 获取当前应用程序域的基目录
-        /// </summary>
-        /// <returns></returns>
-        public static string GetBaseDirectory()
-        {
-            return AppDomain.CurrentDomain.BaseDirectory;
-        }
-
-        /// <summary>
         /// 重命名文件夹
         /// </summary>
         /// <param name="oldDirectory"></param>

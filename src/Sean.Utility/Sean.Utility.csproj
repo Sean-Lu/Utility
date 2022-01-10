@@ -1,44 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net4;net45;net46;netstandard2.0</TargetFrameworks>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Sean</Authors>
-    <Copyright>Copyright © 2016-2021 Sean</Copyright>
-    <Description>Library of utility methods.</Description>
-    <Version>2.1.1-beta2022010101</Version>
-    <PackageProjectUrl>https://github.com/Sean-Lu/Utility</PackageProjectUrl>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net4;net45;net46;netstandard2.0</TargetFrameworks>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Authors>Sean</Authors>
+		<Copyright>Copyright © 2016-2022 Sean</Copyright>
+		<Description>Library of utility methods.</Description>
+		<Version>2.1.1</Version>
+		<PackageProjectUrl>https://github.com/Sean-Lu/Utility</PackageProjectUrl>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-    <DefineConstants>NS2</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<DefineConstants>NS2</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">
-    <Reference Include="System.Configuration" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">
+		<Reference Include="System.Configuration" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <!--<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="5.0.0" />-->
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<!--<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="5.0.0" />-->
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+		<!--<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />-->
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Net\WebClientExt.cs">
-      <SubType>Component</SubType>
-    </Compile>
-  </ItemGroup>
+	<!--<ItemGroup>
+		<Compile Update="Net\WebClientExt.cs">
+			<SubType>Component</SubType>
+		</Compile>
+	</ItemGroup>-->
 
-  <!--<ItemGroup>
-    <Content Include="docs\**">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <Pack>true</Pack>
-      <PackagePath>docs</PackagePath>
-    </Content>
-  </ItemGroup>-->
+	<!--<ItemGroup>
+		<Content Include="docs\**">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+			<Pack>true</Pack>
+			<PackagePath>docs</PackagePath>
+		</Content>
+	</ItemGroup>-->
 </Project>

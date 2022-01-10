@@ -2,6 +2,9 @@
 using System.Data;
 using System.Dynamic;
 using Demo.Framework.Impls;
+using Newtonsoft.Json;
+using Sean.Utility.Common;
+using Sean.Utility.Extensions;
 using Sean.Utility.Format;
 
 namespace Demo.Framework
@@ -10,17 +13,25 @@ namespace Demo.Framework
     {
         static void Main(string[] args)
         {
+            #region 时间戳测试
+            var timestamp = DateTimeHelper.GetTimestamp(DateTime.Now);
+            Console.WriteLine($"当前时间戳：{timestamp}");
+            var time = DateTimeHelper.GetDateTime(timestamp);
+            //Console.WriteLine($"当前时间：{JsonConvert.SerializeObject(time)}");
+            Console.WriteLine($"当前时间：{time.ToLongDateTimeWithTimezone()}");
+            #endregion
+
             //JsonHelper.Serializer = NewJsonSerializer.Instance;
 
             #region json序列化测试
-            dynamic obj = new ExpandoObject();
-            obj.Id = 1001;
-            obj.Name = "Sean";
-            var json = JsonHelper.Serialize(obj);
-            var dynamicObj = JsonHelper.Deserialize<dynamic>(json);
-            var id = dynamicObj.Id;
-            var name = dynamicObj.Name;
-            Console.WriteLine(json);
+            //dynamic obj = new ExpandoObject();
+            //obj.Id = 1001;
+            //obj.Name = "Sean";
+            //var json = JsonHelper.Serialize(obj);
+            //var dynamicObj = JsonHelper.Deserialize<dynamic>(json);
+            //var id = dynamicObj.Id;
+            //var name = dynamicObj.Name;
+            //Console.WriteLine(json);
             #endregion
 
             Console.WriteLine("--------------->Done.");
