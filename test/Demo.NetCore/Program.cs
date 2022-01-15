@@ -8,6 +8,7 @@ using Sean.Utility.Format;
 using Sean.Utility.Impls.Log;
 using Sean.Utility.Serialize;
 using System;
+using Demo.NetCore.Impls.Test;
 
 namespace Demo.NetCore
 {
@@ -48,7 +49,8 @@ namespace Demo.NetCore
             //ISimpleDo toDo = new SimpleQueueTest();
             //ISimpleDo toDo = new ProcessTest();
             //ISimpleDo toDo = new MultiThreadTest();
-            //toDo.Execute();
+            ISimpleDo toDo = new SimpleLocalQueueTest();
+            toDo.Execute();
 
             Console.WriteLine("--------------->Done.");
             Console.ReadLine();
