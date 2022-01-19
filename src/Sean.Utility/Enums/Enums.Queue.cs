@@ -25,4 +25,19 @@ namespace Sean.Utility.Enums
         /// </summary>
         Manual = 4
     }
+
+    /// <summary>
+    /// 消息队列类型
+    /// </summary>
+    public enum MQType
+    {
+        /// <summary>
+        /// 点对点（point to point）：不可重复消费
+        /// </summary>
+        Queue,
+        /// <summary>
+        /// 发布/订阅（publish/subscribe）：可以重复消费
+        /// </summary>
+        Topic
+    }
 }

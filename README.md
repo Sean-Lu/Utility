@@ -15,16 +15,17 @@
 
 > Library of utility methods.
 
-| Class                                                | 说明                                                                                                                                      |
-| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `Sean.Utility.Impls.Log.SimpleLocalLogger<T>`        | **`日志`**，支持输出格式：<br>1. Console：控制台输出<br>2. 本地文件：`SimpleLocalLoggerBase.LogFilePath`<br>3. 自定义输出：`SimpleLocalLoggerBase.CustomOutputLog` |
-| `Sean.Utility.Impls.Queue.SimpleQueue<T>`            | **`队列`**，仅支持本地队列，无中间件                                                                                                                   |
-| `Sean.Utility.Serialize.JsonSerializer`              | json序列化\反序列化                                                                                                                            |
-| `Sean.Utility.Serialize.XmlSerializer`               | XML序列化\反序列化                                                                                                                             |
-| `Sean.Utility.Serialize.BinarySerializer`            | 二进制序列化\反序列化                                                                                                                             |
-| `Sean.Utility.IO.XmlHelper`                          | XML文件操作                                                                                                                                 |
-| `Sean.Utility.Common.CmdHelper`                      | 1. 执行指定的cmd命令<br>2. 应用程序分配或附加控制台，方便输出调试信息                                                                                               |
-| `Sean.Utility.Net.FileShareHelper`                   | 访问网络共享文件夹（基于磁盘映射）                                                                                                                       |
+| Class                                         | 说明                                                                                                                                      |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `Sean.Utility.Impls.Log.SimpleLocalLogger<T>` | **`日志`**，支持输出格式：<br>1. Console：控制台输出<br>2. 本地文件：`SimpleLocalLoggerBase.LogFilePath`<br>3. 自定义输出：`SimpleLocalLoggerBase.CustomOutputLog` |
+| `Sean.Utility.Impls.Queue.SimpleQueue<T>`     | **`队列`**，仅支持本地队列，无中间件                                                                                                                   |
+| `Sean.Utility.Impls.Queue.SimpleLocalMQ<T>`   | 线程安全的 **`本地消息队列`**：<br>1. 支持多线程下的生产者\消费者模式<br>2. 支持多生产者、多消费者                                                                            |
+| `Sean.Utility.Serialize.JsonSerializer`       | json序列化\反序列化                                                                                                                            |
+| `Sean.Utility.Serialize.XmlSerializer`        | XML序列化\反序列化                                                                                                                             |
+| `Sean.Utility.Serialize.BinarySerializer`     | 二进制序列化\反序列化                                                                                                                             |
+| `Sean.Utility.IO.XmlHelper`                   | XML文件操作                                                                                                                                 |
+| `Sean.Utility.Common.CmdHelper`               | 1. 执行指定的cmd命令<br>2. 应用程序分配或附加控制台                                                                                                        |
+| `Sean.Utility.Net.FileShareHelper`            | 访问网络共享文件夹（基于磁盘映射）                                                                                                                       |
 
 - Nuget包从 `2.1.0` 版本开始，去除了对第三方Nuget包 `Newtonsoft.Json` 的依赖：
 

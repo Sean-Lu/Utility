@@ -7,36 +7,60 @@ using Demo.NetCore.Models;
 using Newtonsoft.Json;
 using Sean.Utility;
 using Sean.Utility.Contracts;
+using Sean.Utility.Enums;
+using Sean.Utility.Impls.Log;
+using Sean.Utility.Impls.MQ;
 using Sean.Utility.Impls.Queue;
 
 namespace Demo.NetCore.Impls.Test
 {
     public class SimpleLocalQueueTest : ISimpleDo
     {
-        private SimpleLocalQueue<TestModel> _queue;// 队列
-        private SimpleLocalQueueProducer<TestModel> _producer;// 生产者
-        private SimpleLocalQueueConsumer<TestModel> _consumer;// 消费者
+        private ILogger _logger;
+
+        private ISimpleLocalMQ<TestModel> _mq;// 队列
+        private ISimpleLocalMQConsumer<TestModel> _consumer;// 消费者
+        private ISimpleLocalMQConsumer<TestModel> _consumer2;// 消费者
+        private ISimpleLocalMQConsumer<TestModel> _consumer3;// 消费者
+        private ISimpleLocalMQProducer<TestModel> _producer;// 生产者
 
         public void Execute()
         {
-            #region 队列
-            _queue = new SimpleLocalQueue<TestModel>();
+            _logger = SimpleLocalLoggerManager.GetCurrentClassLogger();
+
+            var name = "Test";
+            var type = MQType.Topic;
+
+            #region 消息队列
+            _mq = new SimpleLocalMQ<TestModel>(name, type, options =>
+              {
+                  options.ConcurrentConsume = true;
+              });
+            _mq.Start();
             #endregion
 
             #region 消费者
-            _consumer = _queue.CreateConsumer();
+            _consumer = _mq.CreateConsumer();
             _consumer.MessageReceived += QueueOnMessageReceived;
             _consumer.Start();
+
+            _consumer2 = _mq.CreateConsumer();
+            _consumer2.MessageReceived += QueueOnMessageReceived;
+            _consumer2.Start();
+
+            _consumer3 = _mq.CreateConsumer();
+            _consumer3.MessageReceived += QueueOnMessageReceived;
+            _consumer3.Start();
             #endregion
 
             #region 生产者
-            _producer = _queue.CreateProducer();
+            _producer = _mq.CreateProducer();
 
-            #region 单线程
+            #region 单线程发送消息
             SendTestMessage("Sean", false);
             #endregion
 
-            #region 多线程
+            #region 多线程发送消息
             //Task.Factory.StartNew(() =>
             //{
             //    SendTestMessage("Sean-线程1", true);
@@ -49,14 +73,20 @@ namespace Demo.NetCore.Impls.Test
 
             #endregion
 
-            //_queue.Dispose();
+            #region 释放资源
+            _producer.Dispose();
+            _consumer.Dispose();
+            _consumer2.Dispose();
+            _consumer3.Dispose();
+            _mq.Dispose();
+            #endregion
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="loop">true：循环；false：手动</param>
+        /// <param name="loop">true：循环触发；false：手动触发</param>
         private void SendTestMessage(string name, bool loop = true)
         {
             var id = 1000;
@@ -81,22 +111,39 @@ namespace Demo.NetCore.Impls.Test
                 string flag = null;
                 do
                 {
-                    if (flag == "2")
+                    switch (flag)
                     {
-                        _consumer.Stop();
-                    }
-                    if (flag == "3")
-                    {
-                        _consumer.Start();
+                        case "1":// 发送消息
+                            {
+                                _producer.Send(new TestModel
+                                {
+                                    Id = id++,
+                                    Name = "Sean",
+                                    Age = 21,
+                                    CreateTime = DateTime.Now
+                                });
+                                break;
+                            }
+                        case "2":// 停止服务
+                            {
+                                _mq.Stop();
+
+                                //_consumer.Stop();
+                                //_consumer2.Stop();
+                                //_consumer3.Stop();
+                                break;
+                            }
+                        case "3":// 开启服务
+                            {
+                                _mq.Start();
+
+                                //_consumer.Start();
+                                //_consumer2.Start();
+                                //_consumer3.Start();
+                                break;
+                            }
                     }
 
-                    _producer.Send(new TestModel
-                    {
-                        Id = id++,
-                        Name = "Sean",
-                        Age = 21,
-                        CreateTime = DateTime.Now
-                    });
                     flag = Console.ReadLine();
                 } while (flag == "1" || flag == "2" || flag == "3");
             }
@@ -104,7 +151,16 @@ namespace Demo.NetCore.Impls.Test
 
         private void QueueOnMessageReceived(object sender, MessageReceivedEventArgs<TestModel> e)
         {
-            Console.WriteLine($"消费到消息：{JsonConvert.SerializeObject(e.Data)}");
+            try
+            {
+                var consumer = (ISimpleLocalMQConsumer)sender;
+                Console.WriteLine($"[{consumer.Identity}][{Thread.CurrentThread.ManagedThreadId}]消费到消息：{JsonConvert.SerializeObject(e.Data)}");
+            }
+            catch (Exception ex)
+            {
+                e.NeedReconsume = true;
+                _logger.LogError($"消费消息异常：{JsonConvert.SerializeObject(e.Data)}", ex);
+            }
         }
     }
 }
