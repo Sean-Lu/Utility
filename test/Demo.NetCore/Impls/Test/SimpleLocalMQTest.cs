@@ -14,7 +14,7 @@ using Sean.Utility.Impls.Queue;
 
 namespace Demo.NetCore.Impls.Test
 {
-    public class SimpleLocalQueueTest : ISimpleDo
+    public class SimpleLocalMQTest : ISimpleDo
     {
         private ILogger _logger;
 

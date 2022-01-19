@@ -49,7 +49,7 @@ namespace Demo.NetCore
             //ISimpleDo toDo = new SimpleQueueTest();
             //ISimpleDo toDo = new ProcessTest();
             //ISimpleDo toDo = new MultiThreadTest();
-            ISimpleDo toDo = new SimpleLocalQueueTest();
+            ISimpleDo toDo = new SimpleLocalMQTest();
             toDo.Execute();
 
             Console.WriteLine("--------------->Done.");
