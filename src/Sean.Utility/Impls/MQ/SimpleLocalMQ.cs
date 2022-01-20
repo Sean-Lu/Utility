@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define DEBUG_OUPUT
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Sean.Utility.Contracts;
 using Sean.Utility.Enums;
+using Sean.Utility.Extensions;
 
 namespace Sean.Utility.Impls.MQ
 {
@@ -38,9 +40,13 @@ namespace Sean.Utility.Impls.MQ
         /// </summary>
         private ConcurrentQueue<T> _queue;
         /// <summary>
-        /// 控制线程阻塞（消费者）
+        /// 控制线程阻塞（消费线程 <see cref="ConsumeItemsThread"/> ）
         /// </summary>
         private AutoResetEvent _waitHandler;
+        /// <summary>
+        /// 消费线程 <see cref="ConsumeItemsThread"/> 是否处于等待状态（线程阻塞）
+        /// </summary>
+        private bool _consumeThreadWaiting;
         /// <summary>
         /// 生产者
         /// </summary>
@@ -163,7 +169,13 @@ namespace Sean.Utility.Impls.MQ
             //}
 
             _queue.Enqueue(data);
-            if (_consumers.Any() && _isStarted)
+#if DEBUG_OUPUT
+            if (!_consumeThreadWaiting)
+            {
+                DebugOutput("+++++++++++消费线程没有阻塞");
+            }
+#endif
+            if (_consumeThreadWaiting && _isStarted && _consumers.Any())
             {
                 _waitHandler.Set();
             }
@@ -186,7 +198,7 @@ namespace Sean.Utility.Impls.MQ
         public void AddConsumer(ISimpleLocalMQConsumer<T> consumer)
         {
             _consumers.Add(consumer);
-            if (!_queue.IsEmpty && _isStarted)
+            if (_consumeThreadWaiting && _isStarted && !_queue.IsEmpty)
             {
                 _waitHandler.Set();
             }
@@ -208,16 +220,33 @@ namespace Sean.Utility.Impls.MQ
             {
                 if (_queue.IsEmpty || !_consumers.Any())
                 {
-                    DebugOutput($"消费线程阻塞");
-                    _waitHandler.WaitOne();
+#if DEBUG_OUPUT
+                    DebugOutput("消费线程阻塞");
+#endif
+                    _consumeThreadWaiting = true;
+                    _waitHandler.WaitOne();// 线程阻塞
+                    _consumeThreadWaiting = false;
+
                     if (!_isStarted)
                     {
-                        DebugOutput("消息队列已经停止，即将退出消费线程！");
+#if DEBUG_OUPUT
+                        DebugOutput("消息队列已经停止，即将退出消费线程");
+#endif
                         break;
+                    }
+
+                    if (_queue.IsEmpty || !_consumers.Any())// 考虑到多线程，这里再判断一次
+                    {
+#if DEBUG_OUPUT
+                        DebugOutput("+++++++++++消费线程阻塞恢复后，不满足继续消费的条件");
+#endif
+                        continue;
                     }
                 }
 
-                DebugOutput($"开始消费数据");
+#if DEBUG_OUPUT
+                DebugOutput("开始消费数据");
+#endif
                 switch (_type)
                 {
                     case MQType.Queue:
@@ -255,7 +284,9 @@ namespace Sean.Utility.Impls.MQ
                         throw new NotSupportedException($"Unsupported type: {_type}");
                 }
             }
-            DebugOutput("消费线程已经结束！");
+#if DEBUG_OUPUT
+            DebugOutput("消费线程已经结束");
+#endif
         }
         #endregion
 
@@ -264,9 +295,11 @@ namespace Sean.Utility.Impls.MQ
             Stop();
         }
 
+#if DEBUG_OUPUT
         private void DebugOutput(string msg)
         {
-            Debug.WriteLine($"######################################## [{this.GetType().Name}] [{Thread.CurrentThread.ManagedThreadId}] [QueueCount:{_queue.Count}] [ConsumerCount:{_consumers.Count}] [ProducerCount:{_producers.Count}] {msg}");
+            Debug.WriteLine($"######################################## [{DateTime.Now.ToLongDateTime()}] [{this.GetType().Name}] [{Thread.CurrentThread.ManagedThreadId}] [QueueCount:{_queue.Count}] [ConsumerCount:{_consumers.Count}] [ProducerCount:{_producers.Count}] {msg}");
         }
+#endif
     }
 }

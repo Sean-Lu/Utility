@@ -16,15 +16,15 @@ namespace Demo.NetCore.Impls.Test
 {
     public class SimpleLocalMQTest : ISimpleDo
     {
-        private ILogger _logger;
+        private readonly ILogger _logger;
 
-        private ISimpleLocalMQ<TestModel> _mq;// 队列
-        private ISimpleLocalMQConsumer<TestModel> _consumer;// 消费者
-        private ISimpleLocalMQConsumer<TestModel> _consumer2;// 消费者
-        private ISimpleLocalMQConsumer<TestModel> _consumer3;// 消费者
-        private ISimpleLocalMQProducer<TestModel> _producer;// 生产者
+        private readonly ISimpleLocalMQ<TestModel> _mq;// 队列
+        private readonly ISimpleLocalMQConsumer<TestModel> _consumer;// 消费者
+        private readonly ISimpleLocalMQConsumer<TestModel> _consumer2;// 消费者
+        private readonly ISimpleLocalMQConsumer<TestModel> _consumer3;// 消费者
+        //private readonly ISimpleLocalMQProducer<TestModel> _producer;// 生产者
 
-        public void Execute()
+        public SimpleLocalMQTest()
         {
             _logger = SimpleLocalLoggerManager.GetCurrentClassLogger();
 
@@ -33,9 +33,9 @@ namespace Demo.NetCore.Impls.Test
 
             #region 消息队列
             _mq = new SimpleLocalMQ<TestModel>(name, type, options =>
-              {
-                  options.ConcurrentConsume = true;
-              });
+            {
+                options.ConcurrentConsume = true;
+            });
             _mq.Start();
             #endregion
 
@@ -54,27 +54,30 @@ namespace Demo.NetCore.Impls.Test
             #endregion
 
             #region 生产者
-            _producer = _mq.CreateProducer();
+            //_producer = _mq.CreateProducer();
+            #endregion
+        }
 
+        public void Execute()
+        {
             #region 单线程发送消息
-            SendTestMessage("Sean", false);
+            //SendTestMessage("Sean", false);
             #endregion
 
             #region 多线程发送消息
-            //Task.Factory.StartNew(() =>
-            //{
-            //    SendTestMessage("Sean-线程1", true);
-            //});
-            //Task.Factory.StartNew(() =>
-            //{
-            //    SendTestMessage("Sean-线程2", true);
-            //});
-            #endregion
-
+            var task1 = Task.Factory.StartNew(() =>
+            {
+                SendTestMessage("Sean-线程1", true);
+            });
+            var task2 = Task.Factory.StartNew(() =>
+            {
+                SendTestMessage("Sean-线程2", true);
+            });
+            Task.WaitAll(task1, task1);
             #endregion
 
             #region 释放资源
-            _producer.Dispose();
+            //_producer.Dispose();
             _consumer.Dispose();
             _consumer2.Dispose();
             _consumer3.Dispose();
@@ -89,63 +92,67 @@ namespace Demo.NetCore.Impls.Test
         /// <param name="loop">true：循环触发；false：手动触发</param>
         private void SendTestMessage(string name, bool loop = true)
         {
-            var id = 1000;
-            if (loop)
+            using (var producer = _mq.CreateProducer())
             {
-                Random random = new Random();
-                while (true)
+                var id = 1000;
+                if (loop)
                 {
-                    _producer.Send(new TestModel
+                    //Random random = new Random();
+                    while (true)
                     {
-                        Id = id++,
-                        Name = name,
-                        Age = 21,
-                        CreateTime = DateTime.Now
-                    });
+                        producer.Send(new TestModel
+                        {
+                            Id = id++,
+                            Name = name,
+                            Age = 21,
+                            CreateTime = DateTime.Now
+                        });
 
-                    Thread.Sleep(random.Next(1000, 3000));
-                }
-            }
-            else
-            {
-                string flag = null;
-                do
-                {
-                    switch (flag)
-                    {
-                        case "1":// 发送消息
-                            {
-                                _producer.Send(new TestModel
-                                {
-                                    Id = id++,
-                                    Name = "Sean",
-                                    Age = 21,
-                                    CreateTime = DateTime.Now
-                                });
-                                break;
-                            }
-                        case "2":// 停止服务
-                            {
-                                _mq.Stop();
-
-                                //_consumer.Stop();
-                                //_consumer2.Stop();
-                                //_consumer3.Stop();
-                                break;
-                            }
-                        case "3":// 开启服务
-                            {
-                                _mq.Start();
-
-                                //_consumer.Start();
-                                //_consumer2.Start();
-                                //_consumer3.Start();
-                                break;
-                            }
+                        //Thread.Sleep(random.Next(1000, 3000));
+                        Thread.Sleep(3000);
                     }
+                }
+                else
+                {
+                    string flag = null;
+                    do
+                    {
+                        switch (flag)
+                        {
+                            case "1":// 发送消息
+                                {
+                                    producer.Send(new TestModel
+                                    {
+                                        Id = id++,
+                                        Name = name,
+                                        Age = 21,
+                                        CreateTime = DateTime.Now
+                                    });
+                                    break;
+                                }
+                            case "2":// 停止服务
+                                {
+                                    _mq.Stop();
 
-                    flag = Console.ReadLine();
-                } while (flag == "1" || flag == "2" || flag == "3");
+                                    //_consumer.Stop();
+                                    //_consumer2.Stop();
+                                    //_consumer3.Stop();
+                                    break;
+                                }
+                            case "3":// 开启服务
+                                {
+                                    _mq.Start();
+
+                                    //_consumer.Start();
+                                    //_consumer2.Start();
+                                    //_consumer3.Start();
+                                    break;
+                                }
+                        }
+
+                        flag = Console.ReadLine();
+                    } while (flag == "1" || flag == "2" || flag == "3");
+                }
             }
         }
 
