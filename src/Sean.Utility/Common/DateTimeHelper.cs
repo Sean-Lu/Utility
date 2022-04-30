@@ -342,16 +342,15 @@ namespace Sean.Utility.Common
         /// </summary>
         /// <param name="time">时间</param>
         /// <param name="timestampType">时间戳类型</param>
-        /// <param name="timeZoneInfo">时区</param>
         /// <returns></returns>
-        public static long GetTimestamp(DateTime time, TimestampType timestampType = TimestampType.JavaScript)
+        public static long GetTimestamp(DateTime time, TimestampType timestampType = TimestampType.TotalMilliseconds)
         {
             switch (timestampType)
             {
-                case TimestampType.JavaScript:
+                case TimestampType.TotalMilliseconds:
                     //return (long)(time.ToUniversalTime() - Jan1st1970Utc).TotalMilliseconds;
                     return (time.ToUniversalTime().Ticks - 621355968000000000L) / 10000;
-                case TimestampType.Unix:
+                case TimestampType.TotalSeconds:
                     //return (long)(time.ToUniversalTime() - Jan1st1970Utc).TotalSeconds;
                     return (time.ToUniversalTime().Ticks - 621355968000000000L) / 10000000;
                 default:
@@ -363,16 +362,15 @@ namespace Sean.Utility.Common
         /// </summary>
         /// <param name="timestamp">时间戳</param>
         /// <param name="timestampType">时间戳类型</param>
-        /// <param name="timeZoneInfo">时区</param>
         /// <returns></returns>
-        public static DateTime GetDateTime(long timestamp, TimestampType timestampType = TimestampType.JavaScript)
+        public static DateTime GetDateTime(long timestamp, TimestampType timestampType = TimestampType.TotalMilliseconds)
         {
             switch (timestampType)
             {
-                case TimestampType.JavaScript:
+                case TimestampType.TotalMilliseconds:
                     //return Jan1st1970Utc.AddMilliseconds(timestamp).ToLocalTime();
                     return new DateTime(timestamp * 10000 + 621355968000000000L, DateTimeKind.Utc).ToLocalTime();
-                case TimestampType.Unix:
+                case TimestampType.TotalSeconds:
                     //return Jan1st1970Utc.AddSeconds(timestamp).ToLocalTime();
                     return new DateTime(timestamp * 10000000 + 621355968000000000L, DateTimeKind.Utc).ToLocalTime();
                 default:
