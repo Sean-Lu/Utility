@@ -53,6 +53,18 @@ namespace Sean.Utility.Format
         /// 对象映射（仅属性）
         /// </summary>
         /// <typeparam name="TDestination"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static TDestination MapProperties<TDestination>(object source) where TDestination : new()
+        {
+            var result = Activator.CreateInstance<TDestination>();
+            MapProperties(result, source);
+            return result;
+        }
+        /// <summary>
+        /// 对象映射（仅属性）
+        /// </summary>
+        /// <typeparam name="TDestination"></typeparam>
         /// <typeparam name="TSource"></typeparam>
         /// <param name="destination"></param>
         /// <param name="source"></param>
@@ -64,6 +76,30 @@ namespace Sean.Utility.Format
             }
 
             var typeSource = typeof(TSource);
+            var typeDestination = typeof(TDestination);
+            foreach (var destinationPropertyInfo in typeDestination.GetProperties())
+            {
+                var sourcePropertyInfo = typeSource.GetProperty(destinationPropertyInfo.Name);
+                if (sourcePropertyInfo != null && destinationPropertyInfo.GetSetMethod() != null && sourcePropertyInfo.GetGetMethod() != null)
+                {
+                    destinationPropertyInfo.SetValue(destination, sourcePropertyInfo.GetValue(source, null), null);
+                }
+            }
+        }
+        /// <summary>
+        /// 对象映射（仅属性）
+        /// </summary>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <param name="destination"></param>
+        /// <param name="source"></param>
+        public static void MapProperties<TDestination>(TDestination destination, object source)
+        {
+            if (source == null || destination == null)
+            {
+                return;
+            }
+
+            var typeSource = source.GetType();//typeof(TSource);
             var typeDestination = typeof(TDestination);
             foreach (var destinationPropertyInfo in typeDestination.GetProperties())
             {
@@ -91,6 +127,18 @@ namespace Sean.Utility.Format
         /// 对象映射（仅字段）
         /// </summary>
         /// <typeparam name="TDestination"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static TDestination MapFields<TDestination>(object source) where TDestination : new()
+        {
+            var result = Activator.CreateInstance<TDestination>();
+            MapFields(result, source);
+            return result;
+        }
+        /// <summary>
+        /// 对象映射（仅字段）
+        /// </summary>
+        /// <typeparam name="TDestination"></typeparam>
         /// <typeparam name="TSource"></typeparam>
         /// <param name="destination"></param>
         /// <param name="source"></param>
@@ -102,6 +150,30 @@ namespace Sean.Utility.Format
             }
 
             var typeSource = typeof(TSource);
+            var typeDestination = typeof(TDestination);
+            foreach (var destinationPropertyInfo in typeDestination.GetFields())
+            {
+                var sourcePropertyInfo = typeSource.GetField(destinationPropertyInfo.Name);
+                if (sourcePropertyInfo != null)
+                {
+                    destinationPropertyInfo.SetValue(destination, sourcePropertyInfo.GetValue(source));
+                }
+            }
+        }
+        /// <summary>
+        /// 对象映射（仅字段）
+        /// </summary>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <param name="destination"></param>
+        /// <param name="source"></param>
+        public static void MapFields<TDestination>(TDestination destination, object source)
+        {
+            if (source == null || destination == null)
+            {
+                return;
+            }
+
+            var typeSource = source.GetType();//typeof(TSource);
             var typeDestination = typeof(TDestination);
             foreach (var destinationPropertyInfo in typeDestination.GetFields())
             {

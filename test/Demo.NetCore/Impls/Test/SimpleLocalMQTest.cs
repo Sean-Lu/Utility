@@ -34,7 +34,7 @@ namespace Demo.NetCore.Impls.Test
             #region 消息队列
             _mq = new SimpleLocalMQ<TestModel>(name, type, options =>
             {
-                options.ConcurrentConsume = true;
+
             });
             _mq.Start();
             #endregion

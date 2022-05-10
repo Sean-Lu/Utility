@@ -235,7 +235,7 @@ namespace Sean.Utility.Impls.MQ
                         break;
                     }
 
-                    if (_queue.IsEmpty || !_consumers.Any())// 考虑到多线程，这里再判断一次
+                    if (_queue.IsEmpty || !_consumers.Any())// 考虑到多线程，这里需要再判断一次
                     {
 #if DEBUG_OUPUT
                         DebugOutput("+++++++++++消费线程阻塞恢复后，不满足继续消费的条件");
@@ -254,14 +254,13 @@ namespace Sean.Utility.Impls.MQ
                             if (_queue.TryDequeue(out var item))
                             {
                                 _queueConsumedTotalCount++;
-                                if (Options.ConcurrentConsume)
+                                if (_consumers.Count > 1)
                                 {
-                                    // 多个消费者并行消费
+                                    // 均衡分配消息给不同的消费者
                                     _consumers[_queueConsumedTotalCount % _consumers.Count].ConsumeDataCallBackAsync(item);
                                 }
                                 else
                                 {
-                                    // 只有第一个消费者会消费到数据（其它消费者直接忽略，类似容灾方案）
                                     _consumers.FirstOrDefault()?.ConsumeDataCallBackAsync(item);
                                 }
                             }

@@ -5,18 +5,23 @@ namespace Sean.Utility.Web.Extensions
 {
     public static class HttpContextExtensions
     {
+        /// <summary>
+        /// 获取客户端IP地址
+        /// </summary>
+        /// <param name="httpContext">示例：HttpContext.Current</param>
+        /// <returns></returns>
         public static string GetRemoteIpAddress(this HttpContext httpContext)
         {
             var clientIp = string.Empty;
-            if (HttpContext.Current != null)
+            if (httpContext != null)
             {
-                clientIp = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+                clientIp = httpContext.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
                 if (string.IsNullOrEmpty(clientIp) || clientIp.ToLower() == "unknown")
                 {
-                    clientIp = HttpContext.Current.Request.ServerVariables["HTTP_X_REAL_IP"];
+                    clientIp = httpContext.Request.ServerVariables["HTTP_X_REAL_IP"];
                     if (string.IsNullOrEmpty(clientIp))
                     {
-                        clientIp = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+                        clientIp = httpContext.Request.ServerVariables["REMOTE_ADDR"];
                     }
                 }
                 else
