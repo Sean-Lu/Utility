@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Sean.Utility.Extensions;
 
 namespace Sean.Utility.Format
@@ -18,10 +19,10 @@ namespace Sean.Utility.Format
         /// <typeparam name="TSource"></typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static TDestination Map<TDestination, TSource>(TSource source) where TDestination : new()
+        public static TDestination Map<TDestination, TSource>(TSource source, Predicate<PropertyInfo> propertyFilter = null, Predicate<FieldInfo> fieldFilter = null) where TDestination : new()
         {
             var result = Activator.CreateInstance<TDestination>();
-            Map(result, source);
+            Map(result, source, propertyFilter, fieldFilter);
             return result;
         }
         /// <summary>
@@ -31,10 +32,10 @@ namespace Sean.Utility.Format
         /// <typeparam name="TSource"></typeparam>
         /// <param name="destination"></param>
         /// <param name="source"></param>
-        public static void Map<TDestination, TSource>(TDestination destination, TSource source)
+        public static void Map<TDestination, TSource>(TDestination destination, TSource source, Predicate<PropertyInfo> propertyFilter = null, Predicate<FieldInfo> fieldFilter = null)
         {
-            MapProperties<TDestination, TSource>(destination, source);
-            MapFields<TDestination, TSource>(destination, source);
+            MapProperties<TDestination, TSource>(destination, source, propertyFilter);
+            MapFields<TDestination, TSource>(destination, source, fieldFilter);
         }
         /// <summary>
         /// 对象映射（仅属性）
@@ -43,10 +44,10 @@ namespace Sean.Utility.Format
         /// <typeparam name="TSource"></typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static TDestination MapProperties<TDestination, TSource>(TSource source) where TDestination : new()
+        public static TDestination MapProperties<TDestination, TSource>(TSource source, Predicate<PropertyInfo> filter = null) where TDestination : new()
         {
             var result = Activator.CreateInstance<TDestination>();
-            MapProperties(result, source);
+            MapProperties(result, source, filter);
             return result;
         }
         /// <summary>
@@ -55,10 +56,10 @@ namespace Sean.Utility.Format
         /// <typeparam name="TDestination"></typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static TDestination MapProperties<TDestination>(object source) where TDestination : new()
+        public static TDestination MapProperties<TDestination>(object source, Predicate<PropertyInfo> filter = null) where TDestination : new()
         {
             var result = Activator.CreateInstance<TDestination>();
-            MapProperties(result, source);
+            MapProperties(result, source, filter);
             return result;
         }
         /// <summary>
@@ -68,7 +69,7 @@ namespace Sean.Utility.Format
         /// <typeparam name="TSource"></typeparam>
         /// <param name="destination"></param>
         /// <param name="source"></param>
-        public static void MapProperties<TDestination, TSource>(TDestination destination, TSource source)
+        public static void MapProperties<TDestination, TSource>(TDestination destination, TSource source, Predicate<PropertyInfo> filter = null)
         {
             if (source == null || destination == null)
             {
@@ -79,6 +80,11 @@ namespace Sean.Utility.Format
             var typeDestination = typeof(TDestination);
             foreach (var destinationPropertyInfo in typeDestination.GetProperties())
             {
+                if (filter != null && !filter(destinationPropertyInfo))
+                {
+                    continue;
+                }
+
                 var sourcePropertyInfo = typeSource.GetProperty(destinationPropertyInfo.Name);
                 if (sourcePropertyInfo != null && destinationPropertyInfo.GetSetMethod() != null && sourcePropertyInfo.GetGetMethod() != null)
                 {
@@ -92,7 +98,7 @@ namespace Sean.Utility.Format
         /// <typeparam name="TDestination"></typeparam>
         /// <param name="destination"></param>
         /// <param name="source"></param>
-        public static void MapProperties<TDestination>(TDestination destination, object source)
+        public static void MapProperties<TDestination>(TDestination destination, object source, Predicate<PropertyInfo> filter = null)
         {
             if (source == null || destination == null)
             {
@@ -103,6 +109,11 @@ namespace Sean.Utility.Format
             var typeDestination = typeof(TDestination);
             foreach (var destinationPropertyInfo in typeDestination.GetProperties())
             {
+                if (filter != null && !filter(destinationPropertyInfo))
+                {
+                    continue;
+                }
+
                 var sourcePropertyInfo = typeSource.GetProperty(destinationPropertyInfo.Name);
                 if (sourcePropertyInfo != null && destinationPropertyInfo.GetSetMethod() != null && sourcePropertyInfo.GetGetMethod() != null)
                 {
@@ -117,10 +128,10 @@ namespace Sean.Utility.Format
         /// <typeparam name="TSource"></typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static TDestination MapFields<TDestination, TSource>(TSource source) where TDestination : new()
+        public static TDestination MapFields<TDestination, TSource>(TSource source, Predicate<FieldInfo> filter = null) where TDestination : new()
         {
             var result = Activator.CreateInstance<TDestination>();
-            MapFields(result, source);
+            MapFields(result, source, filter);
             return result;
         }
         /// <summary>
@@ -129,10 +140,10 @@ namespace Sean.Utility.Format
         /// <typeparam name="TDestination"></typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static TDestination MapFields<TDestination>(object source) where TDestination : new()
+        public static TDestination MapFields<TDestination>(object source, Predicate<FieldInfo> filter = null) where TDestination : new()
         {
             var result = Activator.CreateInstance<TDestination>();
-            MapFields(result, source);
+            MapFields(result, source, filter);
             return result;
         }
         /// <summary>
@@ -142,7 +153,7 @@ namespace Sean.Utility.Format
         /// <typeparam name="TSource"></typeparam>
         /// <param name="destination"></param>
         /// <param name="source"></param>
-        public static void MapFields<TDestination, TSource>(TDestination destination, TSource source)
+        public static void MapFields<TDestination, TSource>(TDestination destination, TSource source, Predicate<FieldInfo> filter = null)
         {
             if (source == null || destination == null)
             {
@@ -151,12 +162,17 @@ namespace Sean.Utility.Format
 
             var typeSource = typeof(TSource);
             var typeDestination = typeof(TDestination);
-            foreach (var destinationPropertyInfo in typeDestination.GetFields())
+            foreach (var destinationFieldInfo in typeDestination.GetFields())
             {
-                var sourcePropertyInfo = typeSource.GetField(destinationPropertyInfo.Name);
-                if (sourcePropertyInfo != null)
+                if (filter != null && !filter(destinationFieldInfo))
                 {
-                    destinationPropertyInfo.SetValue(destination, sourcePropertyInfo.GetValue(source));
+                    continue;
+                }
+
+                var sourceFieldInfo = typeSource.GetField(destinationFieldInfo.Name);
+                if (sourceFieldInfo != null)
+                {
+                    destinationFieldInfo.SetValue(destination, sourceFieldInfo.GetValue(source));
                 }
             }
         }
@@ -166,7 +182,7 @@ namespace Sean.Utility.Format
         /// <typeparam name="TDestination"></typeparam>
         /// <param name="destination"></param>
         /// <param name="source"></param>
-        public static void MapFields<TDestination>(TDestination destination, object source)
+        public static void MapFields<TDestination>(TDestination destination, object source, Predicate<FieldInfo> filter = null)
         {
             if (source == null || destination == null)
             {
@@ -175,12 +191,17 @@ namespace Sean.Utility.Format
 
             var typeSource = source.GetType();//typeof(TSource);
             var typeDestination = typeof(TDestination);
-            foreach (var destinationPropertyInfo in typeDestination.GetFields())
+            foreach (var destinationFieldInfo in typeDestination.GetFields())
             {
-                var sourcePropertyInfo = typeSource.GetField(destinationPropertyInfo.Name);
-                if (sourcePropertyInfo != null)
+                if (filter != null && !filter(destinationFieldInfo))
                 {
-                    destinationPropertyInfo.SetValue(destination, sourcePropertyInfo.GetValue(source));
+                    continue;
+                }
+
+                var sourceFieldInfo = typeSource.GetField(destinationFieldInfo.Name);
+                if (sourceFieldInfo != null)
+                {
+                    destinationFieldInfo.SetValue(destination, sourceFieldInfo.GetValue(source));
                 }
             }
         }
@@ -191,7 +212,7 @@ namespace Sean.Utility.Format
         /// <typeparam name="TSource"></typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static List<TDestination> MapList<TDestination, TSource>(List<TSource> source) where TDestination : new()
+        public static List<TDestination> MapList<TDestination, TSource>(List<TSource> source, Predicate<PropertyInfo> propertyFilter = null, Predicate<FieldInfo> fieldFilter = null) where TDestination : new()
         {
             if (source == null)
             {
@@ -202,7 +223,7 @@ namespace Sean.Utility.Format
             source.ForEach(c =>
             {
                 var model = Activator.CreateInstance<TDestination>();
-                Map(model, c);
+                Map(model, c, propertyFilter, fieldFilter);
                 result.Add(model);
             });
             return result;

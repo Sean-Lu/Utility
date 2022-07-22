@@ -49,7 +49,7 @@ namespace Sean.Utility.Extensions
         /// <returns></returns>
         public static bool ContainLetter(this string content)
         {
-            return !string.IsNullOrWhiteSpace(content) && content.Count(char.IsLetter) > 0;
+            return !string.IsNullOrWhiteSpace(content) && content.Any(char.IsLetter);
         }
     }
 }
