@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ICSharpCode.SharpZipLib.Checksum;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace Sean.Utility.Compress.SharpZipLib
@@ -95,27 +94,6 @@ namespace Sean.Utility.Compress.SharpZipLib
             }
 
             return ZipFilesOrDirectories(filePathOrDirDic, zipFilePath, password, compressionLevel);
-        }
-
-        /// <summary>   
-        /// 压缩单个文件或文件夹   
-        /// </summary>   
-        /// <param name="filePathOrDir">待压缩的文件或文件夹</param>   
-        /// <param name="zipFilePath">压缩后的文件路径</param>   
-        /// <param name="password">密码</param>   
-        /// <param name="compressionLevel">压缩等级：[0(无压缩)-9(压缩率最高)]</param>
-        /// <returns></returns>   
-        public static bool Zip(string filePathOrDir, string zipFilePath, string password = null, int compressionLevel = DefaultCompressionLevel)
-        {
-            if (string.IsNullOrWhiteSpace(filePathOrDir))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(filePathOrDir));
-
-            var result = false;
-            if (Directory.Exists(filePathOrDir))
-                result = ZipDirectory(filePathOrDir, zipFilePath, password, compressionLevel);
-            else if (File.Exists(filePathOrDir))
-                result = ZipFile(filePathOrDir, zipFilePath, password, compressionLevel);
-            return result;
         }
 
         /// <summary>
@@ -254,75 +232,19 @@ namespace Sean.Utility.Compress.SharpZipLib
 
         #region 解压
         /// <summary>  
-        /// 解压到指定目录 
+        /// 解压
         /// </summary>  
         /// <param name="zipFilePath">待解压的压缩文件</param>  
-        /// <param name="unZipDir">解压后的文件夹，为空时默认与压缩文件同一级目录下，跟压缩文件同名的文件夹</param>  
+        /// <param name="unZipDir">解压后的文件夹</param>  
         /// <param name="password">密码</param>   
         /// <returns>是否成功</returns>  
-        public static bool UnZip(string zipFilePath, string unZipDir, string password = null)
+        public static void UnZip(string zipFilePath, string unZipDir, string password = null)
         {
-            if (string.IsNullOrWhiteSpace(zipFilePath))
-                throw new ArgumentException("Value cannot be null or empty.", nameof(zipFilePath));
-            if (!File.Exists(zipFilePath))
+            var fastZip = new FastZip
             {
-                throw new FileNotFoundException("文件不存在", zipFilePath);
-            }
-
-            if (string.IsNullOrWhiteSpace(unZipDir))
-            {
-                //解压文件夹为空时默认与压缩文件同一级目录下，跟压缩文件同名的文件夹
-                var zipFileDir = Path.GetDirectoryName(zipFilePath);
-                if (!string.IsNullOrWhiteSpace(zipFileDir))
-                {
-                    unZipDir = Path.Combine(zipFileDir, Path.GetFileNameWithoutExtension(zipFilePath));
-                }
-
-                if (string.IsNullOrWhiteSpace(unZipDir))
-                    throw new ArgumentException("Value cannot be null or whitespace.", nameof(unZipDir));
-            }
-            if (!Directory.Exists(unZipDir))
-            {
-                Directory.CreateDirectory(unZipDir);
-
-                if (!Directory.Exists(unZipDir))
-                {
-                    throw new Exception($"Create Directory fail.[{unZipDir}]");
-                }
-            }
-
-            using (var zipInputStream = new ZipInputStream(File.OpenRead(zipFilePath)))
-            {
-                if (!string.IsNullOrWhiteSpace(password))
-                {
-                    zipInputStream.Password = password;
-                }
-
-                ZipEntry zipEntry;
-                while ((zipEntry = zipInputStream.GetNextEntry()) != null)
-                {
-                    string directoryName = Path.GetDirectoryName(zipEntry.Name);
-                    string fileName = Path.GetFileName(zipEntry.Name);
-                    if (!string.IsNullOrWhiteSpace(directoryName))
-                    {
-                        Directory.CreateDirectory(Path.Combine(unZipDir, directoryName));
-                    }
-                    if (!string.IsNullOrWhiteSpace(fileName))
-                    {
-                        using (FileStream streamWriter = File.Create(Path.Combine(unZipDir, zipEntry.Name)))
-                        {
-                            int size;
-                            byte[] data = new byte[2048];
-                            while ((size = zipInputStream.Read(data, 0, data.Length)) > 0)
-                            {
-                                streamWriter.Write(data, 0, size);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
+                Password = password
+            };
+            fastZip.ExtractZip(zipFilePath, unZipDir, FastZip.Overwrite.Always, null, null, null, true);
         }
         #endregion
 
