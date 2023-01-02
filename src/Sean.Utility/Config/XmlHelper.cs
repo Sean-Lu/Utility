@@ -8,9 +8,9 @@ namespace Sean.Utility.Config
     /// <summary>
     /// XML文件操作
     /// </summary>
-    public class XmlHelper
+    public static class XmlHelper
     {
-        private XmlHelper() { }
+        private const string FilePathCannotBeEmpty = "文件路径不能为空。";
 
         #region XML文档创建
         /// <summary>
@@ -23,7 +23,7 @@ namespace Sean.Utility.Config
         /// <param name="standalone">该值必须是"yes"或"no",如果为null,Save方法不在XML声明上写出独立属性</param>
         public static bool CreateXmlDocument(string xmlFilePath, string rootNodeName, string version = "1.0", string encoding = "utf-8", string standalone = null)
         {
-            if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(Constants.FilePathCannotBeEmpty);
+            if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(FilePathCannotBeEmpty);
 
             XmlDocument xmlDoc = new XmlDocument();
             XmlDeclaration xmlDeclaration = xmlDoc.CreateXmlDeclaration(version, encoding, standalone);
@@ -50,7 +50,7 @@ namespace Sean.Utility.Config
         /// <param name="value">属性值</param>
         public static bool CreateXmlNode(string xmlFilePath, string xpath, string xmlNodeName, string innerText, string xmlAttributeName, string value)
         {
-            if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(Constants.FilePathCannotBeEmpty);
+            if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(FilePathCannotBeEmpty);
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlFilePath);
@@ -86,7 +86,7 @@ namespace Sean.Utility.Config
         /// <param name="innerText">节点文本值</param>
         public static bool CreateOrUpdateXmlNode(string xmlFilePath, string xpath, string xmlNodeName, string innerText)
         {
-            if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(Constants.FilePathCannotBeEmpty);
+            if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(FilePathCannotBeEmpty);
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlFilePath);
@@ -130,7 +130,7 @@ namespace Sean.Utility.Config
         /// <param name="value">属性值</param>
         public static bool CreateOrUpdateXmlAttribute(string xmlFilePath, string xpath, string xmlAttributeName, string value)
         {
-            if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(Constants.FilePathCannotBeEmpty);
+            if (string.IsNullOrWhiteSpace(xmlFilePath)) throw new ArgumentException(FilePathCannotBeEmpty);
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlFilePath);

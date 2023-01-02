@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Sean.Utility.Common
+namespace Demo.Framework.Helper
 {
     /// <summary>
     /// 程序集操作

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\INewJsonSerializer.cs" />
+    <Compile Include="Helper\AssemblyHelper.cs" />
     <Compile Include="Impls\NewJsonSerializer.cs" />
     <Compile Include="Impls\Test\BarcodeTest.cs" />
     <Compile Include="Impls\Test\CmdTest.cs" />
@@ -68,9 +69,6 @@
       <Version>13.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-    <Folder Include="Helper\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

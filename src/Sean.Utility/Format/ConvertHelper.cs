@@ -1,117 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Sean.Utility.Format
 {
-    /// <summary>
-    /// 格式转换
-    /// </summary>
     public class ConvertHelper
     {
-        #region DataTable转List(泛型)
-        /// <summary>
-        /// DataTable转List（将数据表转换为字典）
-        /// </summary>
-        /// <param name="table">DataTable对象</param>
-        /// <returns></returns>
-        public static List<Dictionary<string, object>> ToListDic(DataTable table)
-        {
-            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
-            if (table != null && table.Rows.Count > 0)
-            {
-                foreach (DataRow dr in table.Rows)
-                {
-                    Dictionary<string, object> dic = new Dictionary<string, object>();
-                    foreach (DataColumn dc in table.Columns)
-                    {
-                        dic[dc.ColumnName] = dr[dc.ColumnName];
-                    }
-                    list.Add(dic);
-                }
-            }
-            return list;
-        }
-        #endregion
-
-        #region DataTable与Hashtable互相转换
-        /// <summary>
-        /// Hashtable转DataTable（哈希表转数据表）。
-        /// 数据表包含两个列"name"和"value"。列name存放哈希表的键名，列value存放哈希表键对应的键值。
-        /// </summary>
-        /// <param name="hashTable">哈希表(Hashtable)对象</param>
-        /// <param name="tableName">数据表(DataTable)名称。如果为空，则使用默认名称。</param>
-        /// <returns></returns>
-        public static DataTable ToDataTable(Hashtable hashTable, string tableName)
-        {
-            if (hashTable == null) return null;
-
-            string strKey = "name";
-            string strValue = "value";
-            DataTable dt = new DataTable(tableName);
-            dt.Columns.Add(new DataColumn(strKey));
-            dt.Columns.Add(new DataColumn(strValue));
-            foreach (string key in hashTable.Keys)
-            {
-                DataRow dr = dt.NewRow();
-                dr[strKey] = key;
-                dr[strValue] = hashTable[key];
-                dt.Rows.Add(dr);
-            }
-            return dt;
-        }
-        /// <summary>
-        /// DataTable转Hashtable（数据表转哈希表）。
-        /// </summary>
-        /// <param name="table">数据表对象，数据表中必须包含两个列"name"和"value"。列name存放哈希表的键名，列value存放哈希表键对应的键值。</param>
-        /// <returns>哈希表对象。</returns>
-        public static Hashtable ToHashtable(DataTable table)
-        {
-            string strKey = "name";
-            string strValue = "value";
-            if (table == null || !table.Columns.Contains(strKey) || !table.Columns.Contains(strValue)) return null;
-
-            Hashtable hashtable = new Hashtable();
-            for (int i = 0; i < table.Rows.Count; i++)
-            {
-                string key = table.Rows[i][strKey].ToString();
-                object value = table.Rows[i][strValue];
-                if (!hashtable.ContainsKey(key))
-                    hashtable.Add(key, value);
-                else
-                    hashtable[key] = value;
-            }
-            return hashtable;
-        }
-
-        /// <summary>
-        /// DataRow转Hashtable（数据行转哈希表）。
-        /// </summary>
-        /// <param name="dataRow">待转换的数据行。</param>
-        /// <returns></returns>
-        public static Hashtable ToHashtable(DataRow dataRow)
-        {
-            if (dataRow == null) return null;
-
-            Hashtable hashTable = new Hashtable();
-            for (int i = 0; i < dataRow.Table.Columns.Count; i++)
-            {
-                string key = dataRow.Table.Columns[i].ColumnName;
-                string val = Convert.ToString(dataRow[i]);
-                if (!hashTable.ContainsKey(key))
-                    hashTable.Add(key, val);
-                else
-                    hashTable[key] = val;
-            }
-            return hashTable;
-        }
-        #endregion
-
         #region 16进制字符串和字符串互相转换
         /// <summary>
         /// 字符串转16进制字符
@@ -264,7 +159,7 @@ namespace Sean.Utility.Format
 
         #region 人民币转换
         /// <summary>
-        /// 数字转中文（人民币转换）
+        /// 数字转中文
         /// </summary>
         /// <param name="number">数字</param>
         /// <returns>中文</returns>

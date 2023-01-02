@@ -1,43 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 
 namespace Sean.Utility.Extensions
 {
     public static class DataTableExtensions
     {
-        public static IList<IDictionary<string, object>> ToDictionary(this DataTable table)
+        public static List<Dictionary<string, object>> ToDictionary(this DataTable table)
         {
-            var result = new List<IDictionary<string, object>>();
+            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
             if (table != null && table.Rows.Count > 0)
             {
-                var listColumnName = new List<string>();
-                foreach (DataColumn column in table.Columns)
+                foreach (DataRow dr in table.Rows)
                 {
-                    listColumnName.Add(column.ColumnName);
-                }
-
-                foreach (DataRow row in table.Rows)
-                {
-                    var dic = new Dictionary<string, object>();
-                    listColumnName.ForEach(c =>
+                    Dictionary<string, object> dic = new Dictionary<string, object>();
+                    foreach (DataColumn dc in table.Columns)
                     {
-                        var value = row[c];
-                        if (row[c] == DBNull.Value)
-                        {
-                            value = null;
-                        }
-                        dic[c] = value;
-                    });
-                    result.Add(dic);
+                        dic[dc.ColumnName] = dr[dc.ColumnName];
+                    }
+                    list.Add(dic);
                 }
             }
-            return result;
+            return list;
         }
 
-        public static DataTable ToDataTable(this IList<IDictionary<string, object>> dic)
+        public static DataTable ToDataTable(this List<Dictionary<string, object>> dic)
         {
             var table = new DataTable();
             if (dic != null && dic.Count > 0)

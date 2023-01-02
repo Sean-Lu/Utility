@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 
 namespace Sean.Utility.Extensions
 {
     public static class DataSetExtensions
     {
-        public static IDictionary<string, IList<IDictionary<string, object>>> ToDictionary(this DataSet ds)
+        public static Dictionary<string, List<Dictionary<string, object>>> ToDictionary(this DataSet ds)
         {
-            var result = new Dictionary<string, IList<IDictionary<string, object>>>();
+            var result = new Dictionary<string, List<Dictionary<string, object>>>();
             if (ds != null && ds.Tables.Count > 0)
             {
                 for (var i = 0; i < ds.Tables.Count; i++)
@@ -24,7 +21,7 @@ namespace Sean.Utility.Extensions
             return result;
         }
 
-        public static DataSet ToDataSet(this IDictionary<string, IList<IDictionary<string, object>>> dic)
+        public static DataSet ToDataSet(this Dictionary<string, List<Dictionary<string, object>>> dic)
         {
             var ds = new DataSet();
             if (dic != null && dic.Count > 0)

@@ -125,12 +125,12 @@ namespace Sean.Utility.Serialize
 
             if (typeof(T) == typeof(DataTable))
             {
-                var data = DeserializeObject<IList<IDictionary<string, object>>>(json).ToDataTable();
+                var data = DeserializeObject<List<Dictionary<string, object>>>(json).ToDataTable();
                 return (T)Convert.ChangeType(data, typeof(T));
             }
             else if (typeof(T) == typeof(DataSet))
             {
-                var data = DeserializeObject<IDictionary<string, IList<IDictionary<string, object>>>>(json).ToDataSet();
+                var data = DeserializeObject<Dictionary<string, List<Dictionary<string, object>>>>(json).ToDataSet();
                 return (T)Convert.ChangeType(data, typeof(T));
             }
             else if (typeof(T) == typeof(object))// dynamic动态类型
