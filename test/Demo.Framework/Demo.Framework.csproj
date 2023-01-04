@@ -46,7 +46,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\INewJsonSerializer.cs" />
+    <Compile Include="Extensions\DecimalExtensions.cs" />
+    <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Helper\AssemblyHelper.cs" />
+    <Compile Include="Helper\WebClientExt.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Impls\NewJsonSerializer.cs" />
     <Compile Include="Impls\Test\BarcodeTest.cs" />
     <Compile Include="Impls\Test\CmdTest.cs" />

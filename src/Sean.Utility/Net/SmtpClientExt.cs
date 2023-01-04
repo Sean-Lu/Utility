@@ -12,7 +12,6 @@ namespace Sean.Utility.Net
     /// </summary>  
     public class SmtpClientExt : IDisposable
     {
-        #region [ 字段、属性 ]
         /// <summary>  
         /// smtp 服务器   
         /// </summary>  
@@ -53,9 +52,7 @@ namespace Sean.Utility.Net
         public Encoding BodyEncoding = Encoding.UTF8;
 
         private readonly SmtpClient _smtp;
-        #endregion
 
-        #region [ 构造函数 ]
         /// <summary>
         /// 创建实例：端口默认为25，不使用SSL加密连接，不验证发件人的身份凭据
         /// </summary>
@@ -100,9 +97,7 @@ namespace Sean.Utility.Net
                 DeliveryMethod = SmtpDeliveryMethod.Network
             };
         }
-        #endregion
 
-        #region [ 发送邮件 ]
         /// <summary>
         /// 发送邮件
         /// </summary>
@@ -153,7 +148,6 @@ namespace Sean.Utility.Net
                 _smtp.Send(mm);
             }
         }
-        #endregion
 
         public void Dispose()
         {

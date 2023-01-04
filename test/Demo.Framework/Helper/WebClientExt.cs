@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Sean.Utility.Net
+namespace Demo.Framework.Helper
 {
     /// <summary>
     /// WebClient扩展，支持设置超时时间
