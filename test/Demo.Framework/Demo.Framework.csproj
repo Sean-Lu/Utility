@@ -55,9 +55,13 @@
     <Compile Include="Impls\NewJsonSerializer.cs" />
     <Compile Include="Impls\Test\BarcodeTest.cs" />
     <Compile Include="Impls\Test\CmdTest.cs" />
+    <Compile Include="Impls\Test\DataTableTest.cs" />
     <Compile Include="Impls\Test\DirectoryTest.cs" />
     <Compile Include="Impls\Test\FileShareTest.cs" />
+    <Compile Include="Impls\Test\JsonTest.cs" />
     <Compile Include="Impls\Test\PathTest.cs" />
+    <Compile Include="Impls\Test\SmtpTest.cs" />
+    <Compile Include="Impls\Test\TimestampTest.cs" />
     <Compile Include="Impls\Test\XmlTest.cs" />
     <Compile Include="Models\TestModel.cs" />
     <Compile Include="Program.cs" />

@@ -5,12 +5,10 @@ using System.Web;
 namespace Sean.Utility.Web
 {
     /// <summary>  
-    /// Cookie缓存操作
+    /// Cookie缓存
     /// </summary>  
-    public class CookieHelper
+    public static class CookieHelper
     {
-        private CookieHelper() { }
-
         /// <summary>
         /// Cookie是否存在
         /// </summary>

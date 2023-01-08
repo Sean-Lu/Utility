@@ -14,10 +14,8 @@ namespace Sean.Utility.Web
     /// <summary>
     /// WebService
     /// </summary>
-    public class WebServiceHelper
+    public static class WebServiceHelper
     {
-        private WebServiceHelper() { }
-
         /// <summary>
         /// 动态调用WebService（基于反射）
         /// </summary>

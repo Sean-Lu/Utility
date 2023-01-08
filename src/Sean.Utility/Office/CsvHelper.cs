@@ -9,14 +9,12 @@ namespace Sean.Utility.Office
     /// <summary>  
     /// Csv文件操作（支持解析逗号、双引号）
     /// </summary> 
-    public class CsvHelper
+    public static class CsvHelper
     {
         /// <summary>
         /// 字符编码
         /// </summary>
         public static Encoding Encoding = Encoding.Default;
-
-        private CsvHelper() { }
 
         /// <summary>
         /// DataTable转Csv

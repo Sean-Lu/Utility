@@ -6,7 +6,7 @@ namespace Sean.Utility.Config
     /// <summary>
     /// ini文件操作
     /// </summary>
-    public class IniHelper
+    public static class IniHelper
     {
         #region DllImport
         /// <summary>
@@ -34,8 +34,6 @@ namespace Sean.Utility.Config
         #endregion
 
         #region Methods
-        private IniHelper() { }
-
         /// <summary>
         /// 读取
         /// </summary>

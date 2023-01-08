@@ -19,7 +19,7 @@ namespace Sean.Utility.Office.NPOI
     /// <summary>
     /// Excel文件操作，支持格式：xls、xlsx
     /// </summary>
-    public class ExcelHelper
+    public static class ExcelHelper
     {
         /// <summary>
         /// 处理DateTime数据的Func委托
@@ -337,11 +337,6 @@ namespace Sean.Utility.Office.NPOI
         #endregion
 
         #region Private Methods
-        /// <summary>
-        /// 私有构造函数（防止类被实例化）
-        /// </summary>
-        private ExcelHelper() { }
-
         private static IWorkbook GetWorkbook(DataTable dt, ExcelExportOptions options)
         {
             if (dt == null) throw new ArgumentNullException(nameof(dt));

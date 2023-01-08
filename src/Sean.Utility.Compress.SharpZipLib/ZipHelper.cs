@@ -10,11 +10,9 @@ namespace Sean.Utility.Compress.SharpZipLib
     /// <summary>
     /// Zip压缩\解压（基于ICSharpCode.SharpZipLib）
     /// </summary>
-    public class ZipHelper
+    public static class ZipHelper
     {
         private const int DefaultCompressionLevel = 6;
-
-        private ZipHelper() { }
 
         #region 压缩
         /// <summary>

@@ -7,12 +7,10 @@ using System.Web.Caching;
 namespace Sean.Utility.Web
 {
     /// <summary>
-    /// Cache缓存操作
+    /// Cache缓存
     /// </summary>
-    public class CacheHelper
+    public static class CacheHelper
     {
-        private CacheHelper() { }
-
         /// <summary>
         /// 获取已存在的所有数据缓存key
         /// </summary>

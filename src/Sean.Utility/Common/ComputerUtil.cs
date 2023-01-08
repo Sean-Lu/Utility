@@ -6,16 +6,11 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Text;
 using Sean.Utility.Enums;
-using Sean.Utility.Net;
 
 namespace Sean.Utility.Common
 {
-    /// <summary>
-    /// 计算机相关
-    /// </summary>
-    public class ComputerUtil
+    public static class ComputerUtil
     {
         #region DllImport
 
@@ -36,8 +31,6 @@ namespace Sean.Utility.Common
         /// 关闭显示器的系统命令
         /// </summary>
         private const int SC_MONITORPOWER = 0xF170;
-
-        private ComputerUtil() { }
 
         #region 获取计算机信息
         /// <summary> 

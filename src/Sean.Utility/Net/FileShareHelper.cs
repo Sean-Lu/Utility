@@ -4,9 +4,9 @@ using Sean.Utility.Enums;
 namespace Sean.Utility.Net
 {
     /// <summary>
-    /// 访问网络共享文件夹（基于磁盘映射）
+    /// 使用磁盘映射的方式访问网络共享文件夹
     /// </summary> 
-    public class FileShareHelper
+    public static class FileShareHelper
     {
         /// <summary>
         /// 建立连接
@@ -27,8 +27,6 @@ namespace Sean.Utility.Net
         /// <returns></returns>
         [DllImport("mpr.dll")]
         public static extern int WNetCancelConnection2A(string name, int dwFlags, int fForce);
-
-        private FileShareHelper() { }
 
         /// <summary>
         /// 建立连接

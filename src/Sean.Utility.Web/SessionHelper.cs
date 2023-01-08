@@ -5,12 +5,10 @@ using System.Web.SessionState;
 namespace Sean.Utility.Web
 {
     /// <summary>
-    /// Session操作
+    /// Session
     /// </summary>
-    public class SessionHelper
+    public static class SessionHelper
     {
-        private SessionHelper() { }
-
         /// <summary>
         /// 私有静态Session操作对象
         /// </summary>

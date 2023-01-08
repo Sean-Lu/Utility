@@ -6,10 +6,8 @@ namespace Sean.Utility.WindowsForms
     /// <summary>
     /// 数据绑定
     /// </summary>
-    public class DataBinding
+    public static class DataBindUtil
     {
-        private DataBinding() { }
-
         /// <summary>
         /// 绑定Dictionary到ComboBox
         /// </summary>
