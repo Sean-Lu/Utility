@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace Sean.Utility.Extensions
 {
@@ -21,17 +22,19 @@ namespace Sean.Utility.Extensions
             return result;
         }
 
-        public static DataSet ToDataSet(this Dictionary<string, List<Dictionary<string, object>>> dic)
+        public static DataSet ToDataSet(this IDictionary<string, List<Dictionary<string, object>>> dic)
         {
-            var ds = new DataSet();
-            if (dic != null && dic.Count > 0)
+            if (dic == null)
             {
-                dic.ForEach(c =>
-                {
-                    var table = c.Value.ToDataTable();
-                    table.TableName = c.Key;
-                    ds.Tables.Add(table);
-                });
+                return null;
+            }
+
+            var ds = new DataSet();
+            foreach (var kv in dic)
+            {
+                var table = kv.Value.ToDataTable();
+                table.TableName = kv.Key;
+                ds.Tables.Add(table);
             }
             return ds;
         }

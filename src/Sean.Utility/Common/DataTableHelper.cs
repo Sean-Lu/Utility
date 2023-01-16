@@ -2,51 +2,105 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 
 namespace Sean.Utility.Common
 {
     public class DataTableHelper
     {
-        public static DataTable ToDataTable<TEntity>(IEnumerable<TEntity> list) where TEntity : class
+        public static DataTable Create<T>(string tableName = null, Action<DataColumn> setColumn = null) where T : class
         {
-            if (list == null)
+            return DataTable<T>.Create(tableName, setColumn);
+        }
+        public static DataTable Create<T>(T model, string tableName = null, Action<DataColumn> setColumn = null) where T : class
+        {
+            return DataTable<T>.Create(model, tableName, setColumn);
+        }
+        public static DataTable Create<T>(IEnumerable<T> list, string tableName = null, Action<DataColumn> setColumn = null) where T : class
+        {
+            return DataTable<T>.Create(list, tableName, setColumn);
+        }
+
+        public static void AddItem<T>(DataTable table, T item, bool autoCreateColumn = true) where T : class
+        {
+            if (table == null || item == null)
             {
-                return null;
+                return;
             }
 
-            var dt = CreateDataTable<TEntity>();
-            var propertyInfos = typeof(TEntity).GetProperties();
-            foreach (var model in list)
+            if (item is IDictionary<string, object> dic)
             {
-                var dataRow = dt.NewRow();
-                foreach (var propertyInfo in propertyInfos)
+                AddItemFromDictionary(table, dic, autoCreateColumn);
+                return;
+            }
+
+            DataTable<T>.AddItem(table, item, autoCreateColumn);
+        }
+
+        public static void AddItems<T>(DataTable table, IEnumerable<T> items, bool autoCreateColumn = true) where T : class
+        {
+            if (table == null || items == null || !items.Any())
+            {
+                return;
+            }
+
+            if (items is IEnumerable<IDictionary<string, object>> listDic)
+            {
+                AddItemsFromDictionary(table, listDic, autoCreateColumn);
+                return;
+            }
+
+            DataTable<T>.AddItems(table, items, autoCreateColumn);
+        }
+
+        private static void AddItemFromDictionary(DataTable table, IDictionary<string, object> dic, bool autoCreateColumn = true)
+        {
+            if (table == null || dic == null || !dic.Any())
+            {
+                return;
+            }
+
+            var dataRow = table.NewRow();
+            foreach (var kv in dic)
+            {
+                if (!dataRow.Table.Columns.Contains(kv.Key))
                 {
-                    if (!dataRow.Table.Columns.Contains(propertyInfo.Name))
+                    if (!autoCreateColumn)
                     {
                         continue;
                     }
 
-                    dataRow[propertyInfo.Name] = propertyInfo.GetValue(model, null) ?? DBNull.Value;
+                    if (kv.Value != null)
+                    {
+                        dataRow.Table.Columns.Add(kv.Key, kv.Value.GetType());
+                    }
+                    else
+                    {
+                        dataRow.Table.Columns.Add(kv.Key);
+                    }
                 }
-                dt.Rows.Add(dataRow);
+
+                dataRow[kv.Key] = kv.Value ?? DBNull.Value;
             }
-            return dt;
+
+            table.Rows.Add(dataRow);
         }
 
-        /// <summary>
-        /// 根据实体类得到表结构
-        /// </summary>
-        /// <returns></returns>
-        public static DataTable CreateDataTable<TEntity>()
+        private static void AddItemsFromDictionary(DataTable table, IEnumerable<IDictionary<string, object>> listDic, bool autoCreateColumn = true)
         {
-            var dataTable = new DataTable(typeof(TEntity).Name);
-            var properties = typeof(TEntity).GetProperties();
-            foreach (var propertyInfo in properties)
+            if (table == null || listDic == null || !listDic.Any())
             {
-                dataTable.Columns.Add(new DataColumn(propertyInfo.Name, propertyInfo.PropertyType));
+                return;
             }
-            return dataTable;
+
+            foreach (var dic in listDic)
+            {
+                if (dic == null || !dic.Any())
+                {
+                    continue;
+                }
+
+                AddItemFromDictionary(table, dic, autoCreateColumn);
+            }
         }
     }
 }

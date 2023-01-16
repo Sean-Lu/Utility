@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using Sean.Utility.Common;
 
 namespace Sean.Utility.Extensions
 {
@@ -8,12 +8,12 @@ namespace Sean.Utility.Extensions
     {
         public static List<Dictionary<string, object>> ToDictionary(this DataTable table)
         {
-            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+            var list = new List<Dictionary<string, object>>();
             if (table != null && table.Rows.Count > 0)
             {
                 foreach (DataRow dr in table.Rows)
                 {
-                    Dictionary<string, object> dic = new Dictionary<string, object>();
+                    var dic = new Dictionary<string, object>();
                     foreach (DataColumn dc in table.Columns)
                     {
                         dic[dc.ColumnName] = dr[dc.ColumnName];
@@ -24,25 +24,15 @@ namespace Sean.Utility.Extensions
             return list;
         }
 
-        public static DataTable ToDataTable(this List<Dictionary<string, object>> dic)
+        public static DataTable ToDataTable(this IEnumerable<IDictionary<string, object>> listDic)
         {
-            var table = new DataTable();
-            if (dic != null && dic.Count > 0)
+            if (listDic == null)
             {
-                dic.First().ForEach(c =>
-                {
-                    table.Columns.Add(c.Key);
-                });
-                dic.ForEach(c =>
-                {
-                    var row = table.NewRow();
-                    c.ForEach(o =>
-                    {
-                        row[o.Key] = o.Value;
-                    });
-                    table.Rows.Add(row);
-                });
+                return null;
             }
+
+            var table = new DataTable();
+            DataTableHelper.AddItems(table, listDic);
             return table;
         }
     }

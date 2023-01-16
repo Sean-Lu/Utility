@@ -138,7 +138,7 @@ namespace Sean.Utility.Office.NPOI
                             ICell cell = rowFirst.GetCell(cellnum);
                             if (cell != null)
                             {
-                                DataColumn column = new DataColumn(isFirstRowColumn ? cell.StringCellValue : "Col" + cellnum);
+                                var column = new DataColumn(isFirstRowColumn ? cell.StringCellValue : $"Col{cellnum}");
                                 dt.Columns.Add(column);
                             }
                         }

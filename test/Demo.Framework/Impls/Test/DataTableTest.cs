@@ -4,6 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Demo.Framework.Models;
+using Sean.Utility.Common;
 using Sean.Utility.Contracts;
 
 namespace Demo.Framework.Impls.Test
@@ -12,7 +14,41 @@ namespace Demo.Framework.Impls.Test
     {
         public void Execute()
         {
+            var model = new TestModel
+            {
+                Id = 1001,
+                Age = 10,
+                Name = "aaa",
+                CreateTime = DateTime.Now
+            };
+            var table = DataTable<TestModel>.Create(model);
+            DataTable<TestModel>.AddItem(table, new TestModel
+            {
+                Id = 1002,
+                Age = 11,
+                Name = "bbb",
+                CreateTime = DateTime.Now
+            });
 
+            DataTableHelper.AddItem(table, new Dictionary<string, object>
+            {
+                {nameof(TestModel.Id),1010},
+                {nameof(TestModel.Age),20},
+                {nameof(TestModel.Name),"qqq"},
+                {nameof(TestModel.CreateTime),DateTime.Now},
+                {nameof(TestModel.UpdateTime),DateTime.Now},
+                {"Test001",DateTime.Now},
+            });
+            DataTableHelper.AddItems(table, new List<Dictionary<string, object>>
+            {
+                new Dictionary<string, object>
+                {
+                    {nameof(TestModel.Id),1011},
+                    {nameof(TestModel.Age),21},
+                    {nameof(TestModel.Name),"www"},
+                    {nameof(TestModel.CreateTime),DateTime.Now},
+                }
+            });
         }
 
         private static DataSet GetTestDataSet()

@@ -13,7 +13,7 @@ namespace Demo.Framework
         {
             //JsonHelper.Serializer = NewJsonSerializer.Instance;
 
-            ISimpleDo toDo = new TimestampTest();
+            ISimpleDo toDo = new DataTableTest();
             toDo.Execute();
 
             Console.WriteLine("--------------->Done.");

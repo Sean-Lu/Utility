@@ -17,5 +17,6 @@ namespace Demo.Framework.Models
         public string Address { get; set; }
         //[DataMember]
         public DateTime CreateTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
     }
 }

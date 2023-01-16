@@ -142,9 +142,8 @@ namespace Sean.Utility.Office
                         columnCount = aryLine.Length;
                         for (int i = 0; i < columnCount; i++)
                         {
-                            string strColumnName = aryLine[i];
-                            DataColumn dc = new DataColumn(isFirstRowColumn && !dt.Columns.Contains(strColumnName) ? strColumnName
-                                                                                                                   : string.Format("Col{0}", Convert.ToString(i + 1)));
+                            var strColumnName = aryLine[i];
+                            var dc = new DataColumn(isFirstRowColumn && !dt.Columns.Contains(strColumnName) ? strColumnName : $"Col{Convert.ToString(i + 1)}");
                             dt.Columns.Add(dc);
                         }
 
