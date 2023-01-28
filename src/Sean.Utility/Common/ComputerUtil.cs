@@ -83,14 +83,6 @@ namespace Sean.Utility.Common
         {
             SetMonitorInState(MonitorState.Off);
         }
-        /// <summary>
-        /// 关闭显示器
-        /// </summary>
-        /// <param name="hWnd">句柄，如：this.Handle</param>
-        public static void TurnOffMonitor(IntPtr hWnd)
-        {
-            SetMonitorInState(MonitorState.Off, hWnd);
-        }
 
         /// <summary>
         /// 打开显示器
@@ -98,14 +90,6 @@ namespace Sean.Utility.Common
         public static void TurnOnMonitor()
         {
             SetMonitorInState(MonitorState.On);
-        }
-        /// <summary>
-        /// 打开显示器
-        /// </summary>
-        /// <param name="hWnd">句柄，如：this.Handle</param>
-        public static void TurnOnMonitor(IntPtr hWnd)
-        {
-            SetMonitorInState(MonitorState.On, hWnd);
         }
         #endregion
 
@@ -208,15 +192,6 @@ namespace Sean.Utility.Common
         {
             //hWnd: If this parameter is HWND_BROADCAST ((HWND)0xffff), the message is sent to all top-level windows in the system, including disabled or invisible unowned windows.
             SendMessage((IntPtr)0xFFFF, WM_SYSCOMMAND, SC_MONITORPOWER, (int)state);
-        }
-        /// <summary>
-        /// 设置显示器状态
-        /// </summary>
-        /// <param name="state"></param>
-        /// <param name="hWnd"></param>
-        private static void SetMonitorInState(MonitorState state, IntPtr hWnd)
-        {
-            SendMessage(hWnd, WM_SYSCOMMAND, SC_MONITORPOWER, (int)state);
         }
     }
 }

@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29728.190
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sean.Utility", "src\Sean.Utility\Sean.Utility.csproj", "{3D091D1A-0CE0-48D9-8705-7615434CA63E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{21E484CB-F21C-4D35-A3A0-6234E33DD0E0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{21E484CB-F21C-4D35-A3A0-6234E33DD0E0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.NetCore", "test\Demo.NetCore\Demo.NetCore.csproj", "{7229FFEA-B7F3-4ABB-B999-6D788F133AD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.NetCore", "demo\Demo.NetCore\Demo.NetCore.csproj", "{7229FFEA-B7F3-4ABB-B999-6D788F133AD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Framework", "test\Demo.Framework\Demo.Framework.csproj", "{061EA08D-3076-4353-A6E5-F4FAE6E1F1E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Framework", "demo\Demo.Framework\Demo.Framework.csproj", "{061EA08D-3076-4353-A6E5-F4FAE6E1F1E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sean.Utility.Compress.SharpZipLib", "src\Sean.Utility.Compress.SharpZipLib\Sean.Utility.Compress.SharpZipLib.csproj", "{BEA63C8D-4330-4104-839C-FCE3C6530F06}"
 EndProject
