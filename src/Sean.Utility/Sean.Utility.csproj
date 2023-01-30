@@ -5,9 +5,9 @@
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>Sean</Authors>
-		<Copyright>Copyright © 2016-2022 Sean</Copyright>
+		<Copyright>Copyright © 2016-2023 Sean</Copyright>
 		<Description>Library of utility methods.</Description>
-		<Version>2.1.2-beta2022011901</Version>
+		<Version>2.1.2</Version>
 		<PackageProjectUrl>https://github.com/Sean-Lu/Utility</PackageProjectUrl>
 	</PropertyGroup>
 
