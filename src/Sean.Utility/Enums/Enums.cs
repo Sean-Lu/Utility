@@ -1,4 +1,6 @@
-﻿namespace Sean.Utility.Enums
+﻿using System;
+
+namespace Sean.Utility.Enums
 {
     /// <summary>
     /// 时间戳类型
@@ -43,5 +45,25 @@
         Code128B,
         Code128C,
         EAN128
+    }
+
+    /// <summary>
+    /// 随机字符串类型
+    /// </summary>
+    [Flags]
+    public enum RandomStringType
+    {
+        /// <summary>
+        /// 数字
+        /// </summary>
+        Number = 1 << 0,
+        /// <summary>
+        /// 大写字母
+        /// </summary>
+        AbcUpper = 1 << 1,
+        /// <summary>
+        /// 小写字母
+        /// </summary>
+        AbcLower = 1 << 2
     }
 }

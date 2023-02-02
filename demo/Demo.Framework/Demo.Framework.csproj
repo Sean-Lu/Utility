@@ -60,6 +60,7 @@
     <Compile Include="Impls\Test\FileShareTest.cs" />
     <Compile Include="Impls\Test\JsonTest.cs" />
     <Compile Include="Impls\Test\PathTest.cs" />
+    <Compile Include="Impls\Test\RandomTest.cs" />
     <Compile Include="Impls\Test\SmtpTest.cs" />
     <Compile Include="Impls\Test\TimestampTest.cs" />
     <Compile Include="Impls\Test\XmlTest.cs" />
