@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>net4;net45;net46;netstandard2.0</TargetFrameworks>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>Sean</Authors>
 		<Copyright>Copyright © 2016-2023 Sean</Copyright>
 		<Description>Library of utility methods.</Description>
@@ -24,6 +23,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 		<Deterministic>true</Deterministic>
 
