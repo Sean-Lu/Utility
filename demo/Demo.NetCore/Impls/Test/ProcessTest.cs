@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using Sean.Utility.Common;
 using Sean.Utility.Contracts;
 
 namespace Demo.NetCore.Impls.Test

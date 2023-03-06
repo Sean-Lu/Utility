@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using Sean.Utility.Extensions;
 
-namespace Sean.Utility.Common
+namespace Sean.Utility
 {
     public class DataTable<T> where T : class
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace Sean.Utility.Common
+namespace Sean.Utility
 {
     public class DataTableHelper
     {

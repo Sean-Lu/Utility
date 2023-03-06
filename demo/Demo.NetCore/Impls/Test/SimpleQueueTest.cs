@@ -1,12 +1,11 @@
 ﻿using Demo.NetCore.Models;
-using Sean.Utility.Common;
 using Sean.Utility.Contracts;
 using Sean.Utility.Enums;
-using Sean.Utility.Format;
 using Sean.Utility.Impls.Queue;
 using System;
 using System.Threading;
 using Newtonsoft.Json;
+using Sean.Utility;
 
 namespace Demo.NetCore.Impls.Test
 {
@@ -45,7 +44,7 @@ namespace Demo.NetCore.Impls.Test
             var id = 0L;
             var now = DateTime.Now;
             //var list = new List<TestModel>();
-            DelegateHelper.BatchFunc(() =>
+            DelegateHelper.Repeat(() =>
             {
                 Thread.Sleep(100);
 

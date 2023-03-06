@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Sean.Utility.Common
+namespace Sean.Utility
 {
     public class CmdHelper
     {

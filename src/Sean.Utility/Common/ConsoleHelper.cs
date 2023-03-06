@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Sean.Utility.Common
+namespace Sean.Utility
 {
     /// <summary>
     /// <see cref="Console"/>

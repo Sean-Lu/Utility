@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using Sean.Utility.Enums;
 
-namespace Sean.Utility.Common
+namespace Sean.Utility
 {
     public static class ComputerUtil
     {

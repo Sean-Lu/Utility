@@ -1,6 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json;
-using Sean.Utility.Common;
+using Sean.Utility;
 using Sean.Utility.Contracts;
 using Sean.Utility.Extensions;
 

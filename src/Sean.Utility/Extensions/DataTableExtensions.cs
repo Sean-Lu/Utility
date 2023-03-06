@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Sean.Utility.Common;
 
 namespace Sean.Utility.Extensions
 {

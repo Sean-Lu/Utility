@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Sean.Utility.Contracts;
 
-namespace Sean.Utility.Common
+namespace Sean.Utility
 {
     /// <summary>
     /// 异常处理

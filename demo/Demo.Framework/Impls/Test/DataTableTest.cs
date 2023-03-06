@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Demo.Framework.Models;
-using Sean.Utility.Common;
+using Sean.Utility;
 using Sean.Utility.Contracts;
 
 namespace Demo.Framework.Impls.Test

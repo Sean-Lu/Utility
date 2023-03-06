@@ -1,7 +1,7 @@
 ﻿using System;
 using Sean.Utility.Enums;
 
-namespace Sean.Utility.Common
+namespace Sean.Utility
 {
     public static class DateTimeHelper
     {

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Sean.Utility.Common;
 using Sean.Utility.Contracts;
 using Sean.Utility.Enums;
 using Sean.Utility.Extensions;
@@ -303,7 +302,7 @@ namespace Sean.Utility.Impls.Queue
                 {
                     return 0;
                 }
-                DelegateHelper.BatchFunc(() =>
+                DelegateHelper.Repeat(() =>
                 {
                     if (!_queue.TryDequeue(out var result))
                     {
