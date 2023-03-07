@@ -6,7 +6,7 @@
 		<Authors>Sean</Authors>
 		<Copyright>Copyright © 2016-2023 Sean</Copyright>
 		<Description>Library of utility methods.</Description>
-		<Version>2.1.3</Version>
+		<Version>2.1.4</Version>
 		<PackageProjectUrl>https://github.com/Sean-Lu/Utility</PackageProjectUrl>
 
 		<!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
