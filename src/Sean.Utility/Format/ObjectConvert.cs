@@ -9,7 +9,7 @@ namespace Sean.Utility.Format
     /// <summary>
     /// 对象转换
     /// </summary>
-    public class ObjectConvert
+    public static class ObjectConvert
     {
         #region 对象映射
         /// <summary>

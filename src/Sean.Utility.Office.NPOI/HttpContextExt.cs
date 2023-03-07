@@ -6,7 +6,7 @@ namespace Sean.Utility.Office.NPOI
     /// <summary>
     /// HttpContext扩展
     /// </summary>
-    public class HttpContextExt
+    internal class HttpContextExt
     {
         private static IHttpContextAccessor _httpContextAccessor;
 

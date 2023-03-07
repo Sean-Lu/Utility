@@ -9,7 +9,7 @@ using Sean.Utility.Enums;
 using Sean.Utility.Extensions;
 using Sean.Utility.Timers;
 
-#if NETSTANDARD
+#if NETSTANDARD || NET5_0_OR_GREATER
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 #endif
@@ -97,8 +97,8 @@ namespace Sean.Utility.Impls.Queue
         /// <param name="options"></param>
         public SimpleQueue(Action<SimpleQueueOptions> options)
         {
-#if NETSTANDARD
-            _options = ServiceProvider?.GetService<IOptionsMonitor<SimpleQueueOptions>>().CurrentValue ?? new SimpleQueueOptions();
+#if NETSTANDARD || NET5_0_OR_GREATER
+            _options = ServiceProvider?.GetService<IOptionsMonitor<SimpleQueueOptions>>()?.CurrentValue ?? new SimpleQueueOptions();
 #else
             _options = new SimpleQueueOptions();
 #endif
@@ -357,7 +357,10 @@ namespace Sean.Utility.Impls.Queue
                     if (args.ShouldReconsume)
                     {
                         // 批量数据重新消费
-                        items.ForEach(c => c.ReconsumeCount++);
+                        foreach (var queueData in items)
+                        {
+                            queueData.ReconsumeCount++;
+                        }
 
                         var listRetry = new List<SimpleQueueData<T>>();
                         if (_options.MaxReconsumeCount > 0)

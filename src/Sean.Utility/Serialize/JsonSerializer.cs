@@ -4,7 +4,6 @@ using System.Data;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -26,22 +25,20 @@ namespace Sean.Utility.Serialize
     {
         public JsonSerializer()
         {
-#if NETSTANDARD || NET45_OR_GREATER
+#if !NET40
             Settings = new DataContractJsonSerializerSettings
             {
                 DateTimeFormat = new DateTimeFormat("yyyy-MM-ddTHH:mm:sszzz"),
                 UseSimpleDictionaryFormat = true
             };
-#if !NETSTANDARD
             //Settings.DataContractSurrogate = new xxxSurrogate();
-#endif
 #endif
             DefaultEncoding = Encoding.UTF8;
         }
 
         public static JsonSerializer Instance { get; } = new JsonSerializer();
 
-#if NETSTANDARD || NET45_OR_GREATER
+#if !NET40
         public DataContractJsonSerializerSettings Settings { get; set; }
 #endif
         /// <summary>
@@ -164,10 +161,10 @@ namespace Sean.Utility.Serialize
         {
             using (var ms = new MemoryStream())
             {
-#if NETSTANDARD || NET45_OR_GREATER
-                var serializer = new DataContractJsonSerializer(typeof(T), Settings);
-#else
+#if NET40
                 var serializer = new DataContractJsonSerializer(typeof(T));
+#else
+                var serializer = new DataContractJsonSerializer(typeof(T), Settings);
 #endif
                 serializer.WriteObject(ms, obj);
                 return DefaultEncoding.GetString(ms.ToArray());
@@ -177,10 +174,10 @@ namespace Sean.Utility.Serialize
         {
             using (var stream = new MemoryStream(DefaultEncoding.GetBytes(json)))
             {
-#if NETSTANDARD || NET45_OR_GREATER
-                var serializer = new DataContractJsonSerializer(typeof(T), Settings);
-#else
+#if NET40
                 var serializer = new DataContractJsonSerializer(typeof(T));
+#else
+                var serializer = new DataContractJsonSerializer(typeof(T), Settings);
 #endif
                 return (T)serializer.ReadObject(stream);
             }

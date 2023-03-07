@@ -7,19 +7,6 @@ namespace Sean.Utility.Extensions
 {
     public static class EnumerableExtensions
     {
-        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> items, Action<T> action)
-        {
-            if (action != null && items != null)
-            {
-                foreach (var item in items)
-                {
-                    action(item);
-                }
-            }
-
-            return items;
-        }
-
         /// <summary>
         /// Paging Execution
         /// </summary>

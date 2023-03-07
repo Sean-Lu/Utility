@@ -1,5 +1,4 @@
-﻿#if !NETSTANDARD
-using Sean.Utility.Enums;
+﻿using Sean.Utility.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,11 +20,11 @@ namespace Sean.Utility.Barcode
         /// <summary>
         /// 条码内容的字体，值为null时表示不显示条码内容。
         /// </summary>
-        public Font ValueFont { get; set; } = null;
+        public Font ValueFont { get; set; }
         /// <summary>
         /// 放大倍数
         /// </summary>
-        public byte Magnify { get; set; } = 0;
+        public byte Magnify { get; set; }
 
         /// <summary>
         /// 构造函数
@@ -159,7 +158,7 @@ namespace Sean.Utility.Barcode
         {
             string viewText = content;
             string text = "";
-            IList<int> textNumb = new List<int>();
+            var textNumb = new List<int>();
             int examine = 0;//首位
             switch (type)
             {
@@ -204,14 +203,14 @@ namespace Sean.Utility.Barcode
                     {
                         int temp = 0;
                         string valueCode = GetValue(type, content.Substring(0, 1), ref temp);
-                        if (valueCode.Length == 0) throw new Exception("无效的字符集!" + content.Substring(0, 1));
+                        if (valueCode.Length == 0) throw new Exception("无效的字符集！" + content.Substring(0, 1));
                         text += valueCode;
                         textNumb.Add(temp);
                         content = content.Remove(0, 1);
                     }
                     break;
             }
-            if (textNumb.Count == 0) throw new Exception("错误的编码,无数据");
+            if (textNumb.Count == 0) throw new Exception("错误的编码，无数据。");
             text = text.Insert(0, GetValue(examine));//获取开始位
 
             for (int i = 0; i != textNumb.Count; i++)
@@ -237,10 +236,10 @@ namespace Sean.Utility.Barcode
         {
             if (_code128 == null)
                 return "";
-            DataRow[] row = _code128.Select(code.ToString() + "='" + value + "'");
+            DataRow[] row = _code128.Select($"{code}='{value}'");
             if (row.Length != 1)
-                throw new Exception("错误的编码" + value.ToString());
-            setId = Int32.Parse(row[0]["ID"].ToString());
+                throw new Exception($"错误的编码：{value}");
+            setId = int.Parse(row[0]["ID"].ToString());
             return row[0]["BandCode"].ToString();
         }
         /// <summary>
@@ -269,15 +268,16 @@ namespace Sean.Utility.Barcode
                 width += int.Parse(value[i].ToString()) * (Magnify + 1);
             }
             Bitmap codeImage = new Bitmap(width, (int)Height);
-            Graphics garphics = Graphics.FromImage(codeImage);
-            int lenEx = 0;
-            for (int i = 0; i != value.Length; i++)
+            using (Graphics garphics = Graphics.FromImage(codeImage))
             {
-                int valueNumb = Int32.Parse(value[i].ToString()) * (Magnify + 1); //获取宽和放大系数
-                garphics.FillRectangle((i & 1) != 0 ? Brushes.White : Brushes.Black, new Rectangle(lenEx, 0, valueNumb, (int)Height));
-                lenEx += valueNumb;
+                int lenEx = 0;
+                for (int i = 0; i != value.Length; i++)
+                {
+                    int valueNumb = int.Parse(value[i].ToString()) * (Magnify + 1); //获取宽和放大系数
+                    garphics.FillRectangle((i & 1) != 0 ? Brushes.White : Brushes.Black, new Rectangle(lenEx, 0, valueNumb, (int)Height));
+                    lenEx += valueNumb;
+                }
             }
-            garphics.Dispose();
             return codeImage;
         }
         /// <summary>
@@ -289,18 +289,18 @@ namespace Sean.Utility.Barcode
         {
             if (ValueFont == null) return;
 
-            Graphics graphics = Graphics.FromImage(bitmap);
-            SizeF drawSize = graphics.MeasureString(viewText, ValueFont);
-            if (drawSize.Height > bitmap.Height - 10 || drawSize.Width > bitmap.Width)
+            using (Graphics graphics = Graphics.FromImage(bitmap))
             {
-                graphics.Dispose();
-                return;
-            }
+                SizeF drawSize = graphics.MeasureString(viewText, ValueFont);
+                if (drawSize.Height > bitmap.Height - 10 || drawSize.Width > bitmap.Width)
+                {
+                    return;
+                }
 
-            int starY = bitmap.Height - (int)drawSize.Height;
-            graphics.FillRectangle(Brushes.White, new Rectangle(0, starY, bitmap.Width, (int)drawSize.Height));
-            graphics.DrawString(viewText, ValueFont, Brushes.Black, 0, starY);
+                int starY = bitmap.Height - (int)drawSize.Height;
+                graphics.FillRectangle(Brushes.White, new Rectangle(0, starY, bitmap.Width, (int)drawSize.Height));
+                graphics.DrawString(viewText, ValueFont, Brushes.Black, 0, starY);
+            }
         }
     }
 }
-#endif

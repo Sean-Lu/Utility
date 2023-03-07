@@ -1,12 +1,9 @@
-﻿#if !NETSTANDARD
+﻿#if !(NETSTANDARD || NET5_0_OR_GREATER)
 using System.Configuration;
 
 namespace Sean.Utility.Config
 {
-    /// <summary>
-    /// 配置文件操作
-    /// </summary>
-    public class ConfigurationHelper
+    public static class ConfigurationHelper
     {
         #region AppSetting
         /// <summary>

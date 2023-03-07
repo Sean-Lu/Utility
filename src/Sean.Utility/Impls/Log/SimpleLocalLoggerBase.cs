@@ -7,7 +7,7 @@ using Sean.Utility.Contracts;
 using Sean.Utility.Enums;
 using Sean.Utility.Extensions;
 using Sean.Utility.IO;
-#if NETSTANDARD
+#if NETSTANDARD || NET5_0_OR_GREATER
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 #endif
@@ -88,7 +88,7 @@ namespace Sean.Utility.Impls.Log
 
         private readonly SimpleLocalLoggerOptions _options;
 
-#if NETSTANDARD
+#if NETSTANDARD || NET5_0_OR_GREATER
         internal static IServiceProvider ServiceProvider { get; set; }
 #endif
 
@@ -106,7 +106,7 @@ namespace Sean.Utility.Impls.Log
             }
             else
             {
-#if NETSTANDARD
+#if NETSTANDARD || NET5_0_OR_GREATER
                 _options = ServiceProvider?.GetService<IOptionsMonitor<SimpleLocalLoggerOptions>>()?.CurrentValue ?? new SimpleLocalLoggerOptions();
 #else
                 _options = new SimpleLocalLoggerOptions();

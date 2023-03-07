@@ -14,7 +14,10 @@ namespace Sean.Utility.Extensions
         {
             return aspect.Combine((work) =>
             {
-                System.Threading.Thread.Sleep(milliseconds);
+                if (milliseconds > 0)
+                {
+                    System.Threading.Thread.Sleep(milliseconds);
+                }
                 work();
             });
         }
@@ -46,7 +49,7 @@ namespace Sean.Utility.Extensions
             {
                 while (!test())
                 {
-                    if (testDelayMilliseconds.HasValue)
+                    if (testDelayMilliseconds.HasValue && testDelayMilliseconds.Value > 0)
                     {
                         System.Threading.Thread.Sleep(testDelayMilliseconds.Value);
                     }
@@ -65,7 +68,7 @@ namespace Sean.Utility.Extensions
                 {
                     work();
 
-                    if (testDelayMilliseconds.HasValue)
+                    if (testDelayMilliseconds.HasValue && testDelayMilliseconds.Value > 0)
                     {
                         System.Threading.Thread.Sleep(testDelayMilliseconds.Value);
                     }
@@ -107,7 +110,7 @@ namespace Sean.Utility.Extensions
 
         #region Retry
         [DebuggerStepThrough]
-        public static AspectF RetryWhenError(this AspectF aspect, int retryDuration, int retryCount, Action<int, Exception> errorHandler)
+        public static AspectF RetryWhenError(this AspectF aspect, int retryCount, Action<int, Exception> errorHandler, int? retryDuration = null)
         {
             var totalRetryCount = retryCount;
             return aspect.Combine((work) =>
@@ -122,7 +125,10 @@ namespace Sean.Utility.Extensions
                     catch (Exception ex)
                     {
                         errorHandler?.Invoke(totalRetryCount - retryCount, ex);
-                        System.Threading.Thread.Sleep(retryDuration);
+                        if (retryDuration.HasValue && retryDuration.Value > 0)
+                        {
+                            System.Threading.Thread.Sleep(retryDuration.Value);
+                        }
                     }
                 } while (retryCount-- > 0);
             });

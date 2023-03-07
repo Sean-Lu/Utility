@@ -8,7 +8,7 @@ namespace Sean.Utility.Office.NPOI.Extensions
     /// <summary>
     /// HttpContext扩展
     /// </summary>
-    public static partial class Extensions
+    internal static class Extensions
     {
         /// <summary>
         /// 注入HttpContextAccessor

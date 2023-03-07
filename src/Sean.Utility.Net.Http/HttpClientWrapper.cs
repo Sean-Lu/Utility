@@ -1,5 +1,4 @@
-﻿#if NET45_OR_GREATER||NETSTANDARD
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -347,4 +346,3 @@ namespace Sean.Utility.Net.Http
         #endregion
     }
 }
-#endif

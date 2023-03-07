@@ -1,4 +1,4 @@
-﻿//#define DEBUG_OUPUT
+﻿//#define DEBUG_OUTPUT
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -169,7 +169,7 @@ namespace Sean.Utility.Impls.MQ
             //}
 
             _queue.Enqueue(data);
-#if DEBUG_OUPUT
+#if DEBUG_OUTPUT
             if (!_consumeThreadWaiting)
             {
                 DebugOutput("+++++++++++消费线程没有阻塞");
@@ -220,7 +220,7 @@ namespace Sean.Utility.Impls.MQ
             {
                 if (_queue.IsEmpty || !_consumers.Any())
                 {
-#if DEBUG_OUPUT
+#if DEBUG_OUTPUT
                     DebugOutput("消费线程阻塞");
 #endif
                     _consumeThreadWaiting = true;
@@ -229,7 +229,7 @@ namespace Sean.Utility.Impls.MQ
 
                     if (!_isStarted)
                     {
-#if DEBUG_OUPUT
+#if DEBUG_OUTPUT
                         DebugOutput("消息队列已经停止，即将退出消费线程");
 #endif
                         break;
@@ -237,14 +237,14 @@ namespace Sean.Utility.Impls.MQ
 
                     if (_queue.IsEmpty || !_consumers.Any())// 考虑到多线程，这里需要再判断一次
                     {
-#if DEBUG_OUPUT
+#if DEBUG_OUTPUT
                         DebugOutput("+++++++++++消费线程阻塞恢复后，不满足继续消费的条件");
 #endif
                         continue;
                     }
                 }
 
-#if DEBUG_OUPUT
+#if DEBUG_OUTPUT
                 DebugOutput("开始消费数据");
 #endif
                 switch (_type)
@@ -283,7 +283,7 @@ namespace Sean.Utility.Impls.MQ
                         throw new NotSupportedException($"Unsupported type: {_type}");
                 }
             }
-#if DEBUG_OUPUT
+#if DEBUG_OUTPUT
             DebugOutput("消费线程已经结束");
 #endif
         }
@@ -294,7 +294,7 @@ namespace Sean.Utility.Impls.MQ
             Stop();
         }
 
-#if DEBUG_OUPUT
+#if DEBUG_OUTPUT
         private void DebugOutput(string msg)
         {
             Debug.WriteLine($"######################################## [{DateTime.Now.ToLongDateTime()}] [{this.GetType().Name}] [{Thread.CurrentThread.ManagedThreadId}] [QueueCount:{_queue.Count}] [ConsumerCount:{_consumers.Count}] [ProducerCount:{_producers.Count}] {msg}");

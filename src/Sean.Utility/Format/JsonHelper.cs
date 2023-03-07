@@ -6,7 +6,7 @@ namespace Sean.Utility.Format
     /// <summary>
     /// json序列化\反序列化
     /// </summary>
-    public class JsonHelper
+    public static class JsonHelper
     {
         /// <summary>
         /// 获取或设置 <see cref="IJsonSerializer"/> ，默认值：<see cref="JsonSerializer.Instance"/>
