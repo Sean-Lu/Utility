@@ -90,6 +90,19 @@ namespace Sean.Utility.Extensions
         }
 
         [DebuggerStepThrough]
+        public static AspectF WhenFalse(this AspectF aspect, params Func<bool>[] conditions)
+        {
+            return aspect.Combine((work) =>
+            {
+                foreach (Func<bool> condition in conditions)
+                    if (condition())
+                        return;
+
+                work();
+            });
+        }
+
+        [DebuggerStepThrough]
         public static AspectF RunAsync(this AspectF aspect, Action completeCallback)
         {
             return aspect.Combine((work) => work.BeginInvoke(asyncResult =>
