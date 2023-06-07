@@ -261,7 +261,7 @@ namespace Sean.Utility.Impls.Log
 
         protected virtual string DefaultHandleMsgFormat(Type classType, LogLevel logLevel, string msg, Exception exception)
         {
-            return $"[{(DateTimeFormat != null ? DateTimeFormat(DateTime.Now) : DateTime.Now.ToLongDateTimeWithTimezone())}] [{logLevel.ToString().ToUpper()}]{(classType != null ? $" [{classType.FullName}]" : string.Empty)} => {msg}{(exception != null ? $"{Environment.NewLine}{exception.ToString()}" : string.Empty)}";
+            return $"[{(DateTimeFormat != null ? DateTimeFormat(DateTime.Now) : DateTime.Now.ToLongDateTimeWithTimezone())}] [{logLevel.ToString().ToUpper()}]{(classType != null ? $" [{classType.GetSimpleFullName()}]" : string.Empty)} => {msg}{(exception != null ? $"{Environment.NewLine}{exception.ToString()}" : string.Empty)}";
         }
 
         protected virtual void DefaultHandleInternalException(Exception exception)

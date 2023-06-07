@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -40,6 +41,25 @@ namespace Sean.Utility.Extensions
         public static bool IsNullableType(this Type type)
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        public static string GetSimpleFullName(this Type type)
+        {
+            if (!type.IsGenericType)
+            {
+                return type.FullName;
+            }
+
+            var genericTypeDefinition = type.GetGenericTypeDefinition();
+            var genericArguments = type.GetGenericArguments();
+            var listGenericArgumentFullName = new List<string>();
+            foreach (var genericArgument in genericArguments)
+            {
+                listGenericArgumentFullName.Add(!genericArgument.IsGenericType
+                    ? genericArgument.FullName
+                    : genericArgument.GetSimpleFullName());
+            }
+            return $"{genericTypeDefinition.FullName}[{string.Join(", ", listGenericArgumentFullName)}]";
         }
     }
 }
