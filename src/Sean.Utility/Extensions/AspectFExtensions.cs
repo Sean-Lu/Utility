@@ -90,6 +90,22 @@ namespace Sean.Utility.Extensions
         }
 
         [DebuggerStepThrough]
+        public static AspectF WhenAnyTrue(this AspectF aspect, params Func<bool>[] conditions)
+        {
+            return aspect.Combine((work) =>
+            {
+                foreach (Func<bool> condition in conditions)
+                {
+                    if (condition())
+                    {
+                        work();
+                        return;
+                    }
+                }
+            });
+        }
+
+        [DebuggerStepThrough]
         public static AspectF WhenFalse(this AspectF aspect, params Func<bool>[] conditions)
         {
             return aspect.Combine((work) =>
@@ -99,6 +115,22 @@ namespace Sean.Utility.Extensions
                         return;
 
                 work();
+            });
+        }
+
+        [DebuggerStepThrough]
+        public static AspectF WhenAnyFalse(this AspectF aspect, params Func<bool>[] conditions)
+        {
+            return aspect.Combine((work) =>
+            {
+                foreach (Func<bool> condition in conditions)
+                {
+                    if (!condition())
+                    {
+                        work();
+                        return;
+                    }
+                }
             });
         }
 
