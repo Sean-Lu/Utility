@@ -7,7 +7,7 @@ namespace Sean.Utility.Contracts
 {
     public interface ISimpleLoggerBase
     {
-        ISimpleLocalLoggerOptions Options { get; }
+        SimpleLocalLoggerOptions Options { get; }
 
         void Log(LogLevel logLevel, string msg, Exception ex = null);
 

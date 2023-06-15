@@ -1,12 +1,11 @@
 ﻿using Sean.Utility.Enums;
 using System;
-using Sean.Utility.Contracts;
 
 namespace Sean.Utility.Impls.Log
 {
     public class MsgFormatEventArgs : EventArgs
     {
-        public MsgFormatEventArgs(ISimpleLocalLoggerOptions options, Type classType, LogLevel logLevel, string message, Exception exception)
+        public MsgFormatEventArgs(SimpleLocalLoggerOptions options, Type classType, LogLevel logLevel, string message, Exception exception)
         {
             Options = options;
             ClassType = classType;
@@ -17,7 +16,7 @@ namespace Sean.Utility.Impls.Log
             MsgFormat = message;
         }
 
-        public ISimpleLocalLoggerOptions Options { get; }
+        public SimpleLocalLoggerOptions Options { get; }
         public Type ClassType { get; }
         public LogLevel LogLevel { get; }
         public string Message { get; }

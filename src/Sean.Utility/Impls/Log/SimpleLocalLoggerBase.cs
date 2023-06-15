@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -82,7 +83,7 @@ namespace Sean.Utility.Impls.Log
         /// </summary>
         public static SimpleLocalLoggerOptions DefaultLoggerOptions { get; set; }
 
-        public ISimpleLocalLoggerOptions Options => _options;
+        public SimpleLocalLoggerOptions Options => _options;
 
         protected Type ClassType;
 
@@ -134,7 +135,7 @@ namespace Sean.Utility.Impls.Log
                 // 输出日志 => 自定义（默认无）
                 CustomOutputLog?.Invoke(this, new CustomOutputLogEventArgs(_options, logLevel, msg, ex));
 
-                if (!_options.LogToConsole && !_options.LogToLocalFile)
+                if (!_options.AnyLogTarget)
                 {
                     return;
                 }
@@ -142,15 +143,27 @@ namespace Sean.Utility.Impls.Log
                 var msgFormat = GetFormattedMessage(ClassType, logLevel, msg, ex);
                 if (!string.IsNullOrWhiteSpace(msgFormat))
                 {
+                    if (_options.LogToDebug && logLevel >= _options.MinLogLevelForDebug)
+                    {
+                        // 输出日志 => Debug
+                        Debug.WriteLine(msgFormat);
+                    }
+
+                    if (_options.LogToTrace && logLevel >= _options.MinLogLevelForTrace)
+                    {
+                        // 输出日志 => Trace
+                        Trace.WriteLine(msgFormat);
+                    }
+
                     if (_options.LogToConsole && logLevel >= _options.MinLogLevelForConsole)
                     {
-                        // 输出日志 => 控制台
+                        // 输出日志 => Console 控制台
                         Console.WriteLine(msgFormat);
                     }
 
                     if (_options.LogToLocalFile && logLevel >= _options.MinLogLevelForLocalFile)
                     {
-                        // 输出日志 => 本地文件
+                        // 输出日志 => *.log 本地日志文件
                         try
                         {
                             _locker.EnterWriteLock();
