@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -60,6 +61,51 @@ namespace Sean.Utility.Extensions
                     : genericArgument.GetSimpleFullName());
             }
             return $"{genericTypeDefinition.FullName}[{string.Join(", ", listGenericArgumentFullName)}]";
+        }
+
+        public static object CreateInstanceByConstructor(this Type type)
+        {
+            var emptyParamConstructor = type.GetConstructor(Type.EmptyTypes);
+            if (emptyParamConstructor != null)
+            {
+                return Activator.CreateInstance(type);
+            }
+
+            var constructors = type.GetConstructors();
+            var minParamConstructor = constructors.Length > 1
+                ? constructors.OrderBy(c => c.GetParameters().Length).FirstOrDefault()
+                : constructors.FirstOrDefault();
+            if (minParamConstructor == null)
+            {
+                return default;
+            }
+
+            object[] parameterArgs = null;
+            var parameters = minParamConstructor.GetParameters();
+            if (parameters.Length > 0)
+            {
+                parameterArgs = new object[parameters.Length];
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    var parameterInfo = parameters[i];
+#if NET40
+                    var paraDefaultValue = parameterInfo.DefaultValue;
+                    parameterArgs[i] = paraDefaultValue != DBNull.Value
+                        ? parameterInfo.DefaultValue
+                        : parameterInfo.ParameterType.GetDefaultValue();
+#else
+                    parameterArgs[i] = parameterInfo.HasDefaultValue
+                        ? parameterInfo.DefaultValue
+                        : parameterInfo.ParameterType.GetDefaultValue();
+#endif
+                }
+            }
+            return Activator.CreateInstance(type, parameterArgs);
+        }
+
+        public static T CreateInstanceByConstructor<T>(this Type type) where T : class
+        {
+            return type.CreateInstanceByConstructor() as T;
         }
     }
 }
