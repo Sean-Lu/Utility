@@ -50,6 +50,38 @@ JsonHelper.Serialize(obj);
   
   - `JavaScriptSerializer`：`System.Web.Script.Serialization`
 
+## Sean.Utility.Security
+
+> 支持常见的加解密：Base64、Hex、Hash、AES、DES、TripleDES、RC2、RC4、RSA
+
+| Class                     | 描述                                                       |
+| ------------------------- | -------------------------------------------------------- |
+| `Base64CryptoProvider`    | 编码\解码：`Base64`                                           |
+| `HexCryptoProvider`       | 编码\解码：`16进制`                                             |
+| `HashCryptoProvider`      | 单向散列算法（**`哈希`**）：`MD5`、`SHA1`、`SHA256`、`SHA384`、`SHA512` |
+| `AESCryptoProvider`       | 对称加密算法：`AES`                                             |
+| `DESCryptoProvider`       | 对称加密算法：`DES`                                             |
+| `TripleDESCryptoProvider` | 对称加密算法：`TripleDES`（3DES）                                 |
+| `RC2CryptoProvider`       | 对称加密算法：`RC2`                                             |
+| `RC4CryptoProvider`       | 对称加密算法：`RC4`                                             |
+| `RSACryptoProvider`       | 非对称加密算法：`RSA`                                            |
+
+- `RSACryptoProvider`：
+
+> 支持2种密钥类型：`Xml`、`OpenSSL`
+> 
+> 支持跨平台：`Windows`, `Linux`, `Mac`, ...，***但需要注意***：
+
+1. 如果使用`.NET Framework`的版本小于4.6，默认使用 `System.Security.Cryptography.RSACryptoServiceProvider`，这个类并不支持跨平台，在`Windows`上运行正常，但是在`Linux`下运行就会报错（编译不会报错）。
+2. 如果在非`Windows`平台下使用`RSACryptoProvider`，建议升级`.NET Framework`的版本（>=4.6），或使用`.NET Core`。
+3. 在`Windows`平台下没有以上问题。
+
+### 术语解释
+
+- Base64 是一种基于 64 个可打印字符来表示二进制数据的编码方法。
+- AES（Advanced Encryption Standard， 高级加密标准），是目前对称密钥加密中比较通用的一种加密方式。速度快，安全级别高，支持 128、192、256、512 位密钥的加密。
+- RSA 签名算法是一种非对称算法，RSA 密钥包括公钥和私钥两部分，公钥是公开信息，私钥是保密信息。私钥用于签名，公钥用于验签。
+
 ## Sean.Utility.Compress.SharpZipLib
 
 > Zip compression tool based on SharpZipLib.

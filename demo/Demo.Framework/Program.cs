@@ -14,6 +14,7 @@ namespace Demo.Framework
             //JsonHelper.Serializer = NewJsonSerializer.Instance;
 
             ISimpleDo toDo = new RandomTest();
+            Console.WriteLine(toDo.GetType());
             toDo.Execute();
 
             Console.WriteLine("--------------->Done.");

@@ -50,6 +50,7 @@ namespace Demo.NetCore
             //ISimpleDo toDo = new ProcessTest();
             //ISimpleDo toDo = new MultiThreadTest();
             ISimpleDo toDo = new SimpleLocalMQTest();
+            Console.WriteLine(toDo.GetType());
             toDo.Execute();
 
             Console.WriteLine("--------------->Done.");

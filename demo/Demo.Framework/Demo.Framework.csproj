@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\INewJsonSerializer.cs" />
+    <Compile Include="CryptoProvider.cs" />
     <Compile Include="Extensions\DecimalExtensions.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Helper\AssemblyHelper.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Impls\Test\JsonTest.cs" />
     <Compile Include="Impls\Test\PathTest.cs" />
     <Compile Include="Impls\Test\RandomTest.cs" />
+    <Compile Include="Impls\Test\Security\RSATest.cs" />
     <Compile Include="Impls\Test\SmtpTest.cs" />
     <Compile Include="Impls\Test\TimestampTest.cs" />
     <Compile Include="Impls\Test\XmlTest.cs" />
