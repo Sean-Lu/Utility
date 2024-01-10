@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Sean.Utility.Contracts;
 using Sean.Utility.Extensions;
+using Sean.Utility.Format;
 
 namespace Sean.Utility.Serialize
 {
@@ -63,12 +64,14 @@ namespace Sean.Utility.Serialize
                 var data = (obj as DataTable).ToDictionary();
                 return SerializeObject(data);
             }
-            else if (typeof(T) == typeof(DataSet))
+
+            if (typeof(T) == typeof(DataSet))
             {
                 var data = (obj as DataSet).ToDictionary();
                 return SerializeObject(data);
             }
-            else if (typeof(T).IsAnonymousType())// 匿名类型
+
+            if (typeof(T).IsAnonymousType())// 匿名类型
             {
                 var dic = new Dictionary<string, object>();
                 foreach (var property in typeof(T).GetProperties())
@@ -77,7 +80,9 @@ namespace Sean.Utility.Serialize
                 }
                 return SerializeObject(dic);
             }
-            else if (typeof(T).GetCustomAttributes(typeof(SerializableAttribute), false).Any())// 解决 k__BackingField 的问题：正则查找替换
+
+            if (typeof(T).GetCustomAttributes(typeof(SerializableAttribute), false).Any()// 解决 k__BackingField 的问题：正则查找替换
+                && !typeof(T).GetCustomAttributes(typeof(DataContractAttribute), false).Any())
             {
                 var json = SerializeObject(obj);
                 var startStr = "\"<";
@@ -125,12 +130,14 @@ namespace Sean.Utility.Serialize
                 var data = DeserializeObject<List<Dictionary<string, object>>>(json).ToDataTable();
                 return (T)Convert.ChangeType(data, typeof(T));
             }
-            else if (typeof(T) == typeof(DataSet))
+
+            if (typeof(T) == typeof(DataSet))
             {
                 var data = DeserializeObject<Dictionary<string, List<Dictionary<string, object>>>>(json).ToDataSet();
                 return (T)Convert.ChangeType(data, typeof(T));
             }
-            else if (typeof(T) == typeof(object))// dynamic动态类型
+
+            if (typeof(T) == typeof(object))// dynamic动态类型
             {
                 if (json.StartsWith("["))
                 {
@@ -143,7 +150,8 @@ namespace Sean.Utility.Serialize
                     return (T)Convert.ChangeType(data, typeof(ExpandoObject));
                 }
             }
-            else if (typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(List<>))
+
+            if (typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(List<>))
             {
                 var types = typeof(T).GetGenericArguments();
                 if (types.Length == 1 && types[0] == typeof(object))// dynamic动态类型（泛型）
@@ -152,6 +160,28 @@ namespace Sean.Utility.Serialize
                     var result = data.Select(c => Convert.ChangeType(c, typeof(ExpandoObject))).ToList();
                     return (T)Convert.ChangeType(result, typeof(T));
                 }
+            }
+
+            if (typeof(T).GetCustomAttributes(typeof(SerializableAttribute), false).Any()
+                && !typeof(T).GetCustomAttributes(typeof(DataContractAttribute), false).Any())
+            {
+                var dynamicObject = DeserializeObject<ExpandoObject>(json);
+                var dic = (IDictionary<string, object>)dynamicObject;
+                var result = Activator.CreateInstance<T>();
+                var propertyInfos = typeof(T).GetProperties();
+                foreach (var propertyInfo in propertyInfos)
+                {
+                    if (dic.ContainsKey(propertyInfo.Name))
+                    {
+                        var value = dic[propertyInfo.Name];
+                        if (value != null)
+                        {
+                            var targetType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+                            propertyInfo.SetValue(result, ObjectConvert.ChangeType(value, targetType), null);
+                        }
+                    }
+                }
+                return result;
             }
 
             return DeserializeObject<T>(json);

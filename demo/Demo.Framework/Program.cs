@@ -13,7 +13,7 @@ namespace Demo.Framework
         {
             //JsonHelper.Serializer = NewJsonSerializer.Instance;
 
-            ISimpleDo toDo = new RandomTest();
+            ISimpleDo toDo = new JsonTest();
             Console.WriteLine(toDo.GetType());
             toDo.Execute();
 
