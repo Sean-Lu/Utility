@@ -47,9 +47,8 @@ namespace Demo.NetCore
             //_logger.LogError("这是一条测试内容");
 
             //ISimpleDo toDo = new SimpleQueueTest();
-            //ISimpleDo toDo = new ProcessTest();
-            //ISimpleDo toDo = new MultiThreadTest();
-            ISimpleDo toDo = new SimpleLocalMQTest();
+            //ISimpleDo toDo = new SimpleLocalMQTest();
+            ISimpleDo toDo = new SnowFlakeTest();
             Console.WriteLine(toDo.GetType());
             toDo.Execute();
 
