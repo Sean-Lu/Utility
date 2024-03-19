@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net4;net45;net46;netstandard2.0;net5</TargetFrameworks>
+		<TargetFrameworks>net4;net45;net46;netstandard2.0;net6</TargetFrameworks>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 		<Authors>Sean</Authors>
 		<Copyright>Copyright © 2016-2023 Sean</Copyright>
@@ -34,7 +34,7 @@
 
 	<ItemGroup>
 		<!-- Required if your repository is on GitHub -->
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
 
 		<!-- Required if your repository is on GitLab -->
 		<!--<PackageReference Include="Microsoft.SourceLink.GitLab" Version="1.1.1" PrivateAssets="All"/>-->
@@ -55,36 +55,14 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<!--<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="5.0.0" />-->
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
-		<!--<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />-->
-		<PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.3" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net5'">
-		<!--<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="5.0.0" />-->
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
-		<!--<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />-->
-		<PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.3" />
 	</ItemGroup>
-
-	<!--<ItemGroup>
-		<Compile Update="Net\WebClientExt.cs">
-			<SubType>Component</SubType>
-		</Compile>
-	</ItemGroup>-->
-
-	<!--<ItemGroup>
-		<Content Include="docs\**">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-			<Pack>true</Pack>
-			<PackagePath>docs</PackagePath>
-		</Content>
-	</ItemGroup>-->
 </Project>

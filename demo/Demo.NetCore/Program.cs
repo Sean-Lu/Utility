@@ -1,7 +1,6 @@
 ﻿using Demo.NetCore.Contracts;
 using Demo.NetCore.Impls;
 using Microsoft.Extensions.DependencyInjection;
-using Sean.Core.Ioc;
 using Sean.Utility.Contracts;
 using Sean.Utility.Extensions;
 using Sean.Utility.Format;
@@ -19,7 +18,7 @@ namespace Demo.NetCore
         static void Main(string[] args)
         {
             #region 依赖注入（DI）
-            IocContainer.Instance.ConfigureServices(services =>
+            IocContainer.ConfigureServices((services, configuration) =>
             {
                 services.AddSimpleLocalLogger();
                 //services.AddSingleton<IJsonSerializer, JsonSerializer>();
@@ -43,7 +42,7 @@ namespace Demo.NetCore
             #endregion
 
             //_logger = SimpleLocalLoggerManager.GetCurrentClassLogger();
-            _logger = IocContainer.Instance.GetService<ISimpleLogger<Program>>();
+            _logger = IocContainer.GetService<ISimpleLogger<Program>>();
             //_logger.LogError("这是一条测试内容");
 
             //ISimpleDo toDo = new SimpleQueueTest();

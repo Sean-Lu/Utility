@@ -1,17 +1,14 @@
 ## 简介
 
-> Ctrl + C, Ctrl + V ??? 没必要重复搬砖，做点更加有意义的事情吧！！！
+> `Ctrl + C`, `Ctrl + V` ??? 没必要重复搬砖，做点更加有意义的事情吧！！！
 
 ## Packages
 
 | Package                                                                              | NuGet Stable                                                                                                                                         | NuGet Pre-release                                                                                                                                       | Downloads                                                                                                                                             |
 | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Sean.Utility](https://www.nuget.org/packages/Sean.Utility/)                         | [![Sean.Utility](https://img.shields.io/nuget/v/Sean.Utility.svg)](https://www.nuget.org/packages/Sean.Utility/)                                     | [![Sean.Utility](https://img.shields.io/nuget/vpre/Sean.Utility.svg)](https://www.nuget.org/packages/Sean.Utility/)                                     | [![Sean.Utility](https://img.shields.io/nuget/dt/Sean.Utility.svg)](https://www.nuget.org/packages/Sean.Utility/)                                     |
-| [Sean.Utility.Office.NPOI](https://www.nuget.org/packages/Sean.Utility.Office.NPOI/) | [![Sean.Utility.Office.NPOI](https://img.shields.io/nuget/v/Sean.Utility.Office.NPOI.svg)](https://www.nuget.org/packages/Sean.Utility.Office.NPOI/) | [![Sean.Utility.Office.NPOI](https://img.shields.io/nuget/vpre/Sean.Utility.Office.NPOI.svg)](https://www.nuget.org/packages/Sean.Utility.Office.NPOI/) | [![Sean.Utility.Office.NPOI](https://img.shields.io/nuget/dt/Sean.Utility.Office.NPOI.svg)](https://www.nuget.org/packages/Sean.Utility.Office.NPOI/) |
 
 ## Sean.Utility
-
-> Library of utility methods.
 
 | Class                                         | 说明                                                                                                                                                               |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -114,30 +111,6 @@ JsonHelper.Serialize(obj);
 snowflake现在有较好的改良方案，比如美团点评开源的分布式ID框架：leaf，通过使用ZooKeeper解决了时钟依赖问题。
 ```
 
-## Sean.Utility.Compress.SharpZipLib
-
-> Zip compression tool based on SharpZipLib.
-
-## Sean.Utility.Net.Http
-
-> Http client
-
-| Class                                     | 说明                                    |
-| ----------------------------------------- | --------------------------------------- |
-| `Sean.Utility.Net.Http.HttpClientWrapper` | RESTful接口调用：Get、Post、Put、Delete |
-
-## Sean.Utility.Office.NPOI
-
-> Office file operation (based on NPOI): Excel (supported formats: xls, xlsx).
-
-| Class                                  | 说明                               |
-| -------------------------------------- | ---------------------------------- |
-| `Sean.Utility.Office.NPOI.ExcelHelper` | Excel文件操作，支持格式：xls、xlsx |
-
 ## Sean.Utility.Web
 
-> Web
-
 ## Sean.Utility.WindowsForms
-
-> WindowsForms

@@ -26,21 +26,6 @@ namespace Sean.Utility.Security
     }
 
     /// <summary>
-    /// RSA密钥长度类型
-    /// </summary>
-    public enum RsaKeySizeType
-    {
-        /// <summary>
-        /// SHA1WithRSA，对RSA密钥的长度不限制，推荐使用2048位以上
-        /// </summary>
-        RSA,
-        /// <summary>
-        /// SHA256WithRSA，强制要求RSA密钥的长度至少为2048
-        /// </summary>
-        RSA2
-    }
-
-    /// <summary>
     /// RSA密钥类型
     /// </summary>
     public enum RsaKeyType

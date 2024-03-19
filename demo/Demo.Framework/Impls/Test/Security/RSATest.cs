@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using Sean.Utility.Contracts;
 using Sean.Utility.Security;
 using Sean.Utility.Security.Provider;
@@ -13,7 +14,9 @@ namespace Demo.Framework.Impls.Test.Security
             {
                 DefaultKeyType = RsaKeyType.FromXmlString,
                 DefaultKeyEncodeMode = EncodeMode.None,
-                DefaultEncryptionEncodeMode = EncodeMode.Hex
+                DefaultEncryptionEncodeMode = EncodeMode.Hex,
+                DefaultHashAlgorithmName = HashAlgorithmName.SHA1,// SHA1WithRSA，对RSA密钥的长度不限制，推荐使用2048位以上
+                //DefaultHashAlgorithmName = HashAlgorithmName.SHA256,// SHA256WithRSA，强制要求RSA密钥的长度至少为2048
             };
 
             #region 密钥
