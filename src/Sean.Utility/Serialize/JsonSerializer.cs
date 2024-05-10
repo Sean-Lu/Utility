@@ -176,8 +176,7 @@ namespace Sean.Utility.Serialize
                         var value = dic[propertyInfo.Name];
                         if (value != null)
                         {
-                            var targetType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
-                            propertyInfo.SetValue(result, ObjectConvert.ChangeType(value, targetType), null);
+                            propertyInfo.SetValue(result, ObjectConvert.ChangeType(value, propertyInfo.PropertyType), null);
                         }
                     }
                 }

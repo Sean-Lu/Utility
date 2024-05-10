@@ -88,7 +88,7 @@ namespace Sean.Utility.Format
                 var sourcePropertyInfo = typeSource.GetProperty(destinationPropertyInfo.Name);
                 if (sourcePropertyInfo != null && destinationPropertyInfo.GetSetMethod() != null && sourcePropertyInfo.GetGetMethod() != null)
                 {
-                    destinationPropertyInfo.SetValue(destination, sourcePropertyInfo.GetValue(source, null), null);
+                    destinationPropertyInfo.SetValue(destination, ChangeType(sourcePropertyInfo.GetValue(source, null), destinationPropertyInfo.PropertyType), null);
                 }
             }
         }
@@ -117,7 +117,7 @@ namespace Sean.Utility.Format
                 var sourcePropertyInfo = typeSource.GetProperty(destinationPropertyInfo.Name);
                 if (sourcePropertyInfo != null && destinationPropertyInfo.GetSetMethod() != null && sourcePropertyInfo.GetGetMethod() != null)
                 {
-                    destinationPropertyInfo.SetValue(destination, sourcePropertyInfo.GetValue(source, null), null);
+                    destinationPropertyInfo.SetValue(destination, ChangeType(sourcePropertyInfo.GetValue(source, null), destinationPropertyInfo.PropertyType), null);
                 }
             }
         }
@@ -172,7 +172,7 @@ namespace Sean.Utility.Format
                 var sourceFieldInfo = typeSource.GetField(destinationFieldInfo.Name);
                 if (sourceFieldInfo != null)
                 {
-                    destinationFieldInfo.SetValue(destination, sourceFieldInfo.GetValue(source));
+                    destinationFieldInfo.SetValue(destination, ChangeType(sourceFieldInfo.GetValue(source), destinationFieldInfo.FieldType));
                 }
             }
         }
@@ -201,7 +201,7 @@ namespace Sean.Utility.Format
                 var sourceFieldInfo = typeSource.GetField(destinationFieldInfo.Name);
                 if (sourceFieldInfo != null)
                 {
-                    destinationFieldInfo.SetValue(destination, sourceFieldInfo.GetValue(source));
+                    destinationFieldInfo.SetValue(destination, ChangeType(sourceFieldInfo.GetValue(source), destinationFieldInfo.FieldType));
                 }
             }
         }
