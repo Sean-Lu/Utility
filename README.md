@@ -111,6 +111,12 @@ JsonHelper.Serialize(obj);
 snowflake现在有较好的改良方案，比如美团点评开源的分布式ID框架：leaf，通过使用ZooKeeper解决了时钟依赖问题。
 ```
 
+### Job
+
+| Class                     | 描述                       |
+| ------------------------- | -------------------------- |
+| `SimpleTaskScheduler`     | 普通定时任务               |
+
 ## Sean.Utility.Web
 
 ## Sean.Utility.WindowsForms

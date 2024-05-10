@@ -15,7 +15,7 @@ namespace Demo.NetCore.Impls.Test
             //Console.WriteLine(DateTimeHelper.GetTimestamp(DateTime.Today));
             //Console.WriteLine(DateTimeHelper.GetDateTime(IdWorker.StartTimestamp, TimestampType.TotalMilliseconds).ToLongDateTimeWithTimezone());
 
-            var idManager = new IdManager<Program>();
+            var idManager = new IdManager();
             var count = 10000;
             var stopwatch = new Stopwatch();
             stopwatch.Start();

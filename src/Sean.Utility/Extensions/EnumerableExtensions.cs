@@ -17,22 +17,22 @@ namespace Sean.Utility.Extensions
         /// <returns>Returns whether the execution was successful.</returns>
         public static bool PagingExecute<T>(this IEnumerable<T> list, int pageSize, Func<int, IEnumerable<T>, bool> func)
         {
-            var pageIndex = 1;
+            var pageNumber = 1;
 
             if (list == null || !list.Any()) return false;
 
             if (list.Count() <= pageSize)
             {
-                return func(pageIndex, list);
+                return func(pageNumber, list);
             }
 
             do
             {
-                var datas = list.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                var datas = list.Skip((pageNumber - 1) * pageSize).Take(pageSize);
                 if (!datas.Any()) break;
-                if (!func(pageIndex, datas)) return false;
+                if (!func(pageNumber, datas)) return false;
 
-                pageIndex++;
+                pageNumber++;
             } while (true);
 
             return true;
@@ -49,22 +49,22 @@ namespace Sean.Utility.Extensions
         /// <returns>Returns whether the execution was successful.</returns>
         public static async Task<bool> PagingExecuteAsync<T>(this IEnumerable<T> list, int pageSize, Func<int, IEnumerable<T>, Task<bool>> func)
         {
-            var pageIndex = 1;
+            var pageNumber = 1;
 
             if (list == null || !list.Any()) return false;
 
             if (list.Count() <= pageSize)
             {
-                return await func(pageIndex, list);
+                return await func(pageNumber, list);
             }
 
             do
             {
-                var datas = list.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                var datas = list.Skip((pageNumber - 1) * pageSize).Take(pageSize);
                 if (!datas.Any()) break;
-                if (!await func(pageIndex, datas)) return false;
+                if (!await func(pageNumber, datas)) return false;
 
-                pageIndex++;
+                pageNumber++;
             } while (true);
 
             return true;
