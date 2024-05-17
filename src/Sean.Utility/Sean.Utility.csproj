@@ -1,44 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../../config/Common.props" />
 
 	<PropertyGroup>
 		<TargetFrameworks>net4;net45;net46;netstandard2.0;net6</TargetFrameworks>
-		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-		<Authors>Sean</Authors>
-		<Copyright>Copyright © 2016-2024 Sean</Copyright>
 		<Description>Library of utility methods.</Description>
 		<Version>2.1.4</Version>
-		<PackageProjectUrl>https://github.com/Sean-Lu/Utility</PackageProjectUrl>
-
-		<!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-
-		<!--<DebugSymbols>true</DebugSymbols>-->
-		<!--<DebugType>embedded</DebugType>-->
-
-		<!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
-		<!-- You must publish both packages, the package that contains the DLL (.nupkg) and the one that contains the symbols (.snupkg) -->
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
-		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-		<Deterministic>true</Deterministic>
-
-		<!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<!-- Required if your repository is on GitHub -->
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-
-		<!-- Required if your repository is on GitLab -->
-		<!--<PackageReference Include="Microsoft.SourceLink.GitLab" Version="1.1.1" PrivateAssets="All"/>-->
-	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<DefineConstants>NS2</DefineConstants>
@@ -57,12 +24,12 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-		<PackageReference Include="System.Drawing.Common" Version="8.0.3" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6'">
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-		<PackageReference Include="System.Drawing.Common" Version="8.0.3" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.5" />
 	</ItemGroup>
 </Project>

@@ -47,26 +47,16 @@
   <ItemGroup>
     <Compile Include="Contracts\INewJsonSerializer.cs" />
     <Compile Include="CryptoProvider.cs" />
-    <Compile Include="Extensions\DecimalExtensions.cs" />
-    <Compile Include="Extensions\DoubleExtensions.cs" />
-    <Compile Include="Helper\AssemblyHelper.cs" />
-    <Compile Include="Helper\ConvertHelper.cs" />
-    <Compile Include="Helper\WebClientExt.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Impls\NewJsonSerializer.cs" />
     <Compile Include="Impls\Test\BarcodeTest.cs" />
     <Compile Include="Impls\Test\CmdTest.cs" />
     <Compile Include="Impls\Test\DataTableTest.cs" />
-    <Compile Include="Impls\Test\DirectoryTest.cs" />
     <Compile Include="Impls\Test\FileShareTest.cs" />
     <Compile Include="Impls\Test\JsonTest.cs" />
-    <Compile Include="Impls\Test\PathTest.cs" />
     <Compile Include="Impls\Test\RandomTest.cs" />
     <Compile Include="Impls\Test\Security\RSATest.cs" />
     <Compile Include="Impls\Test\SmtpTest.cs" />
     <Compile Include="Impls\Test\TimestampTest.cs" />
-    <Compile Include="Impls\Test\XmlTest.cs" />
     <Compile Include="Models\TestModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
