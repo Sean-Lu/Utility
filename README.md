@@ -115,7 +115,7 @@ snowflake现在有较好的改良方案，比如美团点评开源的分布式ID
 
 | Class                     | 描述                       |
 | ------------------------- | -------------------------- |
-| `SimpleTaskScheduler`     | 普通定时任务               |
+| `SimpleJobScheduler`      | 简单定时任务               |
 
 ## Sean.Utility.Web
 

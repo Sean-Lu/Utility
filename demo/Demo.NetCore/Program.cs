@@ -8,6 +8,7 @@ using Sean.Utility.Impls.Log;
 using Sean.Utility.Serialize;
 using System;
 using Demo.NetCore.Impls.Test;
+using Demo.NetCore.Impls.Test.Job;
 
 namespace Demo.NetCore
 {
@@ -45,9 +46,10 @@ namespace Demo.NetCore
             _logger = IocContainer.GetService<ISimpleLogger<Program>>();
             //_logger.LogError("这是一条测试内容");
 
+            //ISimpleDo toDo = new SnowFlakeTest();
             //ISimpleDo toDo = new SimpleQueueTest();
             //ISimpleDo toDo = new SimpleLocalMQTest();
-            ISimpleDo toDo = new SnowFlakeTest();
+            ISimpleDo toDo = new SimpleJobSchedulerTest();
             Console.WriteLine(toDo.GetType());
             toDo.Execute();
 

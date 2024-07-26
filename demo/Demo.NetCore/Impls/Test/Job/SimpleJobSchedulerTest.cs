@@ -1,10 +1,11 @@
 ﻿using Sean.Utility.Contracts;
 using Sean.Utility.Job;
 using System;
+using System.Threading;
 
 namespace Demo.NetCore.Impls.Test.Job
 {
-    public class SimpleTaskSchedulerTest : ISimpleDo
+    public class SimpleJobSchedulerTest : ISimpleDo
     {
         public void Execute()
         {
@@ -13,10 +14,11 @@ namespace Demo.NetCore.Impls.Test.Job
             Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] 开始执行定时任务");
 
             // 创建定时任务调度器，每3秒执行一次
-            var scheduler = new SimpleTaskScheduler("测试定时任务", () =>
+            var scheduler = new SimpleJobScheduler("测试定时任务", (context) =>
             {
-                Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}]: Task executed.");
-            }, TimeSpan.FromSeconds(3), false);
+                Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [{context.JobName}] Task executed.");
+                Thread.Sleep(5000);
+            }, TimeSpan.FromSeconds(3), true, true);
 
             // 启动定时任务
             scheduler.Start();
