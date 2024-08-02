@@ -18,20 +18,30 @@ namespace Demo.NetCore.Impls.Test
             var idManager = new IdManager();
             var count = 10000;
             var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            try
+            {
+                stopwatch.Start();
 
-            //DelegateHelper.Repeat(() =>
-            //{
-            //    var id = idManager.NextId();
-            //    Console.WriteLine(id);
-            //    return false;
-            //}, count);
+                //DelegateHelper.Repeat(() =>
+                //{
+                //    var id = idManager.NextId();
+                //    Console.WriteLine(id);
+                //    return false;
+                //}, count);
 
-            var ids = idManager.NextIds(count);
-            ids.ForEach(Console.WriteLine);
+                var ids = idManager.NextIds(count);
+                ids.ForEach(Console.WriteLine);
 
-            stopwatch.Stop();
-            Console.WriteLine($"生成{count}个id，耗时：{stopwatch.ElapsedMilliseconds}ms");
+                stopwatch.Stop();
+                Console.WriteLine($"生成{count}个id，耗时：{stopwatch.ElapsedMilliseconds}ms");
+            }
+            finally
+            {
+                if (stopwatch.IsRunning)
+                {
+                    stopwatch.Stop();
+                }
+            }
         }
     }
 }
