@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Sean.Utility.Job;
 
-public delegate void JobCallback(JobExecutionContext context);
+public delegate void SimpleJobCallback(SimpleJobExecutionContext context);
 
 /// <summary>
 /// 简单定时任务
@@ -12,14 +12,21 @@ public class SimpleJobScheduler : IDisposable
 {
     public string Name => _name;
 
+    public bool DisallowConcurrentExecution
+    {
+        get => _disallowConcurrentExecution;
+        set => _disallowConcurrentExecution = value;
+    }
+
     public bool IsStarted => _isStarted;
+    public bool IsExecuting => _isExecuting;
 
     private Timer _timer;
     private readonly string _name;
-    private readonly JobCallback _jobCallback;
+    private readonly SimpleJobCallback _jobCallback;
+    private readonly TimeSpan _delay;
     private readonly TimeSpan _interval;
-    private readonly bool _runWhenStart;
-    private readonly bool _disallowConcurrentExecution;
+    private bool _disallowConcurrentExecution;
     private bool _isStarted;
     private bool _isExecuting;
 
@@ -31,29 +38,83 @@ public class SimpleJobScheduler : IDisposable
     /// <param name="interval">执行任务间隔时间</param>
     /// <param name="runWhenStart">是否在启动的时候立刻执行任务</param>
     /// <param name="disallowConcurrentExecution">是否禁止并发执行任务</param>
-    public SimpleJobScheduler(string name, JobCallback jobCallback, TimeSpan interval, bool runWhenStart = false, bool disallowConcurrentExecution = false)
+    public SimpleJobScheduler(string name, SimpleJobCallback jobCallback, TimeSpan interval, bool runWhenStart, bool disallowConcurrentExecution = false)
     {
         _name = name;
         _jobCallback = jobCallback;
+        _delay = runWhenStart ? TimeSpan.Zero : interval;
         _interval = interval;
-        _runWhenStart = runWhenStart;
+        _disallowConcurrentExecution = disallowConcurrentExecution;
+    }
+    /// <summary>
+    /// 创建简单定时任务
+    /// </summary>
+    /// <param name="name">任务名称</param>
+    /// <param name="jobCallback">执行任务的回调方法</param>
+    /// <param name="interval">执行任务间隔时间（单位：毫秒）</param>
+    /// <param name="runWhenStart">是否在启动的时候立刻执行任务</param>
+    /// <param name="disallowConcurrentExecution">是否禁止并发执行任务</param>
+    public SimpleJobScheduler(string name, SimpleJobCallback jobCallback, int interval, bool runWhenStart, bool disallowConcurrentExecution = false)
+    {
+        _name = name;
+        _jobCallback = jobCallback;
+        _delay = runWhenStart ? TimeSpan.Zero : TimeSpan.FromMilliseconds(interval);
+        _interval = TimeSpan.FromMilliseconds(interval);
+        _disallowConcurrentExecution = disallowConcurrentExecution;
+    }
+    /// <summary>
+    /// 创建简单定时任务
+    /// </summary>
+    /// <param name="name">任务名称</param>
+    /// <param name="jobCallback">执行任务的回调方法</param>
+    /// <param name="delay">延迟执行任务的时间</param>
+    /// <param name="interval">执行任务间隔时间</param>
+    /// <param name="disallowConcurrentExecution">是否禁止并发执行任务</param>
+    public SimpleJobScheduler(string name, SimpleJobCallback jobCallback, TimeSpan delay, TimeSpan interval, bool disallowConcurrentExecution = false)
+    {
+        _name = name;
+        _jobCallback = jobCallback;
+        _delay = delay;
+        _interval = interval;
+        _disallowConcurrentExecution = disallowConcurrentExecution;
+    }
+    /// <summary>
+    /// 创建简单定时任务
+    /// </summary>
+    /// <param name="name">任务名称</param>
+    /// <param name="jobCallback">执行任务的回调方法</param>
+    /// <param name="delay">延迟执行任务的时间（单位：毫秒）</param>
+    /// <param name="interval">执行任务间隔时间（单位：毫秒）</param>
+    /// <param name="disallowConcurrentExecution">是否禁止并发执行任务</param>
+    public SimpleJobScheduler(string name, SimpleJobCallback jobCallback, int delay, int interval, bool disallowConcurrentExecution = false)
+    {
+        _name = name;
+        _jobCallback = jobCallback;
+        _delay = TimeSpan.FromMilliseconds(delay);
+        _interval = TimeSpan.FromMilliseconds(interval);
         _disallowConcurrentExecution = disallowConcurrentExecution;
     }
 
     /// <summary>
     /// 启动定时任务
     /// </summary>
-    public virtual void Start()
+    public void Start()
     {
         if (_isStarted)
         {
             return;
         }
 
-        // 创建定时器，并设置回调方法和执行间隔
-        _timer = _runWhenStart
-            ? new Timer(ExecuteTask, null, TimeSpan.Zero, _interval)
-            : new Timer(ExecuteTask, null, _interval, _interval);
+        if (_timer == null)
+        {
+            // 创建定时器，并设置回调方法和执行间隔
+            _timer = new Timer(ExecuteTask, null, _delay, _interval);
+        }
+        else
+        {
+            // 重新启动定时器
+            _timer.Change(_delay, _interval);
+        }
 
         _isStarted = true;
     }
@@ -61,19 +122,20 @@ public class SimpleJobScheduler : IDisposable
     /// <summary>
     /// 停止定时任务
     /// </summary>
-    public virtual void Stop()
+    public void Stop()
     {
         if (!_isStarted)
         {
             return;
         }
 
-        _timer?.Dispose();
+        // 停止定时器，但不释放资源
+        _timer.Change(Timeout.Infinite, Timeout.Infinite);
 
         _isStarted = false;
     }
 
-    public virtual void Dispose()
+    public void Dispose()
     {
         _timer?.Dispose();
     }
@@ -82,7 +144,7 @@ public class SimpleJobScheduler : IDisposable
     /// 执行任务
     /// </summary>
     /// <param name="state"></param>
-    protected virtual void ExecuteTask(object state)
+    private void ExecuteTask(object state)
     {
         if (_disallowConcurrentExecution && _isExecuting)
         {
@@ -96,10 +158,7 @@ public class SimpleJobScheduler : IDisposable
         try
         {
             // 执行任务
-            var jobExecutionContext = new JobExecutionContext
-            {
-                JobName = _name
-            };
+            var jobExecutionContext = new SimpleJobExecutionContext(_name, _timer, _delay, _interval);
             _jobCallback?.Invoke(jobExecutionContext);
         }
         finally
