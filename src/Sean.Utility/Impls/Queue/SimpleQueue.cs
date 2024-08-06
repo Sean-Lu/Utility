@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Sean.Utility.Contracts;
 using Sean.Utility.Enums;
 using Sean.Utility.Extensions;
-using Sean.Utility.Timers;
+using Timer = System.Timers.Timer;
 
 #if NETSTANDARD || NET5_0_OR_GREATER
 using Microsoft.Extensions.DependencyInjection;
@@ -63,7 +64,7 @@ namespace Sean.Utility.Impls.Queue
         /// <summary>
         /// 定时器
         /// </summary>
-        private readonly TimerExt _timer;
+        private readonly Timer _timer;
 
         /// <summary>
         /// 生产者的状态
@@ -120,10 +121,9 @@ namespace Sean.Utility.Impls.Queue
                     throw new Exception($"The value of {nameof(_options.TimerInterval)} must be greater than 0.");
                 }
 
-                _timer = new TimerExt(_options.TimerInterval, disallowConcurrentExecution: false)
-                {
-                    Execute = TimerExecute
-                };
+                _timer = new Timer(_options.TimerInterval);
+                _timer.AutoReset = true;
+                _timer.Elapsed += TimerCallback;
                 _timer.Start();
             }
         }
@@ -446,7 +446,7 @@ namespace Sean.Utility.Impls.Queue
         /// <summary>
         /// 定时器触发
         /// </summary>
-        private void TimerExecute()
+        private void TimerCallback(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             ExecuteConsume(() =>
             {
