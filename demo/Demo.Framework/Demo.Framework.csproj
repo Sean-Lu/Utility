@@ -48,7 +48,6 @@
     <Compile Include="Contracts\INewJsonSerializer.cs" />
     <Compile Include="CryptoProvider.cs" />
     <Compile Include="Impls\NewJsonSerializer.cs" />
-    <Compile Include="Impls\Test\BarcodeTest.cs" />
     <Compile Include="Impls\Test\CmdTest.cs" />
     <Compile Include="Impls\Test\DataTableTest.cs" />
     <Compile Include="Impls\Test\FileShareTest.cs" />
