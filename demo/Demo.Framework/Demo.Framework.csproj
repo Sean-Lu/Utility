@@ -46,15 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\INewJsonSerializer.cs" />
+    <Compile Include="Contracts\ISimpleDo.cs" />
     <Compile Include="CryptoProvider.cs" />
     <Compile Include="Impls\NewJsonSerializer.cs" />
-    <Compile Include="Impls\Test\CmdTest.cs" />
-    <Compile Include="Impls\Test\DataTableTest.cs" />
     <Compile Include="Impls\Test\FileShareTest.cs" />
     <Compile Include="Impls\Test\JsonTest.cs" />
     <Compile Include="Impls\Test\RandomTest.cs" />
     <Compile Include="Impls\Test\Security\RSATest.cs" />
-    <Compile Include="Impls\Test\SmtpTest.cs" />
+    <Compile Include="Impls\Test\SmtpEmailTest.cs" />
     <Compile Include="Impls\Test\TimestampTest.cs" />
     <Compile Include="Models\TestModel.cs" />
     <Compile Include="Program.cs" />

@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Sean.Utility.Impls.MQ;
-using Sean.Utility.Impls.Queue;
 
 namespace Sean.Utility.Contracts
 {
-    public interface ISimpleLocalMQConsumer : ISimpleService, IDisposable
+    public interface ISimpleLocalMQConsumer : IDisposable
     {
         string Identity { get; }
+
+        bool IsStarted { get; }
+
+        void Start();
+        void Stop();
     }
     public interface ISimpleLocalMQConsumer<T> : ISimpleLocalMQConsumer
     {

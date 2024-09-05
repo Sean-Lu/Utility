@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using Demo.Framework.Contracts;
 using Demo.Framework.Impls.Test;
 using Newtonsoft.Json;
 using Sean.Utility.Contracts;

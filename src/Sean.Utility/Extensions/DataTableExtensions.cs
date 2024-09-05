@@ -31,7 +31,7 @@ namespace Sean.Utility.Extensions
             }
 
             var table = new DataTable();
-            DataTableHelper.AddItems(table, listDic);
+            DataTableHelper.AddRows(table, listDic);
             return table;
         }
     }

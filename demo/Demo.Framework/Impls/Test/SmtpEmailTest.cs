@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Mail;
 using System.Text;
-using Sean.Utility.Contracts;
-using Sean.Utility.Net.Mail;
+using Demo.Framework.Contracts;
 
 namespace Demo.Framework.Impls.Test
 {
-    internal class SmtpTest : ISimpleDo
+    /// <summary>
+    /// 使用 SMTP 协议发送电子邮件
+    /// </summary>
+    internal class SmtpEmailTest : ISimpleDo
     {
         public void Execute()
         {
@@ -66,13 +69,13 @@ namespace Demo.Framework.Impls.Test
                 }
 
                 // 发送邮件
-                using (var smtpClientProvider = new SmtpClientProvider("127.0.0.1"))
+                using (var smtpClient = new SmtpClient("127.0.0.1", 25))
                 {
-                    //smtpClientProvider.Client.Credentials = new NetworkCredential("userName", "password");
-                    smtpClientProvider.Client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                    smtpClientProvider.Client.EnableSsl = true;
+                    //smtpClient.Credentials = new NetworkCredential("userName", "password");
+                    smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    smtpClient.EnableSsl = true;
 
-                    smtpClientProvider.SendMail(mm);
+                    smtpClient.Send(mm);
                 }
             }
         }

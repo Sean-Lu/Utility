@@ -5,6 +5,7 @@ using Sean.Utility.Extensions;
 using Sean.Utility.SnowFlake;
 using System;
 using System.Diagnostics;
+using Demo.NetCore.Contracts;
 
 namespace Demo.NetCore.Impls.Test
 {

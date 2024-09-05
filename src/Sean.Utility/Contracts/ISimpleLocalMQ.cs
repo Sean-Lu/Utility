@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading;
 using Sean.Utility.Enums;
 using Sean.Utility.Impls.MQ;
-using Sean.Utility.Impls.Queue;
 
 namespace Sean.Utility.Contracts
 {
-    public interface ISimpleLocalMQ : ISimpleService, IDisposable
+    public interface ISimpleLocalMQ : IDisposable
     {
         /// <summary>
         /// 消息队列名称
@@ -18,6 +15,11 @@ namespace Sean.Utility.Contracts
         /// 消息队列类型
         /// </summary>
         MQType Type { get; }
+
+        bool IsStarted { get; }
+
+        void Start();
+        void Stop();
     }
 
     /// <summary>

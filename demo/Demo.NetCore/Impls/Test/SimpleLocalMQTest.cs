@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Demo.NetCore.Contracts;
 using Demo.NetCore.Models;
 using Newtonsoft.Json;
 using Sean.Utility;

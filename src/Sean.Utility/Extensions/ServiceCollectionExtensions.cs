@@ -43,17 +43,15 @@ namespace Sean.Utility.Extensions
 
         #region SimpleLocalLogger
         /// <summary>
-        /// 默认依赖注入(<paramref name="useDefaultDependencyInjection"/> == true)：
         /// <para><see cref="ISimpleLogger"/></para>
         /// <para><see cref="ISimpleLogger{T}"/></para>
         /// <para><see cref="ISimpleLoggerAsync{T}"/></para>
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="useDefaultDependencyInjection"></param>
         /// <param name="configureOptions"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSimpleLocalLogger(this IServiceCollection services, bool useDefaultDependencyInjection = true, Action<SimpleLocalLoggerOptions> configureOptions = null, IConfiguration configuration = null)
+        public static IServiceCollection AddSimpleLocalLogger(this IServiceCollection services, Action<SimpleLocalLoggerOptions> configureOptions = null, IConfiguration configuration = null)
         {
             var provider = services.BuildServiceProvider();
             SimpleLocalLoggerBase.ServiceProvider = provider;
@@ -72,12 +70,9 @@ namespace Sean.Utility.Extensions
                 services.Configure(configureOptions);
             }
 
-            if (useDefaultDependencyInjection)
-            {
-                services.AddTransient(typeof(ISimpleLogger), typeof(SimpleLocalLogger));
-                services.AddTransient(typeof(ISimpleLogger<>), typeof(SimpleLocalLogger<>));
-                services.AddTransient(typeof(ISimpleLoggerAsync<>), typeof(SimpleLocalLoggerAsync<>));
-            }
+            services.AddTransient(typeof(ISimpleLogger), typeof(SimpleLocalLogger));
+            services.AddTransient(typeof(ISimpleLogger<>), typeof(SimpleLocalLogger<>));
+            services.AddTransient(typeof(ISimpleLoggerAsync<>), typeof(SimpleLocalLoggerAsync<>));
 
             return services;
         }
@@ -88,11 +83,10 @@ namespace Sean.Utility.Extensions
         /// <see cref="ISimpleQueue{T}"/>
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="useDefaultDependencyInjection"></param>
         /// <param name="configureOptions"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddSimpleQueue(this IServiceCollection services, bool useDefaultDependencyInjection = true, Action<SimpleQueueOptions> configureOptions = null, IConfiguration configuration = null)
+        public static IServiceCollection AddSimpleQueue(this IServiceCollection services, Action<SimpleQueueOptions> configureOptions = null, IConfiguration configuration = null)
         {
             var provider = services.BuildServiceProvider();
             SimpleQueueBase.ServiceProvider = provider;
@@ -111,10 +105,7 @@ namespace Sean.Utility.Extensions
                 services.Configure(configureOptions);
             }
 
-            if (useDefaultDependencyInjection)
-            {
-                services.AddSingleton(typeof(ISimpleQueue<>), typeof(SimpleQueue<>));
-            }
+            services.AddSingleton(typeof(ISimpleQueue<>), typeof(SimpleQueue<>));
 
             return services;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Demo.NetCore.Contracts;
 using Demo.NetCore.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

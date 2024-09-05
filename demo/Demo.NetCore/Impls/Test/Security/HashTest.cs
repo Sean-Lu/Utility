@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
+using Demo.NetCore.Contracts;
 using Sean.Utility.Contracts;
 
 namespace Demo.NetCore.Impls.Test.Security

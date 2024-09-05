@@ -1,106 +1,157 @@
-﻿using System;
+﻿using Sean.Utility.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace Sean.Utility
+namespace Sean.Utility;
+
+public class DataTableHelper
 {
-    public class DataTableHelper
+    public static DataTable Create<T>(string tableName = null, Action<DataColumn> setColumn = null) where T : class
     {
-        public static DataTable Create<T>(string tableName = null, Action<DataColumn> setColumn = null) where T : class
+        var dataTable = new DataTable(tableName ?? typeof(T).Name);
+        var properties = typeof(T).GetProperties();
+        foreach (var propertyInfo in properties)
         {
-            return DataTable<T>.Create(tableName, setColumn);
+            var propertyType = propertyInfo.PropertyType.IsNullableType() ? Nullable.GetUnderlyingType(propertyInfo.PropertyType) : propertyInfo.PropertyType;
+            var column = dataTable.Columns.Add(propertyInfo.Name, propertyType ?? propertyInfo.PropertyType);
+            setColumn?.Invoke(column);
         }
-        public static DataTable Create<T>(T model, string tableName = null, Action<DataColumn> setColumn = null) where T : class
+        return dataTable;
+    }
+    public static DataTable Create<T>(T model, string tableName = null, Action<DataColumn> setColumn = null) where T : class
+    {
+        if (model == null)
         {
-            return DataTable<T>.Create(model, tableName, setColumn);
-        }
-        public static DataTable Create<T>(IEnumerable<T> list, string tableName = null, Action<DataColumn> setColumn = null) where T : class
-        {
-            return DataTable<T>.Create(list, tableName, setColumn);
-        }
-
-        public static void AddItem<T>(DataTable table, T item, bool autoCreateColumn = true) where T : class
-        {
-            if (table == null || item == null)
-            {
-                return;
-            }
-
-            if (item is IDictionary<string, object> dic)
-            {
-                AddItemFromDictionary(table, dic, autoCreateColumn);
-                return;
-            }
-
-            DataTable<T>.AddItem(table, item, autoCreateColumn);
+            return null;
         }
 
-        public static void AddItems<T>(DataTable table, IEnumerable<T> items, bool autoCreateColumn = true) where T : class
+        var table = Create<T>(tableName, setColumn);
+        AddRow(table, model);
+        return table;
+    }
+    public static DataTable Create<T>(IEnumerable<T> list, string tableName = null, Action<DataColumn> setColumn = null) where T : class
+    {
+        if (list == null)
         {
-            if (table == null || items == null || !items.Any())
-            {
-                return;
-            }
-
-            if (items is IEnumerable<IDictionary<string, object>> listDic)
-            {
-                AddItemsFromDictionary(table, listDic, autoCreateColumn);
-                return;
-            }
-
-            DataTable<T>.AddItems(table, items, autoCreateColumn);
+            return null;
         }
 
-        private static void AddItemFromDictionary(DataTable table, IDictionary<string, object> dic, bool autoCreateColumn = true)
+        var table = Create<T>(tableName, setColumn);
+        AddRows(table, list);
+        return table;
+    }
+
+    public static void AddRow<T>(DataTable table, T item, bool autoCreateColumn = true) where T : class
+    {
+        if (table == null || item == null)
         {
-            if (table == null || dic == null || !dic.Any())
-            {
-                return;
-            }
-
-            var dataRow = table.NewRow();
-            foreach (var kv in dic)
-            {
-                if (!dataRow.Table.Columns.Contains(kv.Key))
-                {
-                    if (!autoCreateColumn)
-                    {
-                        continue;
-                    }
-
-                    if (kv.Value != null)
-                    {
-                        dataRow.Table.Columns.Add(kv.Key, kv.Value.GetType());
-                    }
-                    else
-                    {
-                        dataRow.Table.Columns.Add(kv.Key);
-                    }
-                }
-
-                dataRow[kv.Key] = kv.Value ?? DBNull.Value;
-            }
-
-            table.Rows.Add(dataRow);
+            return;
         }
 
-        private static void AddItemsFromDictionary(DataTable table, IEnumerable<IDictionary<string, object>> listDic, bool autoCreateColumn = true)
+        if (item is IDictionary<string, object> dic)
         {
-            if (table == null || listDic == null || !listDic.Any())
-            {
-                return;
-            }
+            AddRowFromDictionary(table, dic, autoCreateColumn);
+            return;
+        }
 
-            foreach (var dic in listDic)
+        var propertyInfos = typeof(T).GetProperties();
+        var dataRow = table.NewRow();
+        foreach (var propertyInfo in propertyInfos)
+        {
+            var propertyValue = propertyInfo.GetValue(item, null);
+
+            if (!dataRow.Table.Columns.Contains(propertyInfo.Name))
             {
-                if (dic == null || !dic.Any())
+                if (!autoCreateColumn)
                 {
                     continue;
                 }
 
-                AddItemFromDictionary(table, dic, autoCreateColumn);
+                if (propertyValue != null)
+                {
+                    dataRow.Table.Columns.Add(propertyInfo.Name, propertyValue.GetType());
+                }
+                else
+                {
+                    dataRow.Table.Columns.Add(propertyInfo.Name);
+                }
             }
+
+            dataRow[propertyInfo.Name] = propertyValue ?? DBNull.Value;
+        }
+
+        table.Rows.Add(dataRow);
+    }
+
+    public static void AddRows<T>(DataTable table, IEnumerable<T> items, bool autoCreateColumn = true) where T : class
+    {
+        if (table == null || items == null || !items.Any())
+        {
+            return;
+        }
+
+        if (items is IEnumerable<IDictionary<string, object>> listDic)
+        {
+            AddRowsFromDictionary(table, listDic, autoCreateColumn);
+            return;
+        }
+
+        foreach (var item in items)
+        {
+            AddRow(table, item, autoCreateColumn);
+        }
+    }
+
+    private static void AddRowFromDictionary(DataTable table, IDictionary<string, object> dic, bool autoCreateColumn = true)
+    {
+        if (table == null || dic == null || !dic.Any())
+        {
+            return;
+        }
+
+        var dataRow = table.NewRow();
+        foreach (var kv in dic)
+        {
+            if (!dataRow.Table.Columns.Contains(kv.Key))
+            {
+                if (!autoCreateColumn)
+                {
+                    continue;
+                }
+
+                if (kv.Value != null)
+                {
+                    dataRow.Table.Columns.Add(kv.Key, kv.Value.GetType());
+                }
+                else
+                {
+                    dataRow.Table.Columns.Add(kv.Key);
+                }
+            }
+
+            dataRow[kv.Key] = kv.Value ?? DBNull.Value;
+        }
+
+        table.Rows.Add(dataRow);
+    }
+
+    private static void AddRowsFromDictionary(DataTable table, IEnumerable<IDictionary<string, object>> listDic, bool autoCreateColumn = true)
+    {
+        if (table == null || listDic == null || !listDic.Any())
+        {
+            return;
+        }
+
+        foreach (var dic in listDic)
+        {
+            if (dic == null || !dic.Any())
+            {
+                continue;
+            }
+
+            AddRowFromDictionary(table, dic, autoCreateColumn);
         }
     }
 }

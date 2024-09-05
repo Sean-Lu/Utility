@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Demo.NetCore.Contracts;
 using Sean.Utility.Contracts;
 using Sean.Utility.Security;
 using Sean.Utility.Security.Provider;

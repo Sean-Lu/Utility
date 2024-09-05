@@ -4,6 +4,7 @@ using Sean.Utility.Enums;
 using Sean.Utility.Impls.Queue;
 using System;
 using System.Threading;
+using Demo.NetCore.Contracts;
 using Newtonsoft.Json;
 using Sean.Utility;
 

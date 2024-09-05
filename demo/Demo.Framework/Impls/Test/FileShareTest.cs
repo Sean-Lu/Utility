@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Demo.Framework.Contracts;
 using Sean.Utility.Contracts;
 using Sean.Utility.Enums;
 using Sean.Utility.Net;
@@ -28,7 +29,7 @@ namespace Demo.Framework.Impls.Test
             string password = "12345!a";
             // 连接
             int status = FileShareHelper.Connect(remotePath, localpath, username, password);
-            if (status == (int)ERROR_ID.NO_ERROR)
+            if (status == 0)
             {
                 // 连接成功
                 Console.WriteLine(string.Format(strMsg, "Connect Success."));
@@ -44,14 +45,14 @@ namespace Demo.Framework.Impls.Test
 
                 // 断开连接
                 status = FileShareHelper.Disconnect(localpath);
-                Console.WriteLine(status == (int)ERROR_ID.NO_ERROR
+                Console.WriteLine(status == 0
                     ? string.Format(strMsg, "Disconnect Success.")
-                    : string.Format(strMsg, $"Disconnect Failed: {(Enum.IsDefined(typeof(ERROR_ID), status) ? ((ERROR_ID)status).ToString() : status.ToString())}"));
+                    : string.Format(strMsg, $"Disconnect Failed: {status}"));
             }
             else
             {
                 // 连接失败
-                Console.WriteLine(string.Format(strMsg, $"Connect Failed: {(Enum.IsDefined(typeof(ERROR_ID), status) ? ((ERROR_ID)status).ToString() : status.ToString())}"));
+                Console.WriteLine(string.Format(strMsg, $"Connect Failed: {status}"));
             }
         }
 
@@ -66,7 +67,7 @@ namespace Demo.Framework.Impls.Test
             string password = "12345!a";
             // 连接
             int status = FileShareHelper.Connect(remotePath, null, username, password);
-            if (status == (int)ERROR_ID.NO_ERROR)
+            if (status == 0)
             {
                 // 连接成功
                 Console.WriteLine(string.Format(strMsg, "Connect Success."));
@@ -82,14 +83,14 @@ namespace Demo.Framework.Impls.Test
 
                 // 断开连接
                 status = FileShareHelper.Disconnect(remotePath);
-                Console.WriteLine(status == (int)ERROR_ID.NO_ERROR
+                Console.WriteLine(status == 0
                     ? string.Format(strMsg, "Disconnect Success.")
-                    : string.Format(strMsg, $"Disconnect Failed: {(Enum.IsDefined(typeof(ERROR_ID), status) ? ((ERROR_ID)status).ToString() : status.ToString())}"));
+                    : string.Format(strMsg, $"Disconnect Failed: {status}"));
             }
             else
             {
                 // 连接失败
-                Console.WriteLine(string.Format(strMsg, $"Connect Failed: {(Enum.IsDefined(typeof(ERROR_ID), status) ? ((ERROR_ID)status).ToString() : status.ToString())}"));
+                Console.WriteLine(string.Format(strMsg, $"Connect Failed: {status}"));
             }
         }
         #endregion

@@ -3,6 +3,7 @@ using Sean.Utility.Job;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Demo.NetCore.Contracts;
 
 namespace Demo.NetCore.Impls.Test.Job
 {
