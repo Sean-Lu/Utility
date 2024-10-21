@@ -49,7 +49,8 @@ namespace Demo.NetCore
             //ISimpleDo toDo = new SnowFlakeTest();
             //ISimpleDo toDo = new SimpleQueueTest();
             //ISimpleDo toDo = new SimpleLocalMQTest();
-            ISimpleDo toDo = new SimpleJobSchedulerTest();
+            //ISimpleDo toDo = new SimpleJobSchedulerTest();
+            ISimpleDo toDo = new CronJobSchedulerTest();
             Console.WriteLine(toDo.GetType());
             toDo.Execute();
 
