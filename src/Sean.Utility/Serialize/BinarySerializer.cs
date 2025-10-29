@@ -8,7 +8,9 @@ namespace Sean.Utility.Serialize;
 /// </summary>
 public class BinarySerializer
 {
+#pragma warning disable SYSLIB0011
     private readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
+#pragma warning restore SYSLIB0011
 
     /// <summary>
     /// 序列化
